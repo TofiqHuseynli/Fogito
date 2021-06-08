@@ -1,0 +1,13 @@
+.table {
+  &:not(.table-sm),
+  &:not(.table-bordered) {
+    thead th,
+    tbody td {
+      padding: 1rem 0.5rem;
+      border: none;
+    }
+  }
+  &.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f4f6f899;
+  }
+}

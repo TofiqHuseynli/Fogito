@@ -1,0 +1,70 @@
+{
+  "name": "docspanel",
+  "version": "0.1.0",
+  "private": true,
+  "author": "Suleyman",
+  "scripts": {
+    "start-on-crm": "webpack-dev-server --mode=development --publicPath=/frame/docspanel --frameMode=true --progress --colors",
+    "start": "webpack-dev-server --mode=development --publicPath= --open --progress --colors",
+    "build": "webpack --mode=production --publicPath=/frame/docspanel --frameMode=true"
+  },
+  "dependencies": {
+    "@syncfusion/ej2-react-navigations": "^19.1.66",
+    "@tinymce/tinymce-react": "^3.12.6",
+    "antd": "^4.16.2",
+    "bootstrap": "^4.6.0",
+    "classnames": "2.2.6",
+    "jquery": "^3.6.0",
+    "moment": "^2.27.0",
+    "moment-timezone": "0.5.28",
+    "node-sass": "4.14.1",
+    "react": "16.13.1",
+    "react-bootstrap": "^1.6.1",
+    "react-dom": "16.13.1",
+    "react-highlight.js": "^1.0.7",
+    "react-router-dom": "5.2.0",
+    "respinner": "3.0.2",
+    "sweetalert2": "^9.10.12"
+  },
+  "devDependencies": {
+    "@babel/core": "7.9.0",
+    "@babel/plugin-proposal-class-properties": "7.8.3",
+    "@babel/plugin-proposal-export-default-from": "7.8.3",
+    "@babel/plugin-syntax-dynamic-import": "7.8.3",
+    "@babel/plugin-transform-runtime": "7.9.0",
+    "@babel/preset-env": "7.9.5",
+    "@babel/preset-react": "7.9.4",
+    "@types/react-router-dom": "^5.1.7",
+    "babel-eslint": "10.1.0",
+    "babel-loader": "8.1.0",
+    "copy-webpack-plugin": "5.1.1",
+    "css-loader": "2.1.1",
+    "eslint": "6.8.0",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "html-loader": "1.1.0",
+    "html-webpack-plugin": "4.2.0",
+    "sass-loader": "8.0.2",
+    "style-loader": "1.1.4",
+    "webpack": "4.42.1",
+    "webpack-cli": "3.3.11",
+    "webpack-dev-middleware": "3.7.2",
+    "webpack-dev-server": "3.11.0",
+    "webpack-hot-client": "4.1.2",
+    "webpack-hot-middleware": "2.25.0"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

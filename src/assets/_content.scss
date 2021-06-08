@@ -1,0 +1,15 @@
+.frame-content {
+  min-height: 100vh;
+  &.sidebar-opened {
+    margin-left: $sidebar_width;
+  }
+  &.sidebar-closed {
+    margin-left: $sidebar_width_sm;
+  }
+}
+
+@media (max-width: 1200px) {
+  .frame-content {
+    margin-left: 0px !important;
+  }
+}

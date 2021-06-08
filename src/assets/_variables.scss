@@ -1,0 +1,16 @@
+$content_padding: 1rem;
+
+$header_height: calc(46px + #{$content_padding * 2});
+
+$sidebar_width: 270px;
+$sidebar_width_sm: calc(#{$header_height} + #{$content_padding});
+$sidebar_toggler_width: 42px;
+
+$bg-main: #b7b7b7;
+$bg-white: #fff;
+$bg-gray: #f8f9fe;
+$bg-success: #5ecc62;
+$bg-secondary: #f2f5f9;
+$text-main: #7b7b7b;
+$text-muted: #b9b9b9;
+$primary_color: #6195f1;

@@ -1,0 +1,150 @@
+$form-label-color: #bdc7cd;
+$form-bg-color: #f2f5f9;
+
+.form-check {
+  border: none;
+  outline: none !important;
+  user-select: none;
+  background: none;
+  cursor: pointer;
+  .checkbox {
+    width: 20px;
+    height: 20px;
+    -webkit-box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15),
+      0 1px 0 rgba(0, 0, 0, 0.02);
+    box-shadow: 0 1px 3px rgba(50, 50, 93, 0.15), 0 1px 0 rgba(0, 0, 0, 0.02);
+    border-radius: 3px;
+    &.disabled {
+      opacity: 0.7;
+    }
+    i {
+      font-weight: bolder;
+    }
+  }
+  label {
+    cursor: pointer;
+    font-weight: normal;
+  }
+}
+
+.form-control,
+.custom-select {
+  &:not(.form-control-alternative) {
+    border: none;
+    box-shadow: none;
+    background-color: $bg-secondary;
+    &:focus {
+      background-color: $bg-secondary;
+    }
+  }
+}
+
+label {
+  color: $form-label-color;
+  user-select: none;
+}
+
+.custom-input {
+  background: $bg-secondary !important;
+  border: none;
+}
+
+.custom-input {
+  width: 100%;
+  background-color: $form-bg-color;
+  box-shadow: none !important;
+}
+
+.members {
+  .members_container {
+    display: flex;
+    img {
+      width: 45px;
+      height: 45px;
+      border-radius: 500rem;
+      cursor: pointer;
+    }
+    .more_users {
+      width: 43px;
+      height: 43px;
+      background-color: #BCD5E5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: row;
+      color: #fff;
+      border-radius: 500rem;
+      margin-left: 2px;
+      cursor: pointer;
+    }
+  }
+}
+
+
+.tooltip__header {
+  padding: 10px 10px 0px 10px;
+  display: flex;
+
+  color: #7496AB;
+  align-items: center;
+  justify-content: space-between;
+  h5 {
+
+  }
+  i {
+    font-size: 1.3rem;
+    margin-top: -.9rem;
+    &:hover {
+      color: #6dacd4;
+      cursor: pointer;
+    }
+  }
+}
+.users_list {
+  .list__item {
+    display: flex;
+    margin-bottom: .7rem;
+    align-items: center;
+    &:hover {
+      cursor: pointer;
+      .list__info {
+        h5 {
+          color: #6dacd4;
+        }
+      }
+      p {
+        color: $primary_color;
+      }
+    }
+    img {
+      width: 40px;
+      height: 40px;
+      border-radius: 500rem;
+    }
+    .list__info {
+      margin-left: 1rem;
+      h5 {
+        transition: all .1s;
+        font-size: 14px;
+        margin: 0;
+        font-weight: 400;
+      }
+      p {
+        margin: 0;
+      }
+    }
+    .feather-more-vertical {
+      visibility: hidden;
+    }
+    &:hover {
+      .feather-more-vertical {
+        visibility: visible;
+      }
+    }
+  }
+}
+
+
+.cr-pointer {
+  cursor: pointer;
+}

@@ -1,0 +1,25 @@
+.content-header {
+  position: sticky;
+  top: 0px;
+  z-index: 99;
+  height: $header_height;
+  -moz-backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  .title {
+    max-width: 60%;
+    overflow: hidden;
+    font-size: 1.5rem;
+    color: $text-main;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}
+
+@media (max-width: 1200px) {
+  .content-header {
+    .frame-sidebar-toogler {
+      margin-right: 0.5rem;
+    }
+  }
+}

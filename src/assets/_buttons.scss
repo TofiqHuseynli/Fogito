@@ -1,0 +1,68 @@
+.btn[data-filter-count] {
+  position: relative;
+  &::after {
+    content: attr(data-filter-count);
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--orange);
+    border: 2px solid #fff;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    color: #fff;
+  }
+}
+
+.btn-circle {
+  width: 46px;
+  height: 46px;
+  background-color: #f2f5f9;
+  border: none;
+  display: flex;
+  color: #7496AB;
+  justify-content: center;
+  align-items: center;
+  border-radius: 500rem;
+}
+
+.editor__buttons {
+  .btn {
+    width: 150px;
+    background: #F2F1F1;
+    border-radius: 8px 0 0 0;
+    border: none;
+    margin: 0 !important;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 18px;
+    color: #464646;
+    &:hover {
+      box-shadow: none !important;
+      background-color: #d9d9d9;
+    }
+    &:last-child {
+      border-radius: 0 8px 0 0;
+    }
+  }
+}
+
+.options-btn {
+  width: 100%;
+  padding: 10px 0;
+  background-color: $bg-secondary;
+}
+
+.tooltip_button {
+  width: 100%;
+  color: #6FA3C0;
+  &:hover {
+    background-color: #F7FAFC;
+    box-shadow: none;
+  }
+}

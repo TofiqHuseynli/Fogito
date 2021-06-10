@@ -5,7 +5,6 @@ import {
   Projects,
 } from "@layouts";
 import {Edit} from "../layouts/Projects/components";
-import {DocsEdit} from "../layouts/Docs/components";
 
 export const CRM_API_URL = "https://crm.fogito.com";
 export const FILE_API_URL = "https://files.fogito.com";

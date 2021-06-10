@@ -44,7 +44,7 @@ export const Docs = (props) => {
 
         perms_modal: false,
         loading: false,
-        editor_type: 'json',
+        tab: 'json',
         jsonValue: ''
     };
 

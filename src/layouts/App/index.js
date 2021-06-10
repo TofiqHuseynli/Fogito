@@ -54,7 +54,8 @@ export const App = () => {
       setLoading(false);
     } else {
       const request_uri = qs.parse(location.search);
-      const token = request_uri.token || cookie.get("_token") || false;
+      // const token = request_uri.token || cookie.get("_token") || false;
+      const token = 'O9Nbbb4bI1b0H4RcTb76J5g5k9ma2A6Y779ddhd_cM7C22c85Rf25B6W5U4Adt6k9C9D4_a2d2a1ff5b46595c5b4617401c45e8c1759bcd92'
 
       const settings = await loadSettings({ token });
       const translations = await loadTranslations({ token });
@@ -124,15 +125,10 @@ export const App = () => {
     return <AuthError message={Lang.get("NotAutorized")} />;
   }
 
-  const checkDocs = () =>{
-    let pathArray = location.pathname.split('/');
-    return pathArray[1] === 'docs'
-  }
 
   return (
     <ErrorBoundary>
       <SidebarProvider>
-        {!checkDocs('docs') && <Sidebar {...{routes: MENU_ROUTES}} />}
         <Content>
           <Switch>
             {renderRoutes(MENU_ROUTES)}

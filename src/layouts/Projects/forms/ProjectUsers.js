@@ -47,9 +47,9 @@ export const Content = ({user, close}) => {
             </div>
             <div>
                 {user.map((item,i) =>
-                    <div className='users_list px-3' key={i} >
+                    <div className='users_list px-1' key={i} >
                         <div className='list__item' >
-                            <img src={item.avatar} alt='' />
+                            <img src={item.avatar} alt='' style={{ width:43, height: 43 }} />
                             <div className='list__info' >
                                 <h5>{item.fullname}</h5>
                                 <p className='badge badge-primary' >{item.type}</p>

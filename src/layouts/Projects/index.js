@@ -183,12 +183,11 @@ export const Projects = ({ name, match: { path }, type }) => {
         {
             key: "actions",
             name: Lang.get("Status"),
-            center: false,
+            center: true,
             render: (data) => {
                 return (
-                    <div className='d-flex _ai-center _jc-start' >
-                        <div style={{ width: 10, height: 10, backgroundColor:data.status?.dex, borderRadius:500, marginTop:4 }} />
-                        <h5 className='p-0 m-0 ml-2' >{data.status.label}</h5>
+                    <div className='d-flex justify-content-center' >
+                        <span style={{ width:100, fontSize:11 }} className={`badge badge-${getStatus(data.status.label)} m-0 ml-2`} >{data.status.label}</span>
                     </div>
                 );
             },
@@ -222,6 +221,14 @@ export const Projects = ({ name, match: { path }, type }) => {
             ),
         },
     ];
+
+    const getStatus = (color) => {
+        switch (color) {
+            case 'Closed': return 'danger';
+            case 'Active': return 'success';
+            case 'InProgress': return 'warning';
+        }
+    }
 
     const sortable = {
         sort: sort.field,

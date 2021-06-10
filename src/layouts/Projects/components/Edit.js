@@ -11,7 +11,7 @@ import {projectUsersList} from "../../../actions/user";
 import {AppContext} from "@contexts";
 
 
-export const Edit = ({match, history}) => {
+export const Edit = ({name, match, history}) => {
     const initialState = {
         id: match.params.id,
         data: {
@@ -101,7 +101,7 @@ export const Edit = ({match, history}) => {
             <Popup
                 show={inArray("members", modal.modals)}
                 title={Lang.get("Users")}
-                size='md'
+                size='sm'
                 onClose={() => modal.hide("members")}
             >
                 <UsersModal users={users}
@@ -122,14 +122,18 @@ export const Edit = ({match, history}) => {
                         </button>
                     </div>
 
-                    <div className='d-flex w-100 justify-content-end' >
+                    <h3 className='text-primary' >{Lang.get(name)}</h3>
+
+
+                    <div className='d-flex justify-content-end' >
+
                         <Link to={{ pathname: `/docs/${state.data?.id}` }}
-                              className="btn btn-primary lh-24 col-md-2 px-3 d-flex align-items-center justify-content-between"
+                              className="btn btn-primary lh-24 col-md-12 px-3 d-flex align-items-center justify-content-between"
                         >
                             {Lang.get("GoDocs")}
                             <i className="feather feather-chevron-right fs-20 " />
                         </Link>
-                        <div className="col-md-2 pr-0">
+                        <div className="col-md-7 pr-0">
                             <button
                                 className="btn btn-success btn-block lh-24 px-3"
                                 onClick={() => getUpdate()}
@@ -217,16 +221,12 @@ export const Edit = ({match, history}) => {
                             />
                         </div>
 
-                        {/** Permission accordion **/}
-                        <div className='row d-flex flex-column ml-md-1 mt-3' >
-                            <button className='col-md-2 btn btn-primary' data-toggle="collapse" href="#perms" aria-controls="perms" >
-                                {Lang.get("Permissions")}
-                            </button>
-                            <div className="collapse mt-3" id="perms">
-                                <Permissions state={state}
-                                             setState={setState}
-                                />
-                            </div>
+                        {/** Permission **/}
+                        <div className='mt-4' >
+                            <label className='label mb-2' >{Lang.get('Permission')}</label>
+                            <Permissions state={state}
+                                         setState={setState}
+                            />
                         </div>
 
                     </div>

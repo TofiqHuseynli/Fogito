@@ -85,12 +85,16 @@ export const DocsEdit = (props) => {
                 />
             </CustomModal>
 
+            {/*** TABS ***/}
             <div className='docs__tab' >
                 <button className={`${state.tab === 'json' ? 'active' : ''}`} onClick={()=> setState({tab: 'json'})} >
-                    {Lang.get("Editors")}
+                    {Lang.get("Parameters")}
+                </button>
+                <button className={`${state.tab === 'desc' ? 'active' : ''}`} onClick={()=> setState({tab: 'desc'})} >
+                    {Lang.get("Description")}
                 </button>
                 <button className={`${state.tab === 'actions' ? 'active' : ''}`} onClick={()=> setState({tab: 'actions'})} >
-                    {Lang.get("Actions")}
+                    {Lang.get("Generations")}
                 </button>
             </div>
 
@@ -124,30 +128,35 @@ export const DocsEdit = (props) => {
                                     />
                                 </div>
                             </div>
+                        </>
+                }
 
-                            {/* Text Editor */}
-                            <label className='parent__label mt-4' >{Lang.get("Description")}</label>
-                            <div className='w-100 mb-4' style={{ borderRadius:10 }}  >
-                                <Editor
+                {
+                    state.tab === 'desc' &&
+                    <>
+                        {/* Text Editor */}
+                        <label className='parent__label mt-4' >{Lang.get("Description")}</label>
+                        <div className='w-100 mb-4' style={{ borderRadius:10 }}  >
+                            <Editor
                                     style={{ borderRadius:10 }}
                                     onEditorChange={(content)=> setState({...state, data: {...state.data, description: content}})}
                                     apiKey='82nbg8ctqdxe6wzh685u0inzhlffhw2yr10iptjmngucrniy'
                                     value={state.data.description}
                                     init={{
-                                        height: 300,
-                                        menubar: false,
-                                        plugins: [
-                                            'advlist autolink link image lists charmap print preview hr anchor pagebreak',
-                                            'searchreplace wordcount visualblocks code fullscreen insertdatetime media nonbreaking',
-                                            'table emoticons template paste help'
-                                        ],
-                                        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
-                                            'bullist numlist outdent indent | link image | print preview media fullpage | ' +
-                                            'forecolor backcolor emoticons | help',
-                                    }}
-                                />
-                            </div>
-                        </>
+                                    height: 300,
+                                    menubar: false,
+                                    plugins: [
+                                        'advlist autolink link image lists charmap print preview hr anchor pagebreak',
+                                        'searchreplace wordcount visualblocks code fullscreen insertdatetime media nonbreaking',
+                                        'table emoticons template paste help'
+                                    ],
+                                    toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
+                                        'bullist numlist outdent indent | link image | print preview media fullpage | ' +
+                                        'forecolor backcolor emoticons | help',
+                                }}
+                            />
+                        </div>
+                    </>
                 }
 
 

@@ -159,10 +159,10 @@ export const Docs = (props) => {
             </Header>
             {/*** Content ***/}
             <section className="container-fluid position-relative pb-1">
-                <div className="card d-flex flex-md-row flex-column col">
+                <div className="d-flex flex-md-row flex-column col">
 
                     {/* Docs Sidebar */}
-                    <div className='docs_sidebar col-md-3 p-0 m-0' >
+                    <div className='card docs_sidebar col-md-3 p-0 m-0 mb-4' >
                         <button
                             className="btn btn-primary d-flex align-items-center
                             justify-content-center btn-block lh-24  mt-4 mb-2 mx-auto"
@@ -182,29 +182,31 @@ export const Docs = (props) => {
                     </div>
 
                     {/* Docs Content */}
-                    <div className='col-md-9 p-3' >
-                        {
-                            state.docs_id
-                            ?
-                            <DocsEdit
-                                {...props}
-                                _id={state.docs_id}
-                                state={state}
-                                setState={setState}
-                                refresh={() => refresh()}
-                                getUpdate={()=> getUpdate()}
-                            />
-                            :
-                            <div className='d-flex justify-content-center flex-column align-items-center py-3' >
-                                <h2>{Lang.get("Select docs")}</h2>
-                                <button
-                                    className="btn btn-secondary w-25 lh-24 px-3 mt-3"
-                                    onClick={() => modal.show("add")}
-                                >
-                                    {Lang.get("Create Docs")}
-                                </button>
-                            </div>
-                        }
+                    <div className='col pl-md-3 p-0' >
+                        <div className='card col-md-12 p-3' >
+                            {
+                                state.docs_id
+                                ?
+                                <DocsEdit
+                                    {...props}
+                                    _id={state.docs_id}
+                                    state={state}
+                                    setState={setState}
+                                    refresh={() => refresh()}
+                                    getUpdate={()=> getUpdate()}
+                                />
+                                :
+                                <div className='d-flex justify-content-center flex-column align-items-center py-3' >
+                                    <h2>{Lang.get("Select docs")}</h2>
+                                    <button
+                                        className="btn btn-secondary w-25 lh-24 px-3 mt-3"
+                                        onClick={() => modal.show("add")}
+                                    >
+                                        {Lang.get("Create Docs")}
+                                    </button>
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
             </section>

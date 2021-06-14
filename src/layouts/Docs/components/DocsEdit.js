@@ -7,6 +7,7 @@ import {App, Lang} from "@plugins";
 import {Select} from "antd";
 import {Duplicate} from "./Duplicate";
 import {MoveModal} from "./MoveModal";
+import {Link} from "react-router-dom";
 
 
 export const DocsEdit = (props) => {
@@ -86,16 +87,27 @@ export const DocsEdit = (props) => {
             </CustomModal>
 
             {/*** TABS ***/}
-            <div className='docs__tab' >
-                <button className={`${state.tab === 'json' ? 'active' : ''}`} onClick={()=> setState({tab: 'json'})} >
-                    {Lang.get("Parameters")}
-                </button>
-                <button className={`${state.tab === 'desc' ? 'active' : ''}`} onClick={()=> setState({tab: 'desc'})} >
-                    {Lang.get("Description")}
-                </button>
-                <button className={`${state.tab === 'actions' ? 'active' : ''}`} onClick={()=> setState({tab: 'actions'})} >
-                    {Lang.get("Generations")}
-                </button>
+            <div className='d-flex justify-content-between' >
+                <div className='docs__tab' >
+                    <button className={`${state.tab === 'desc' ? 'active' : ''}`} onClick={()=> setState({tab: 'desc'})} >
+                        {Lang.get("Description")}
+                    </button>
+                    <button className={`${state.tab === 'json' ? 'active' : ''}`} onClick={()=> setState({tab: 'json'})} >
+                        {Lang.get("Parameters")}
+                    </button>
+                    <button className={`${state.tab === 'actions' ? 'active' : ''}`} onClick={()=> setState({tab: 'actions'})} >
+                        {Lang.get("Settings")}
+                    </button>
+                </div>
+
+                <div className='go_docs__button' >
+                    <Link to={{ pathname: `https://apptest.fogito.com/frame/docs/api/${state.project_id}/${state.docs_id}`}}
+                          className='btn btn-primary'
+                          target='_blank'
+                    >
+                        {Lang.get("GoDocs")}
+                    </Link>
+                </div>
             </div>
 
             {/* Content */}

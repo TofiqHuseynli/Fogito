@@ -30,11 +30,6 @@ table {
 }
 
 
-.docs__stripe {
-  max-height: 540px;
-  overflow-y: auto;
-}
-
 
 // TREEVIEW
 .e-treeview {
@@ -78,6 +73,51 @@ table {
     &:hover {
       background-color: #528aec;
     }
+  }
+}
+
+
+.docs__sidebar {
+  position: fixed;
+  padding: 10px 0;
+  height: 86vh;
+  z-index: 100;
+  .content__scroll {
+    overflow-y: auto;
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    &::-webkit-scrollbar-track {
+      border-radius: 50px !important;
+      background: #f1f1f1;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #b5b5b5;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: #818181;
+      position: relative;
+    }
+  }
+}
+
+.docs__content {
+  display: flex;
+  justify-content: flex-end;
+  padding-left: 35px;
+  padding-right: 0;
+}
+
+
+@media (max-width: 768px) {
+  .docs__sidebar {
+    position: relative;
+    z-index: 0;
+    height: auto;
+  }
+  .docs__content {
+    padding-left: 0;
   }
 }
 

@@ -31,7 +31,7 @@ export const Members = ({ state, users, setUsers, openMembersModal }) => {
                                     {/** User Permission **/}
                                     <CustomModal
                                         show={modal === i}
-                                        title={Lang.get('UsersPermissions')}
+                                        title={Lang.get('UserPermissions')}
                                         onHide={()=> setModal(false)}
                                     >
                                         <Permissions state={state} userID={item.id} />

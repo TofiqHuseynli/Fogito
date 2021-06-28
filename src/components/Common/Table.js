@@ -86,9 +86,9 @@ export const Table = ({
     let from = parseInt(skip) + 1;
     let to = parseInt(skip) + parseInt(limit);
     return (
-        <span className="ml-3">{`Showing ${from} - ${
+        <span className="ml-3">{`${Lang.get("Showing")} ${from} - ${
             to < count ? to : count
-        } of ${count} records`}</span>
+        } ${Lang.get("of")} ${count} ${Lang.get("records")}`}</span>
     );
   };
 

@@ -7,7 +7,6 @@ import {App, Lang} from "@plugins";
 import {Select} from "antd";
 import {Duplicate} from "./Duplicate";
 import {MoveModal} from "./MoveModal";
-import {Link} from "react-router-dom";
 
 
 export const DocsEdit = (props) => {
@@ -101,12 +100,11 @@ export const DocsEdit = (props) => {
                 </div>
 
                 <div className='go_docs__button' >
-                    <Link to={{ pathname: `https://apptest.fogito.com/frame/docs/api/${state.project_id}/${state.docs_id}`}}
-                          className='btn btn-primary'
-                          target='_blank'
-                    >
+                    <a href={`https://apptest.fogito.com/frame/docs/api/${state.project_id}/${state.docs_id}`}
+                       target='_blank'
+                       className='btn options-btn mt-1' >
                         {Lang.get("GoDocs")}
-                    </Link>
+                    </a>
                 </div>
             </div>
 
@@ -150,21 +148,21 @@ export const DocsEdit = (props) => {
                         <label className='parent__label mt-4' >{Lang.get("Description")}</label>
                         <div className='w-100 mb-4' style={{ borderRadius:10 }}  >
                             <Editor
-                                    style={{ borderRadius:10 }}
-                                    onEditorChange={(content)=> setState({...state, data: {...state.data, description: content}})}
-                                    apiKey='82nbg8ctqdxe6wzh685u0inzhlffhw2yr10iptjmngucrniy'
-                                    value={state.data.description}
-                                    init={{
-                                    height: 300,
-                                    menubar: false,
-                                    plugins: [
-                                        'advlist autolink link image lists charmap print preview hr anchor pagebreak',
-                                        'searchreplace wordcount visualblocks code fullscreen insertdatetime media nonbreaking',
-                                        'table emoticons template paste help'
-                                    ],
-                                    toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
-                                        'bullist numlist outdent indent | link image | print preview media fullpage | ' +
-                                        'forecolor backcolor emoticons | help',
+                                style={{ borderRadius:10 }}
+                                onEditorChange={(content)=> setState({...state, data: {...state.data, description: content}})}
+                                apiKey='82nbg8ctqdxe6wzh685u0inzhlffhw2yr10iptjmngucrniy'
+                                value={state.data.description}
+                                init={{
+                                height: 300,
+                                menubar: false,
+                                plugins: [
+                                    'advlist autolink link image lists charmap print preview hr anchor pagebreak',
+                                    'searchreplace wordcount visualblocks code fullscreen insertdatetime media nonbreaking',
+                                    'table emoticons template paste help'
+                                ],
+                                toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
+                                         'bullist numlist outdent indent | link image | print preview media fullpage | ' +
+                                         'forecolor backcolor emoticons | help',
                                 }}
                             />
                         </div>
@@ -236,11 +234,11 @@ export const DocsEdit = (props) => {
 
                                 {/* Actions */}
                                 <div className='col-md-4' >
-                                    <div className='px-2 text-primary row' style={{ marginTop: 41 }} >
-                                        <a href={`https://apptest.fogito.com/frame/docs/api/${state.project_id}/${state.docs_id}`} target='_blank' className='btn options-btn' >
-                                            {Lang.get("GoDocs")}
-                                        </a>
-                                    </div>
+                                    {/*<div className='px-2 text-primary row' style={{ marginTop: 41 }} >*/}
+                                    {/*    <a href={`https://apptest.fogito.com/frame/docs/api/${state.project_id}/${state.docs_id}`} target='_blank' className='btn options-btn' >*/}
+                                    {/*        {Lang.get("GoDocs")}*/}
+                                    {/*    </a>*/}
+                                    {/*</div>*/}
                                     {/*<OptionsBtn*/}
                                     {/*    divClassName='px-2 row'*/}
                                     {/*    style={{ marginTop: 20 }}*/}
@@ -255,7 +253,7 @@ export const DocsEdit = (props) => {
                                     {/*/>*/}
                                     <OptionsBtn
                                         divClassName='px-2 text-danger row'
-                                        style={{ marginTop: 20 }}
+                                        style={{ marginTop: 41 }}
                                         onClick={()=> App.deleteModal(()=> onDelete() )}
                                         title={'Delete'}
                                     />

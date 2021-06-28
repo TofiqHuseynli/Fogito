@@ -517,7 +517,7 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
                 {addTreeOne === index &&
                     <form onSubmit={() => {
                             if (!create.type) {
-                                Api.errorModal('Reports are empty')
+                                Api.errorModal('Parameters are empty')
                             } else {
                                 let new_item = {
                                     key: create.key,

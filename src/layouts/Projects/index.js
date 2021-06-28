@@ -187,7 +187,9 @@ export const Projects = ({ name, match: { path }, type }) => {
             render: (data) => {
                 return (
                     <div className='d-flex justify-content-center' >
-                        <span style={{ width:100, fontSize:11 }} className={`badge badge-${getStatus(data.status.label)} m-0 ml-2`} >{data.status.label}</span>
+                        <span style={{ width:100, fontSize:11 }} className={`badge badge-${getStatus(data.status.label)} m-0 ml-2`} >
+                            {Lang.get(data.status.label)}
+                        </span>
                     </div>
                 );
             },

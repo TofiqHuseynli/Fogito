@@ -79,11 +79,11 @@ export const UsersModal = ({users, project_id, setUsers}) => {
                     let selected = inArray(item.id, users.map(row => row.id))
 
                     return (
-                        <>
+                        <div key={i} >
                             {/* User Permissions */}
                             <CustomModal
                                 show={permsModal === i}
-                                title={Lang.get('UsersPermissions')}
+                                title={Lang.get('UserPermissions')}
                                 onHide={()=> setPermsModal(false)}
                             >
                                 <Permissions state={state} userID={item.id} />
@@ -107,7 +107,7 @@ export const UsersModal = ({users, project_id, setUsers}) => {
                                 </div>
 
                             </div>
-                        </>
+                        </div>
                     )})
                 }
             </div>

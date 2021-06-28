@@ -70,10 +70,10 @@ export const Content = ({ user, onPermission, onDelete, close }) => {
             </div>
 
             <div className="btn tooltip_button d-flex justify-content-start" onClick={onPermission} >
-                <div>{Lang.get("Permissions")}</div>
+                <div>{Lang.get("UserPermissions")}</div>
             </div>
             <div className="btn tooltip_button d-flex justify-content-start" onClick={onDelete}>
-                <div>{Lang.get('RemoveFromProject')}</div>
+                <div>{Lang.get('Remove')}</div>
             </div>
         </div>
     )

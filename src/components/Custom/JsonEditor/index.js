@@ -60,7 +60,7 @@ export const JsonEditor = ({state, setState}) => {
     const createNew = (e, index, item) => {
         e.preventDefault()
         if (item.type !== 'array' && !create.key || !create.type) {
-            App.errorModal(Lang.get('Reports are empty'))
+            App.errorModal(Lang.get('Parameters are empty'))
         } else {
             let new_item = {
                 key: create.key,
@@ -93,7 +93,7 @@ export const JsonEditor = ({state, setState}) => {
 
     const createNewOneItem = (index) => {
         if (!create.key || !create.type) {
-            App.errorModal(Lang.get('Reports are empty'))
+            App.errorModal(Lang.get('Parameters are empty'))
         } else {
             let new_item = {
                 key: create.key,
@@ -130,7 +130,7 @@ export const JsonEditor = ({state, setState}) => {
 
     function createExampleLine(e, index) {
         if (!create.key || !create.type) {
-            App.errorModal(Lang.get('Reports are empty'))
+            App.errorModal(Lang.get('Parameters are empty'))
         } else {
             let items = {
                 key: create.key,

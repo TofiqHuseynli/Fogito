@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Add} from "./Add";
 import {inArray} from "@lib";
 import {Lang} from "@plugins";
@@ -12,10 +12,11 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
     const history =  useHistory()
     const cookie = useCookie()
     const modal = useModal()
-    const [data, setData] = React.useState(state.docs)
-    const [new_id, setNew_id] = React.useState('')
 
-    const fields = { dataSource: state.docs, expanded: 'expanded', id:'id', text: 'title', child: 'children' }
+    const [initData, setInitData] = React.useState([])
+    const [data, setData] = React.useState([])
+
+    const fields = { dataSource: data, id:'id', text: 'title', child: 'children' }
 
     const menuClick = () => modal.show("add_sub")
 
@@ -30,8 +31,35 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
 
 
     React.useEffect(()=>{
-        setData(state.docs)
+        setInitData(state.docs)
     },[state.docs])
+
+
+    console.log('row', initData)
+
+
+    const onOpen = () => {
+        if(initData) {
+            let row = initData.find(x => x.id === cookie.get('_stripe_id')) || '';
+            let ret = initData.map(x => {
+                if (x.id === row.id) {
+                        let ret = {
+                            id: x.id, title: x.title,
+                            children: x.children, expanded: true,
+                        }
+                    return ret
+                    } else {
+                        return {...x}
+                    }
+                }
+            )
+            setData([...ret])
+        }
+    }
+
+    useEffect(() => {
+        initData && onOpen()
+    }, [initData])
 
 
     return (
@@ -43,25 +71,25 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
                 onClose={() => modal.hide("add_sub")}
             >
                 <Add
-                    _id={new_id || state.docs_id}
+                    _id={state.docs_id}
                     type={'add_sub'}
                     refresh={refresh}
                     onClose={() => modal.hide("add_sub")}
                 />
             </Popup>
 
-            <div className='docs__stripe py-3' style={{ overflowY:'auto' }} >
+            <div className='content__scroll' >
+                {state.loadingStripe && <Loading />}
                 {
-                    state.docs.length
+                    data.length
                         ?
-                        <div>
+                        <>
                             <TreeViewComponent
                                 id='tree'
                                 fields={fields}
                                 allowDragAndDrop={true}
                                 expandOn={'Click'}
-                                nodeDragStop={(data)=>onDragEnd(data) + console.log(data)}
-                                // nodeTemplate={(data)=> nodeTemplate(data)}
+                                nodeDragStop={(data)=>onDragEnd(data)}
                                 nodeClicked={(data)=> getNode(data)}
                             />
                             <ContextMenuComponent
@@ -69,10 +97,16 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
                                 items={[{ text: 'Add Sub' }]}
                                 select={() => menuClick()}
                             />
-                        </div>
+                        </>
                         :
-                        <div className='text-cent   er mt-5' >
-                            {state.data.length ? <h1>{Lang.get("NoDocs")}</h1> : <Loading />}
+                        <div className='d-flex justify-content-center align-items-center' style={{ height:'30rem' }} >
+                            {
+                                !state.loading &&
+                                <div className='d-flex justify-content-center  align-items-center flex-column' >
+                                    <img src='/assets/icons/noDocs.svg' style={{ width:80, opacity: .4 }} />
+                                    <h4 className='mt-2' style={{ opacity: .4 }} >{Lang.get("NoData")}</h4>
+                                </div>
+                            }
                         </div>
                 }
             </div>

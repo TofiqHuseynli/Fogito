@@ -223,7 +223,7 @@ export const Edit = ({name, match, history}) => {
 
                         {/** Permission **/}
                         <div className='mt-4' >
-                            <label className='label mb-2' >{Lang.get('Permission')}</label>
+                            <label className='label mb-2' >{Lang.get('Permissions')}</label>
                             <Permissions state={state}
                                          setState={setState}
                             />

@@ -164,7 +164,7 @@ export const InputCheckbox = ({
             </div>
             {label && (
                 <label className="form-control-label mb-0 ml-2 text-muted">
-                    {label}
+                    {Lang.get(label)}
                 </label>
             )}
         </button>

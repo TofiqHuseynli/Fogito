@@ -116,10 +116,13 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
                             ?
                             <div className='text-danger'>null</div>
                             :
-                            item.value
-                            // ((item.type !== 'array') && (item.type !== 'object')) && item.value.substring(0, 50)
+                            <div className='d-flex' >
+                                <div style={{ width: item.value.length > 50 && 200, height:16, overflow:'hidden' }} >
+                                    {(((item.type !== 'array') && (item.type !== 'object')) && item.value)}
+                                </div>
+                                {item.value.length > 50 && '...'}
+                            </div>
                     }
-                    {/*{item.value.length > 50 && '...'}*/}
                 </div>
                 }
             </>
@@ -517,7 +520,7 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
                 {addTreeOne === index &&
                     <form onSubmit={() => {
                             if (!create.type) {
-                                Api.errorModal('Parameters are empty')
+                                // Api.errorModal('Parameters are empty')
                             } else {
                                 let new_item = {
                                     key: create.key,

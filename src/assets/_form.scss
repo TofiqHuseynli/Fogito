@@ -81,6 +81,23 @@ label {
 }
 
 
+.custom-file-input {
+  opacity: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  &::before {
+    content: 'Import';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.custom-file-input::-webkit-file-upload-button {
+  visibility: hidden;
+}
+
 .tooltip__header {
   padding: 5px 10px 0px 10px;
   display: flex;

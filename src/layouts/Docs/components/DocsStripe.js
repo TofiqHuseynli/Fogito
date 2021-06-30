@@ -103,7 +103,7 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
                             {
                                 !state.loading &&
                                 <div className='d-flex justify-content-center  align-items-center flex-column' >
-                                    <img src='/assets/icons/noDocs.svg' style={{ width:80, opacity: .4 }} />
+                                    <img src='/frame/docspanel/assets/icons/noDocs.svg' style={{ width:80, opacity: .4 }} />
                                     <h4 className='mt-2' style={{ opacity: .4 }} >{Lang.get("NoData")}</h4>
                                 </div>
                             }

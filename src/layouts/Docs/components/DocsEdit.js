@@ -54,7 +54,7 @@ export const DocsEdit = (props) => {
     }
 
     React.useEffect(()=> {
-        state.docs_id && refreshInfo()
+        refreshInfo()
     },[state.docs_id])
 
     React.useEffect(()=> {
@@ -118,10 +118,12 @@ export const DocsEdit = (props) => {
                             {/* Json Editor */}
                             <label className='parent__label mt-2' >{Lang.get("Parameters")}</label>
                             <div className='row' >
-                                <JsonEditor
-                                    state={state}
-                                    setState={setState}
-                                />
+                                {
+                                    <JsonEditor
+                                        state={state}
+                                        setState={setState}
+                                    />
+                                }
                             </div>
 
                             {/* Json Response */}

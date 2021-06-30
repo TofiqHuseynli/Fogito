@@ -2,15 +2,17 @@ import React from 'react';
 import {apisDelete, apisMove, apisUpdate, documentationStripe} from "@actions";
 import {ErrorBoundary, Header, Popup} from "@components";
 import {DocsEdit, DocsStripe} from "./components";
-import {App, Lang} from "@plugins";
+import {App, Auth, Lang} from "@plugins";
 import {Add} from "./components";
 import {useModal} from "@hooks";
-import {inArray} from "@lib";
+import {genUuid, inArray} from "@lib";
+import {API_ROUTES} from "@config";
+import {Link} from "react-router-dom";
 
 export const Docs = (props) => {
 
+    let xhr = [];
     const modal = useModal()
-
     const initialState = {
         docs_id: props.match.params.docs_id,
         id: props.match.params.id,
@@ -21,6 +23,7 @@ export const Docs = (props) => {
         status_data: [],
         public_data: [],
         docs: [],
+        file: {  },
 
         options: [
             { value: 'get',       label: 'get' },
@@ -86,7 +89,6 @@ export const Docs = (props) => {
         }
     }
 
-
     const getUpdate = async () => {
         let response = await apisUpdate({
             id: state.pro_id,
@@ -109,6 +111,38 @@ export const Docs = (props) => {
             App.errorModal(response.description);
         }
     }
+
+    const sendFormData = ({ key, data, target }) => {
+        xhr[key] = new XMLHttpRequest();
+
+        xhr[key].addEventListener("load", function (e) {
+            let response = JSON.parse(e.target.responseText);
+            console.log('res',response)
+        });
+
+        xhr[key].open("POST", API_ROUTES["apisImport"], true);
+        xhr[key].send(data);
+    };
+
+    const onFileSelect = (e, target) => {
+        let { pro_id } = state;
+        for (let file of e.target.files) {
+            let key = genUuid();
+            // let type = file.type.split("/")[1];
+            file.loading = true;
+            file.key = key;
+
+            let formData = new FormData();
+            formData.append("token", Auth.get("token"));
+            formData.append("project_id", pro_id);
+            formData.append("file", file);
+            sendFormData({
+                key,
+                data: formData,
+                target,
+            });
+        }
+    };
 
 
     React.useEffect(()=> {
@@ -144,9 +178,29 @@ export const Docs = (props) => {
                         </button>
                     </div>
 
-                    <h3 className='text-primary mx-auto' >{Lang.get(props.name)}</h3>
+                    <h3 className='text-primary' >{Lang.get(props.name)}</h3>
 
                     <>
+                        <div className="col-md-1 pr-0">
+                            <input
+                                className="btn btn-primary btn-block custom-file-input lh-24 px-3"
+                                onChange={(e) => onFileSelect(e, "file")}
+                                type={'file'}
+                                accept=".doc,.docx,.txt,.fog"
+                            />
+                        </div>
+                        <div className="col-md-1 pr-0">
+                            <a
+                                className="btn btn-primary btn-block lh-24 px-3"
+                                href={
+                                    `https://docs.fogito.com/apis/export?token=${Auth.get("token")}&lang=${Auth.get("lang")}&project_id=${state.pro_id}`
+                                }
+                                target="_blank"
+                                download
+                            >
+                                {Lang.get("Export")}
+                            </a>
+                        </div>
                         <div className="col-md-1 pr-0">
                             <button
                                 className="btn btn-success btn-block lh-24 px-3"
@@ -198,7 +252,7 @@ export const Docs = (props) => {
                                 />
                                 :
                                 <div className='d-flex flex-column justify-content-center align-items-center pt-5 mt-5' >
-                                    <img src='/assets/icons/docs.svg' style={{ width: 120, opacity: .4 }} />
+                                    <img src='/frame/docspanel/assets/icons/docs.svg' style={{ width: 120, opacity: .4 }} />
                                     <button
                                         className="btn btn-secondary text-primary w-25 lh-24 px-3 mt-3"
                                         onClick={() => modal.show("add")}

@@ -39,6 +39,8 @@ export const API_ROUTES = {
   apisMove:                API_DOC_PANEL + "/apis/move",
   apisData:                API_DOC_PANEL + "/apis/data",
   apisCopy:                API_DOC_PANEL + "/apis/copy",
+  apisExport:              API_DOC_PANEL + "/apis/export",
+  apisImport:              API_DOC_PANEL + "/apis/import",
 
   // Documentation
   documentationList:       API_DOC_PANEL + "/documentation/list",
@@ -54,7 +56,6 @@ export const API_ROUTES = {
   // Permissions List
   permissionsList:         API_DOC_PANEL + "/permissions/list",
   permissionsSet:          API_DOC_PANEL + "/permissions/set",
-
 
   // Files
   filesUpload: FILE_API_URL + "/file/upload",

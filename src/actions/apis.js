@@ -40,6 +40,16 @@ export const apisCopy = (url, obj) => {
     return Api.post("apisCopy", (url, obj));
 };
 
+export const apisExport = (params) => {
+    return Api.post("apisExport", (params));
+};
+
+export const apisImport = (params) => {
+    return Api.post("apisImport", (params));
+};
+
+
+// Permissions
 export const permissionsList = (params) => {
     return Api.post("permissionsList", params);
 };

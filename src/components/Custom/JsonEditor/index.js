@@ -60,7 +60,7 @@ export const JsonEditor = ({state, setState}) => {
     const createNew = (e, index, item) => {
         e.preventDefault()
         if (item.type !== 'array' && !create.key || !create.type) {
-            App.errorModal(Lang.get('Parameters are empty'))
+            // App.errorModal(Lang.get('Parameters are empty'))
         } else {
             let new_item = {
                 key: create.key,
@@ -93,7 +93,7 @@ export const JsonEditor = ({state, setState}) => {
 
     const createNewOneItem = (index) => {
         if (!create.key || !create.type) {
-            App.errorModal(Lang.get('Parameters are empty'))
+            // App.errorModal(Lang.get('Parameters are empty'))
         } else {
             let new_item = {
                 key: create.key,
@@ -130,7 +130,7 @@ export const JsonEditor = ({state, setState}) => {
 
     function createExampleLine(e, index) {
         if (!create.key || !create.type) {
-            App.errorModal(Lang.get('Parameters are empty'))
+            // App.errorModal(Lang.get('Parameters are empty'))
         } else {
             let items = {
                 key: create.key,
@@ -196,16 +196,20 @@ export const JsonEditor = ({state, setState}) => {
                             ?
                             <div className='text-danger'>null</div>
                             :
-                             ((item.type !== 'array') && (item.type !== 'object')) && item.value.substring(0, 50)
+                            <div className='d-flex' >
+                                <div style={{ width: item.value.length > 50 && 200, height:16, overflow:'hidden' }} >
+                                    {(((item.type !== 'array') && (item.type !== 'object')) && item.value)}
+                                </div>
+                                {item.value.length > 50 && '...'}
+                            </div>
                         }
-                        {item.value.length > 50 && '...'}
                     </div>
                 }
             </>
         )
         switch (item.type) {
-            case 'integer': return (content);
             case 'string': return (content);
+            case 'integer': return (content);
             case 'float': return (content);
             case 'boolean':
                 return (
@@ -443,7 +447,12 @@ export const JsonEditor = ({state, setState}) => {
                                     />
 
                                     {/* Recursive */}
-                                    {getRecursive(item)}
+                                    {
+                                        // item.children?.length &&
+                                        <>
+                                            {getRecursive(item)}
+                                        </>
+                                    }
 
                                     {/*****  ADD / REMOVE LINE for ONE ITEM  *****/}
                                     {item.type === 'object' &&

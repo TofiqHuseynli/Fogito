@@ -80,7 +80,8 @@ table {
 .docs__sidebar {
   position: fixed;
   padding: 10px 0;
-  height: 86vh;
+  top: 1rem;
+  bottom: -.5rem;
   z-index: 100;
   .content__scroll {
     overflow-y: auto;
@@ -93,10 +94,10 @@ table {
       background: #f1f1f1;
     }
     &::-webkit-scrollbar-thumb {
-      background: #b5b5b5;
+      background: #c6c6c6;
     }
     &::-webkit-scrollbar-thumb:hover {
-      background: #818181;
+      background: #a4a4a4;
       position: relative;
     }
   }

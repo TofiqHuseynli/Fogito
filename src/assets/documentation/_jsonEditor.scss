@@ -132,6 +132,16 @@
   }
 }
 
+.is_required {
+  position: absolute;
+  opacity: .7;
+  top: 4px;
+  font-size: 21px;
+  left: 2.2rem;
+  z-index: 10;
+  user-select: none;
+}
+
 .static__width {
   width: 5rem !important;
 }

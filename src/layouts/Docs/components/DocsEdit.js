@@ -1,18 +1,21 @@
 import React from 'react';
-import {CustomModal, ErrorBoundary, Inputs, JsonEditor, Loading} from "@components";
+import {CustomModal, ErrorBoundary, Inputs, JsonEditor, Loading, Popup} from "@components";
 import {apisDelete, apisInfo, projectsData} from "@actions";
 import {Editor} from "@tinymce/tinymce-react";
-import {OptionsBtn} from "../forms";
+import {JsonModal, OptionsBtn} from "../forms";
 import {App, Lang} from "@plugins";
 import {Select} from "antd";
 import {Duplicate} from "./Duplicate";
 import {MoveModal} from "./MoveModal";
+import {inArray} from "@lib";
+import {Add} from "./Add";
+import {useModal} from "@hooks";
 
 
 export const DocsEdit = (props) => {
 
+    const modal = useModal()
     const [duplicate, setDuplicate] = React.useState(false)
-    const [move, setMove] = React.useState(false)
     let {refresh, state, setState} = props;
 
     const refreshInfo = async () => {
@@ -55,6 +58,7 @@ export const DocsEdit = (props) => {
 
     React.useEffect(()=> {
         refreshInfo()
+        window.scrollTo(0,0);
     },[state.docs_id])
 
     React.useEffect(()=> {
@@ -72,18 +76,20 @@ export const DocsEdit = (props) => {
             >
                 <Duplicate onHide={()=> setDuplicate(false)} />
             </CustomModal>
-            <CustomModal
-                show={move}
-                title={Lang.get('Move')}
-                onHide={()=> setMove(false)}
+            <Popup
+                show={inArray("jsonModal", modal.modals)}
+                title={Lang.get("Json format")}
+                size={'md'}
+                onClose={() => modal.hide("jsonModal")}
             >
-                <MoveModal
-                    onHide={()=> setMove(false)}
-                    setState={setState}
-                    id={state.docs_id}
-                    state={state}
-                />
-            </CustomModal>
+                    <JsonModal
+                        onHide={()=> modal.show('jsonModal')}
+                        setState={setState}
+                        id={state.docs_id}
+                        state={state}
+                        onClose={() => modal.hide("jsonModal")}
+                    />
+            </Popup>
 
             {/*** TABS ***/}
             <div className='d-flex justify-content-between' >
@@ -100,7 +106,7 @@ export const DocsEdit = (props) => {
                 </div>
 
                 <div className='go_docs__button' >
-                    <a href={`https://apptest.fogito.com/frame/docs/api/${state.project_id}/${state.docs_id}`}
+                    <a href={`/frame/docs/api/${state.project_id}/${state.docs_id}`}
                        target='_blank'
                        className='btn options-btn mt-1' >
                         {Lang.get("GoDocs")}
@@ -122,6 +128,7 @@ export const DocsEdit = (props) => {
                                     <JsonEditor
                                         state={state}
                                         setState={setState}
+                                        openJsonModal={()=> modal.show('jsonModal')}
                                     />
                                 }
                             </div>

@@ -4,10 +4,10 @@ import {apisData} from "@actions";
 import {NewLine, Tree} from "./components";
 import {useOutsideAlerter} from "@hooks";
 import {ErrorBoundary} from "@components";
-import {Tooltip} from "antd";
+import {Checkbox, Tooltip} from "antd";
 import {App, Lang} from "@plugins";
 
-export const JsonEditor = ({state, setState}) => {
+export const JsonEditor = ({state, setState, openJsonModal}) => {
 
     //  values
     const formRef = useRef();
@@ -352,6 +352,7 @@ export const JsonEditor = ({state, setState}) => {
         }
     }
 
+    console.log(state.data.parameters)
 
 
     // this function for inputs/forms onblur
@@ -375,7 +376,7 @@ export const JsonEditor = ({state, setState}) => {
 
                     {/*****  EDITOR's LINE NUMBERS ON THE LEFT SIDE  *****/}
                     <div className='d-flex flex-column h-100 _ai-end pl-3 pr-2'
-                         style={{position: 'absolute', backgroundColor: '#E9EDEF', paddingTop:12, borderRadius: '5px 0 0 5px' }}>
+                         style={{position: 'absolute', backgroundColor: '#E9EDEF', paddingTop:12, borderRadius: '5px 0 0 5px', zIndex: 10, userSelect: 'none' }}>
                         {getLinesCount().map((item, i) => <div key={i} style={{color: '#AAA0A0', marginTop:10 }}>{item}</div>)}
                     </div>
 
@@ -388,8 +389,13 @@ export const JsonEditor = ({state, setState}) => {
                                 <div className='ml-2'>{"{"}</div>
                             </div>
 
-                            <div className='d-flex _center' onClick={() => setNewLineExample(true)}>
-                                <i className='feather feather-plus editor-line-btn mr-3'/>
+                            <div className='d-flex' >
+                                <div onClick={openJsonModal} >
+                                    <i className='feather feather-file-text editor-line-btn mr-2'/>
+                                </div>
+                                <div className='d-flex _center' onClick={() => setNewLineExample(true)}>
+                                    <i className='feather feather-plus editor-line-btn mr-3'/>
+                                </div>
                             </div>
                         </div>
 
@@ -399,17 +405,17 @@ export const JsonEditor = ({state, setState}) => {
                                 getValueAdd, createExampleLine, getNewValue}}
                         />
 
-                        <div className='ml-3'  >
+                        <div style={{ marginLeft: '1.2rem' }}  >
                             {state.data?.parameters?.map((item, index) => (
                                 <div key={index}>
                                     {/*<Tooltip title='text' trigger='contextMenu' >*/}
                                     <div className='d-flex editor-line _jc-between'
-                                         onDoubleClick={()=> getNewLine(index)} style={{paddingLeft: 50}}
+                                         onDoubleClick={()=> getNewLine(index)} style={{ paddingLeft: 50, position: 'relative' }}
 
                                     >
                                         <div className='d-flex'>
 
-                                            <Key {...{item, edit, index, formRef, onEdit, setValue, setEdit}} />
+                                            <Key {...{item, edit, index, formRef, onEdit, setValue, setEdit, state}} />
 
                                             <Type {...{item, changeType, types, index}} />  &nbsp;
 
@@ -422,6 +428,13 @@ export const JsonEditor = ({state, setState}) => {
 
                                         {/*****  ADD / REMOVE LINE  *****/}
                                         <div className='d-flex _center a-r__buttons'>
+                                            <Checkbox className='editor-line-btn'
+                                                      defaultChecked={item.is_required}
+                                                      style={{ margin: '-1px 10px 0 0' }}
+                                                      onChange={(e)=> {
+                                                          setValue(index, e.target.checked ? 1 : 0, 'is_required')
+                                                      }}
+                                            />
                                             <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
                                                 setNewLine(index)
                                                 setCreate({field:'', type:'string', value:''})
@@ -586,9 +599,10 @@ const ExampleLine = ({create ,setCreate ,newLineExample, setNewLineExample, form
 }
 
 
-const Key = ({item, edit, index, formRef, onEdit, setValue, setEdit}) => {
+const Key = ({item, edit, index, formRef, onEdit, setValue, setEdit, state}) => {
     return (
         <ErrorBoundary>
+            {state.data.parameters[index].is_required ? <div className='is_required text-danger'>*</div> : null}
             {
                 edit === index
                     ?

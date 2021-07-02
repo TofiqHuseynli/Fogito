@@ -35,8 +35,6 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
     },[state.docs])
 
 
-    console.log('row', initData)
-
 
     const onOpen = () => {
         if(initData) {

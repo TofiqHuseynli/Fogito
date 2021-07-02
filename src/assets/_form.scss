@@ -86,6 +86,7 @@ label {
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: #22BBD6;
   &::before {
     content: 'Import';
     display: flex;
@@ -95,7 +96,7 @@ label {
 }
 
 .custom-file-input::-webkit-file-upload-button {
-  visibility: hidden;
+  visibility: hidden !important;
 }
 
 .tooltip__header {

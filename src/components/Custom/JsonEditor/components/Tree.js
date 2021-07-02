@@ -3,7 +3,7 @@ import {Api} from "@plugins";
 import {useOutsideAlerter} from "@hooks";
 import {ErrorBoundary} from "@components";
 import {NewLine} from "./NewLine";
-import {Tooltip} from "antd";
+import {Checkbox, Tooltip} from "antd";
 
 
 export function Tree({setState, line, setLine, children, types, valueItem}) {
@@ -39,7 +39,7 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
     const createNew = (e, index, item) => {
         e.preventDefault()
         if ((valueItem.type !== 'array') && !create.type) {
-            // App.errorModal(Lang.get('Reports are empty'))
+                // App.errorModal(Lang.get('Reports are empty'))
         } else {
             let new_item = {
                 key: create.key,
@@ -319,7 +319,6 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
     }
 
 
-
     // this function for inputs/forms onblur
     const onCloseForm = () => {
         formRef.current.dispatchEvent(new Event('submit', { cancelable: true }))
@@ -334,48 +333,53 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
     useOutsideAlerter(formRef, onCloseForm)
 
 
-    return children.length > 0 && children?.map((item, index) => (
-        <div key={index} >
-            <div className='pl-5' >
-                <div key={index} className='d-flex editor-line _jc-between'  onDoubleClick={()=> getNewLine(index)} >
-                    <div className='d-flex' onDoubleClick={(e)=> e.stopPropagation()}   >
+    return children.length > 0 && children?.map((item, index) => {
+        let it = item.children
+        return (
+        <div key={index} style={{ paddingLeft: '3rem' }}  >
+            <div >
+                <div key={index} className='d-flex editor-line _jc-between'
+                     style={{ position: 'relative' }}
+                     onDoubleClick={()=> getNewLine(index)} >
+                    <div className='d-flex'  onDoubleClick={(e)=> e.stopPropagation()}   >
 
                         {/*****  KEY  *****/}
+                        {item.is_required ? <div className='is_required text-danger'>*</div> : null}
                         {
                             edit === index ? (
-                                <form onSubmit={() => onEdit(index)} ref={formRef} >
-                                    <div className='json_edit d-flex'>
-                                        <input
-                                            type="text"
-                                            className="json_input"
-                                            id="inlineFormInputGroup"
-                                            value={item.key}
-                                            autoFocus={true}
-                                            onChange={(e) => setValue(index, e.target.value, 'key')}
-                                        />
-                                        <i className='feather feather-check' onClick={() => onEdit(index)}/>
+                                    <form onSubmit={() => onEdit(index)} ref={formRef} >
+                                        <div className='json_edit d-flex'>
+                                            <input
+                                                type="text"
+                                                className="json_input"
+                                                id="inlineFormInputGroup"
+                                                value={item.key}
+                                                autoFocus={true}
+                                                onChange={(e) => setValue(index, e.target.value, 'key')}
+                                            />
+                                            <i className='feather feather-check' onClick={() => onEdit(index)}/>
+                                        </div>
+                                    </form>
+                                ) :
+                                !item.key
+                                    ?
+                                    <>
+                                        {
+                                            valueItem.type !== 'array'
+                                                ?
+                                                <div onClick={() => setEdit(index)}>
+                                                    "field:"
+                                                </div>
+                                                :
+                                                <div>
+                                                    {`"${index}":`}
+                                                </div>
+                                        }
+                                    </>
+                                    :
+                                    <div onClick={() => setEdit(index)}>
+                                        {`${item.key && `"${item.key}":`}`}
                                     </div>
-                                </form>
-                            ) :
-                            !item.key
-                            ?
-                            <>
-                                {
-                                    valueItem.type !== 'array'
-                                        ?
-                                        <div onClick={() => setEdit(index)}>
-                                            "field:"
-                                        </div>
-                                        :
-                                        <div>
-                                            {`"${index}":`}
-                                        </div>
-                                }
-                            </>
-                            :
-                            <div onClick={() => setEdit(index)}>
-                                {`${item.key && `"${item.key}":`}`}
-                            </div>
                         }
 
                         &nbsp;
@@ -424,7 +428,7 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
                             <div className="dropdown-menu" style={{marginRight: '6em'}}
                                  aria-labelledby="dropdownMenuButton">
                                 {boolean?.map((d, i) =>
-                                    <p className="dropdown-item" key={i} onClick={() => changeBoolean(d.value, index)}>
+                                    <p className="dropdown-item" key={i} onClick={() => changeBoolean(d.value, index)} >
                                         {d.label}
                                     </p>
                                 )}
@@ -453,6 +457,13 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
 
                     {/*****  ADD / REMOVE LINE  *****/}
                     <div className='d-flex _center a-r__buttons'>
+                        <Checkbox className='editor-line-btn'
+                                  defaultChecked={item.is_required}
+                                  style={{margin: '-1px 10px 0 0'}}
+                                  onChange={(e) => {
+                                      setValue(index, e.target.checked ? 1 : 0, 'is_required')
+                                  }}
+                        />
                         <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
                             setAddTree(index)
                             setCreate({field:'', type:'string', value:''})
@@ -485,99 +496,101 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
 
 
                 {item.type === 'array' &&
-                    <div style={{paddingLeft: 100}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
-                        <div style={{ marginLeft: -45 }} >{item.type === 'array' && ']'}</div>
-                        {/*****  ADD / REMOVE LINE  *****/}
-                        <div className='d-flex _center a-r__buttons'>
-                            <i className='feather feather-plus editor-line-btn mr-2'
-                               onClick={() => {
-                                   setAddTreeOne(index)
-                                   setCreate({field:'', type:'string', value:''})
-                               }}
-                            />
-                            <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
-                               onClick={() => removeLine(index)}/>
-                        </div>
+                <div style={{paddingLeft: 100}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
+                    <div style={{ marginLeft: -45 }} >{item.type === 'array' && ']'}</div>
+                    {/*****  ADD / REMOVE LINE  *****/}
+                    <div className='d-flex _center a-r__buttons'>
+                        <i className='feather feather-plus editor-line-btn mr-2'
+                           onClick={() => {
+                               setAddTreeOne(index)
+                               setCreate({field:'', type:'string', value:''})
+                           }}
+                        />
+                        <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
+                           onClick={() => removeLine(index)}/>
                     </div>
+                </div>
                 }
                 {item.type === 'object' &&
-                    <div style={{paddingLeft: 100}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
-                        <div style={{ marginLeft: -45 }} >{item.type === 'object' && '}'}</div>
-                        {/*****  ADD / REMOVE LINE  *****/}
-                        <div className='d-flex _center a-r__buttons'>
-                            <i className='feather feather-plus editor-line-btn mr-2'
-                               onClick={() => {
-                                   setAddTreeOne(index)
-                                   setCreate({field:'', type:'string', value:''})
-                               }}
-                            />
-                            <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
-                               onClick={() => removeLine(index)}/>
-                        </div>
+                <div style={{paddingLeft: 100}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
+                    <div style={{ marginLeft: -45 }} >{item.type === 'object' && '}'}</div>
+                    {/*****  ADD / REMOVE LINE  *****/}
+                    <div className='d-flex _center a-r__buttons'>
+                        <i className='feather feather-plus editor-line-btn mr-2'
+                           onClick={() => {
+                               setAddTreeOne(index)
+                               setCreate({field:'', type:'string', value:''})
+                           }}
+                        />
+                        <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
+                           onClick={() => removeLine(index)}/>
                     </div>
+                </div>
                 }
                 {/*****  CREATE NEW  *****/}
                 {addTreeOne === index &&
-                    <form onSubmit={() => {
-                            if (!create.type) {
-                                // Api.errorModal('Parameters are empty')
-                            } else {
-                                let new_item = {
-                                    key: create.key,
-                                    type: create.type,
-                                    value: create.value,
-                                };
-                                children.splice(index + 1, 0, new_item)
-                                setState({...children})
-                                setAddTreeOne(false)
-                                setLine(line + 1)
-                            }
-                        }}
-                        ref={formRef}
-                        className='static__width'
-                    >
-                        <div className='pl-5 ml-2 d-flex'>
-                            {
-                                valueItem.type !== 'array' &&
-                                <>
-                                    <input
-                                        className='badge-input'
-                                        placeholder={'field'}
-                                        autoFocus
-                                        onChange={e => {
-                                            setCreate({...create, key: e.target.value})
-                                        }}
-                                    /> :
-                                </>
-                            }
-                            <select
-                                className='badge-select'
-                                defaultValue={'string'}
-                                onChange={e => {
-                                    setCreate({...create,
-                                        key: (e.target.value === 'array') && '',
-                                        type: e.target.value,
-                                        value: getNewValue(e.target.value)
-                                    });
-                                }}
-                            >
-                                <option value=''>Type</option>
-                                {types.map((d, i) =>
-                                    <option key={i} value={d.value}>{d.label}</option>
-                                )}
-                            </select>
-                            {getValueAdd(create.type, valueItem, false)}
-                            <button className='btn badge-ok_btn'>ok</button>
-                            <button className='btn badge-x_btn' onClick={() => setAddTreeOne(false)}>
-                                x
-                            </button>
-                        </div>
-                    </form>
+                <form onSubmit={() => {
+                    if (!create.type) {
+                        // Api.errorModal('Parameters are empty')
+                    } else {
+                        let new_item = {
+                            key: create.key,
+                            type: create.type,
+                            value: create.value,
+                        };
+                        children.splice(index + 1, 0, new_item)
+                        setState({...children})
+                        setAddTreeOne(false)
+                        setLine(line + 1)
+                    }
+                }}
+                      ref={formRef}
+                      className='static__width'
+                >
+                    <div className='pl-5 ml-2 d-flex'>
+                        {
+                            valueItem.type !== 'array' &&
+                            <>
+                                <input
+                                    className='badge-input'
+                                    placeholder={'field'}
+                                    autoFocus
+                                    onChange={e => {
+                                        setCreate({...create, key: e.target.value})
+                                    }}
+                                /> :
+                            </>
+                        }
+                        <select
+                            className='badge-select'
+                            defaultValue={'string'}
+                            onChange={e => {
+                                setCreate({...create,
+                                    key: (e.target.value === 'array') && '',
+                                    type: e.target.value,
+                                    value: getNewValue(e.target.value)
+                                });
+                            }}
+                        >
+                            <option value=''>Type</option>
+                            {types.map((d, i) =>
+                                <option key={i} value={d.value}>{d.label}</option>
+                            )}
+                        </select>
+                        {getValueAdd(create.type, valueItem, false)}
+                        <button className='btn badge-ok_btn'>ok</button>
+                        <button className='btn badge-x_btn' onClick={() => setAddTreeOne(false)}>
+                            x
+                        </button>
+                    </div>
+                </form>
                 }
             </div>
         </div>
-    ))
+    )})
 }
+
+
 
 
 

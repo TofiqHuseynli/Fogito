@@ -17,6 +17,10 @@
   }
 }
 
+.ant-checkbox-inner {
+  transition: none !important;
+}
+
 .ant-select {
   .ant-select-selector {
     background-color: #F2F5F9 !important;

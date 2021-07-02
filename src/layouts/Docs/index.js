@@ -7,7 +7,6 @@ import {Add} from "./components";
 import {useModal} from "@hooks";
 import {genUuid, inArray} from "@lib";
 import {API_ROUTES} from "@config";
-import {Link} from "react-router-dom";
 
 export const Docs = (props) => {
 
@@ -117,7 +116,11 @@ export const Docs = (props) => {
 
         xhr[key].addEventListener("load", function (e) {
             let response = JSON.parse(e.target.responseText);
-            console.log('res',response)
+            if(response.status === 'success') {
+                refresh()
+            } else {
+                App.errorModal(response.description)
+            }
         });
 
         xhr[key].open("POST", API_ROUTES["apisImport"], true);
@@ -128,7 +131,6 @@ export const Docs = (props) => {
         let { pro_id } = state;
         for (let file of e.target.files) {
             let key = genUuid();
-            // let type = file.type.split("/")[1];
             file.loading = true;
             file.key = key;
 
@@ -169,21 +171,24 @@ export const Docs = (props) => {
             {/*** Header ***/}
             <Header>
                 <div className="col d-flex justify-content-between align-items-center px-0">
-                    <div className="col-md-1 pl-0 ml-0">
+
+                    <div className='col-3 mx-3' />
+
+                    <div className="col-md-1 pl-0">
                         <button
-                            className="btn btn-primary lh-24 px-3 text-center"
+                            className="btn btn-lightblue text-white lh-24 px-3 text-center"
                             onClick={() => props.history.push('/projects')}
                         >
                             <i className="feather feather-chevron-left fs-22 align-middle" />
                         </button>
                     </div>
 
-                    <h3 className='text-primary' >{Lang.get(props.name)}</h3>
+                    <h3 className='text-primary mx-auto' >{Lang.get(state.data.title)}</h3>
 
                     <>
                         <div className="col-md-1 pr-0">
                             <input
-                                className="btn btn-primary btn-block custom-file-input lh-24 px-3"
+                                className="btn btn-lightblue text-white btn-block custom-file-input lh-24 px-3"
                                 onChange={(e) => onFileSelect(e, "file")}
                                 type={'file'}
                                 accept=".doc,.docx,.txt,.fog"
@@ -191,7 +196,7 @@ export const Docs = (props) => {
                         </div>
                         <div className="col-md-1 pr-0">
                             <a
-                                className="btn btn-primary btn-block lh-24 px-3"
+                                className="btn btn-lightblue btn-block lh-24 px-3"
                                 href={
                                     `https://docs.fogito.com/apis/export?token=${Auth.get("token")}&lang=${Auth.get("lang")}&project_id=${state.pro_id}`
                                 }
@@ -201,7 +206,7 @@ export const Docs = (props) => {
                                 {Lang.get("Export")}
                             </a>
                         </div>
-                        <div className="col-md-1 pr-0">
+                        <div className="col-md-2 pr-0">
                             <button
                                 className="btn btn-success btn-block lh-24 px-3"
                                 onClick={() => getUpdate()}

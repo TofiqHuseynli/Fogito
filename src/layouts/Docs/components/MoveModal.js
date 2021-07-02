@@ -53,8 +53,6 @@ export const MoveModal = ({state, setState, id, onHide}) => {
         loadApis()
     },[params.projectID])
 
-    console.log('info',state.data)
-    console.log('getApis',apis.children)
 
     return (
         <ErrorBoundary>

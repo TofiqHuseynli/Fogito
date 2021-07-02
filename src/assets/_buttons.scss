@@ -73,3 +73,12 @@
     padding: 7px 30px !important;
   }
 }
+
+.btn-lightblue {
+  background-color: $bg-success2;
+  transition: all 0.1s ease-in;
+  color: $bg-white;
+  &:hover {
+    color: $bg-white !important;
+  }
+}

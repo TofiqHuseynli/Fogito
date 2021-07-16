@@ -10,7 +10,6 @@ import {
   ErrorBoundary,
   AuthError,
   Loading,
-  Sidebar,
   Content,
 } from "@components";
 

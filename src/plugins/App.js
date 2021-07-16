@@ -73,4 +73,26 @@ export class App {
       }
     });
   }
+
+  static duplicateModal(func) {
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-primary fs-14 fw-500 m-2 px-4",
+        cancelButton: "btn btn-danger fs-14 fw-500 m-2 px-4",
+        title: "fs-30 mt-3 mb-0",
+      },
+      buttonsStyling: false,
+    });
+
+    swalWithBootstrapButtons.fire({
+      title: "Are you sure?",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Duplicate It",
+      cancelButtonText: "No, Cancel",
+    }).then(async (result) => {
+      if (result.value) {
+        await func();
+      }
+    });
+  }
 }

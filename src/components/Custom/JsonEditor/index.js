@@ -7,7 +7,7 @@ import {ErrorBoundary} from "@components";
 import {Checkbox, Tooltip} from "antd";
 import {App, Lang} from "@plugins";
 
-export const JsonEditor = ({state, setState, openJsonModal}) => {
+export const JsonEditor = ({state, setState}) => {
 
     //  values
     const formRef = useRef();
@@ -146,14 +146,26 @@ export const JsonEditor = ({state, setState, openJsonModal}) => {
     }
 
     function changeType(type, index) {
-        let items = state.data.parameters
+        let newJSONObj = {};
+        let items = state.data.parameters;
         items.map((d,i) => {
             if (i === index) {
                 d.type = type;
                 switch (type) {
-                    case 'array': d.value = []; break;
-                    case 'object': d.value = []; break;
-                    default: d.value = ''; break;
+                    case 'array':
+                        d.value = [];
+                        break;
+                    case 'object':
+                        for (let par of items) {
+                            newJSONObj[par.key] = index + 1;
+                        }
+                        if (typeof d.value === 'string') {
+                            d.value = []
+                        }
+                        break;
+                    default:
+                        d.value = '';
+                        break;
                 }
             }
         })
@@ -390,9 +402,6 @@ export const JsonEditor = ({state, setState, openJsonModal}) => {
                             </div>
 
                             <div className='d-flex' >
-                                <div onClick={openJsonModal} >
-                                    <i className='feather feather-file-text editor-line-btn mr-2'/>
-                                </div>
                                 <div className='d-flex _center' onClick={() => setNewLineExample(true)}>
                                     <i className='feather feather-plus editor-line-btn mr-3'/>
                                 </div>
@@ -428,13 +437,13 @@ export const JsonEditor = ({state, setState, openJsonModal}) => {
 
                                         {/*****  ADD / REMOVE LINE  *****/}
                                         <div className='d-flex _center a-r__buttons'>
-                                            <Checkbox className='editor-line-btn'
-                                                      defaultChecked={item.is_required}
-                                                      style={{ margin: '-1px 10px 0 0' }}
-                                                      onChange={(e)=> {
-                                                          setValue(index, e.target.checked ? 1 : 0, 'is_required')
-                                                      }}
-                                            />
+                                            {/*<Checkbox className='editor-line-btn'*/}
+                                            {/*          defaultChecked={item.is_required}*/}
+                                            {/*          style={{ margin: '-1px 10px 0 0' }}*/}
+                                            {/*          onChange={(e)=> {*/}
+                                            {/*              setValue(index, e.target.checked ? 1 : 0, 'is_required')*/}
+                                            {/*          }}*/}
+                                            {/*/>*/}
                                             <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
                                                 setNewLine(index)
                                                 setCreate({field:'', type:'string', value:''})
@@ -602,7 +611,11 @@ const ExampleLine = ({create ,setCreate ,newLineExample, setNewLineExample, form
 const Key = ({item, edit, index, formRef, onEdit, setValue, setEdit, state}) => {
     return (
         <ErrorBoundary>
-            {state.data.parameters[index].is_required ? <div className='is_required text-danger'>*</div> : null}
+            <input
+                className={`is_required text-light ${state.data.parameters[index].is_required ? 'active' : '' }`}
+                type='checkbox'
+                onChange={(e)=> setValue(index, !!e.target.checked ? 1 : 0, 'is_required')}
+            />
             {
                 edit === index
                     ?

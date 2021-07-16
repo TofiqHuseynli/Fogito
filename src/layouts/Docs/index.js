@@ -15,7 +15,6 @@ export const Docs = (props) => {
     const initialState = {
         docs_id: props.match.params.docs_id,
         id: props.match.params.id,
-        project_id: '',
         _id: '',
         pro_id: props.match.params.id,
 
@@ -47,7 +46,7 @@ export const Docs = (props) => {
         perms_modal: false,
         loading: false,
         loadingStripe: false,
-        tab: 'json',
+        tab: 'params',
         jsonValue: ''
     };
 

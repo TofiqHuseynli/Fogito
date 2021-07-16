@@ -132,14 +132,30 @@
   }
 }
 
+
 .is_required {
+  width: 0;
+  height: 0;
   position: absolute;
-  opacity: .7;
   top: 4px;
   font-size: 21px;
   left: 2.2rem;
   z-index: 10;
   user-select: none;
+  transition: all .2s ease;
+  &:before {
+    content: '*';
+  }
+  &:hover {
+    color: #f5365c !important;
+  }
+  &.active {
+    color: #f5365c !important;
+    &:before {
+      content: '*';
+      transform: rotate(90deg);
+    }
+  }
 }
 
 .static__width {

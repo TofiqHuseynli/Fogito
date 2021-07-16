@@ -54,7 +54,7 @@ table {
     padding: 12px 60px;
     border: none;
     color: #000;
-    background-color: #F2F1F1;
+    background-color: transparent !important;
     transition: all 0.2s ease;
     cursor: pointer;
     &:first-child {
@@ -64,14 +64,14 @@ table {
       border-radius: 0 10px 0 0;
     }
     &:hover {
-      background-color: #dedede;
+      color: #4a4a4a;
     }
   }
   .active {
-    color: #fff;
-    background-color: $primary_color;
+    color: #f5365c;
+    border-bottom: 2px solid #f5365c;
     &:hover {
-      background-color: #528aec;
+      color: #ee234b;
     }
   }
 }

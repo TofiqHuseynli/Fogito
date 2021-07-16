@@ -180,13 +180,21 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
 
 
     function changeType(type, index) {
+        let newJSONObj = {};
         let items = children;
         items.map((d,i) => {
             if (i === index) {
                 d.type = type;
                 switch (type) {
                     case 'array': d.value = []; break;
-                    case 'object': d.value = []; break;
+                    case 'object':
+                        for (let par of items) {
+                            newJSONObj[par.key] = index + 1;
+                        }
+                        if (typeof d.value === 'string') {
+                            d.value = []
+                        }
+                        break;
                     default: d.value = ''; break;
                 }
             }
@@ -344,7 +352,11 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
                     <div className='d-flex'  onDoubleClick={(e)=> e.stopPropagation()}   >
 
                         {/*****  KEY  *****/}
-                        {item.is_required ? <div className='is_required text-danger'>*</div> : null}
+                        <input
+                            className={`is_required text-light ${children[index].is_required ? 'active' : '' }`}
+                            type='checkbox'
+                            onChange={(e)=> setValue(index, !!e.target.checked ? 1 : 0, 'is_required') + console.log('test')}
+                        />
                         {
                             edit === index ? (
                                     <form onSubmit={() => onEdit(index)} ref={formRef} >
@@ -457,13 +469,13 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
 
                     {/*****  ADD / REMOVE LINE  *****/}
                     <div className='d-flex _center a-r__buttons'>
-                        <Checkbox className='editor-line-btn'
-                                  defaultChecked={item.is_required}
-                                  style={{margin: '-1px 10px 0 0'}}
-                                  onChange={(e) => {
-                                      setValue(index, e.target.checked ? 1 : 0, 'is_required')
-                                  }}
-                        />
+                        {/*<Checkbox className='editor-line-btn'*/}
+                        {/*          defaultChecked={item.is_required}*/}
+                        {/*          style={{margin: '-1px 10px 0 0'}}*/}
+                        {/*          onChange={(e) => {*/}
+                        {/*              setValue(index, e.target.checked ? 1 : 0, 'is_required')*/}
+                        {/*          }}*/}
+                        {/*/>*/}
                         <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
                             setAddTree(index)
                             setCreate({field:'', type:'string', value:''})

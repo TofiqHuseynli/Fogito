@@ -36,8 +36,8 @@ export const apisMove = (url, obj) => {
     return Api.post("apisMove", (url, obj));
 };
 
-export const apisCopy = (url, obj) => {
-    return Api.post("apisCopy", (url, obj));
+export const apisCopy = (params) => {
+    return Api.post("apisCopy", params);
 };
 
 export const apisExport = (params) => {

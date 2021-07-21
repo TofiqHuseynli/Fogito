@@ -40,7 +40,7 @@ const Input = (props) => {
     return (
         <div className={classNames(`${divClass}`)} >
             {label && <label className='label' >{Lang.get(label)}</label> }
-            <input className={`form-control form-control-alternative ${propsClass}`}
+            <input className={classNames('form-control', {propsClass})}
                    defaultValue={defaultValue}
                    placeholder={placeholder}
                    autoFocus={autoFocus}
@@ -72,7 +72,7 @@ const TextArea = (props) => {
     return (
         <div className={classNames(`${divClass}`)} >
             {label && <label className='label' >{Lang.get(label)}</label> }
-            <textarea  className={`form-control form-control-alternative ${propsClass}`}
+            <textarea  className={classNames('form-control', {propsClass})}
                        onChange={onChange}
                        value={value}
                        defaultValue={defaultValue}
@@ -91,7 +91,6 @@ const Select = (props) => {
     let {
         defaultTitle,
         placeholder,
-        backColor,
         onSelect,
         selected,
         divClass,
@@ -103,8 +102,7 @@ const Select = (props) => {
         <div className={`${divClass}`} >
             {label && <label className='label' >{Lang.get(label)}</label> }
             <select placeholder={placeholder}
-                    className="custom-select border-none shadow-none"
-                    style={{height: 45, paddingLeft: 15, border: 'none', color: '#737373', backgroundColor: backColor}}
+                    className="form-control custom-select"
                     onChange={onSelect}
             >
                 <option value="none" selected disabled hidden>{defaultTitle || Lang.get('Choose')}</option>
@@ -126,47 +124,32 @@ const Select = (props) => {
 
 
 export const InputCheckbox = ({
-      label = null,
-      checked = false,
-      onChange,
-      disabled = false,
-      theme = "primary",
-      className = "",
-      style,
-    }) => {
+          theme,
+          label,
+          checked,
+          disabled,
+          onChange,
+          className,
+      }) => {
+    const id = `_${Math.random().toString(36).substr(2, 9)}`;
     return (
-        <button
-            type="button"
-            className={classNames("form-check d-flex align-items-center p-0", {
+        <div
+            className={classNames("custom-control custom-checkbox", {
+                "custom-control-alternative": theme === "alternative",
                 [className]: className,
             })}
-            onClick={() => {
-                if (!disabled) {
-                    onChange(!checked);
-                }
-            }}
         >
-            <div
-                style={style}
-                className={classNames(
-                    "checkbox d-flex align-items-center justify-content-center",
-                    {
-                        "bg-primary": theme === "primary" && checked,
-                        "bg-success": theme === "success" && checked,
-                        "bg-white": !checked,
-                        disabled,
-                    }
-                )}
-            >
-                {checked == true && (
-                    <i className="feather feather-check font-weight-bold text-white" />
-                )}
-            </div>
-            {label && (
-                <label className="form-control-label mb-0 ml-2 text-muted">
-                    {Lang.get(label)}
-                </label>
-            )}
-        </button>
+            <input
+                id={id}
+                type="checkbox"
+                checked={checked}
+                disabled={disabled}
+                onChange={onChange}
+                className="custom-control-input"
+            />
+            <label htmlFor={id} className="custom-control-label">
+                {label}
+            </label>
+        </div>
     );
 };

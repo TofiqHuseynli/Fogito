@@ -1,13 +1,30 @@
-.table {
-  &:not(.table-sm),
-  &:not(.table-bordered) {
-    thead th,
-    tbody td {
-      padding: 1rem 0.5rem;
-      border: none;
-    }
-  }
-  &.table-striped tbody tr:nth-of-type(odd) {
-    background-color: #f4f6f899;
+table {
+  thead th,
+  tbody td {
+    vertical-align: middle !important;
   }
 }
+
+.table-line {
+  display: flex;
+  .table-line-title {
+    align-items: center;
+    padding-right: 10px;
+    font-size: 15px;
+    color: #6FA3C0;
+    transition: 0.1s ease-in-out;
+  }
+  .more-vertical {
+    font-size: 22px;
+    color: #8F8F8F;
+    &:hover {
+      color: $primary_color;
+    }
+  }
+  &:hover {
+    .table-line-title {
+      color: #4c88f3;
+    }
+  }
+}
+

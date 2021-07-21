@@ -1,4 +1,3 @@
-
 .ant-tooltip {
   z-index: 300;
   .dropdown-item {
@@ -28,5 +27,33 @@
     box-shadow: none !important;
     border-radius: 5px !important;
     min-height: 2.8rem;
+  }
+}
+
+// DARK MODE
+.dark {
+  .ant-tooltip {
+    z-index: 300;
+    .dropdown-item {
+      margin: 0 !important;
+      padding: 5px .5rem;
+      color: #fff;
+      .feather {
+        padding-top: 1rem !important;
+        font-size: 1rem !important;
+      }
+    }
+    .ant-tooltip-arrow {
+      span {
+        background: #363636 !important;
+      }
+    }
+    .ant-tooltip-content {
+      .ant-tooltip-inner {
+        background: #363636 !important;
+        position: relative;
+        border-radius: 8px;
+      }
+    }
   }
 }

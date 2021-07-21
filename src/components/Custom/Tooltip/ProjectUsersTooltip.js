@@ -6,7 +6,7 @@ import {Lang} from "@plugins";
 
 
 
-export const ProjectUsers = ({item, children}) => {
+export const ProjectUsersTooltip = ({item, children}) => {
 
     const [visible, setVisible] = React.useState(false);
     const style = { minWidth: 300 }

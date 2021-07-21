@@ -1,118 +1,94 @@
 import React from "react";
 import classNames from "classnames";
 import { createPortal } from "react-dom";
-import { SidebarContext } from "@contexts";
 
-export const Modal = React.forwardRef(
-    ({ className, children, show, ...props }, ref) => {
-        if (!show) {
-            return null;
-        } else {
-            const { mode } = React.useContext(SidebarContext);
-            const [visible, setVisible] = React.useState(false);
-            const timeout = React.useRef(null);
+export const Modal = ({ children, show }) => {
+    const [visible, setVisible] = React.useState(false);
+    const timeout = React.useRef(null);
 
-            React.useEffect(() => {
-                timeout.current = setTimeout(() => {
-                    setVisible(show);
-                }, 10);
-
-                return () => clearTimeout(timeout.current);
-            }, [show]);
-
-            return createPortal(
-                <div
-                    ref={ref}
-                    className={classNames("frame__modal", className, {
-                        "sidebar-opened": mode === "opened",
-                        "sidebar-closed": mode === "closed",
-                        show: visible,
-                    })}
-                    {...props}
-                >
-                    {children}
-                </div>,
-                document.body
-            );
+    React.useEffect(() => {
+        if (timeout.current) {
+            clearTimeout(timeout.current);
         }
-    }
-);
+        timeout.current = setTimeout(() => {
+            setVisible(show);
+        });
+    }, [show]);
 
-Modal.Header = React.forwardRef(
-    ({ className, children, onClose = () => true, ...props }, ref) => {
-        return (
-            <div
-                ref={ref}
-                className={classNames(
-                    "frame__modal-header d-flex align-items-center",
-                    className
-                )}
-                {...props}
-            >
-                <button
-                    type="button"
-                    className="frame__modal-header-close"
-                    onClick={onClose}
-                >
-                    <i className="feather feather-chevron-left" />
-                </button>
-                <div className="frame__modal-header-content d-flex align-items-center ml-3">
-                    {children}
-                </div>
-            </div>
-        );
-    }
-);
+    if (!show) return null;
 
-Modal.Body = React.forwardRef(({ className, children, ...props }, ref) => {
-    return (
+    return createPortal(
         <div
-            ref={ref}
-            className={classNames("frame__modal-body px-md-3 px-2", className)}
-            {...props}
+            className={classNames("frame-modal", { show: visible })}
         >
+            {children}
+        </div>,
+        document.body
+    );
+};
+
+Modal.Header = ({ children, onClose = () => false }) => {
+    return (
+        <div className="frame-modal-header">
+            <button type="button" className="close" onClick={onClose}>
+                <i className="feather feather-chevron-left" />
+            </button>
             {children}
         </div>
     );
-});
+};
 
-let timeout = null;
+Modal.Body = ({ children }) => {
+    return <div className="frame-modal-body">{children}</div>;
+};
+
 export const Popup = ({
-                          show = false,
-                          title = "",
-                          size = "sm",
-                          onClose = () => console.log("No action passed!"),
+                          size = "md",
+                          show,
+                          title,
+                          onClose = () => false,
                           children,
                       }) => {
-    if (!show) return null;
-
+    const timeout = React.useRef(null);
     const [visible, setVisible] = React.useState(false);
 
     React.useEffect(() => {
-        timeout = setTimeout(() => {
+        if (timeout.current) {
+            clearTimeout(timeout.current);
+        }
+        timeout.current = setTimeout(() => {
             setVisible(show);
-        }, 10);
-        return () => clearTimeout(timeout);
+        });
     }, [show]);
 
+    if (!show) return null;
+
     return createPortal(
-        <div className="frame__popup-backdrop" onClick={onClose}>
+        <div
+            role="dialog"
+            tabIndex="-1"
+            className={classNames("modal fade", { show: visible })}
+            onMouseDown={onClose}
+        >
             <div
-                className={classNames(
-                    "content position-relative rounded bg-white mx-auto my-md-5 my-2 px-0 col-11",
-                    {
-                        show: visible,
-                        "col-lg-9 col-md-10 col-sm-11": size === "lg",
-                        "col-lg-6 col-md-7 col-sm-8": size === "md",
-                        "col-lg-4 col-md-5 col-sm-6": size === "sm",
-                    }
-                )}
-                onClick={(e) => e.stopPropagation()}
+                role="document"
+                className={classNames("modal-dialog modal-dialog-centered", {
+                    "modal-sm": size === "sm",
+                    "modal-md": size === "md",
+                    "modal-lg": size === "lg",
+                    "modal-xl": size === "xl",
+                })}
+                onMouseDown={(e) => e.stopPropagation()}
             >
-                <div className="head rounded-top">
-                    <h4 className="title mb-0">{title}</h4>
+                <div className="modal-content">
+                    <div className="modal-header">
+                        <h5 className="modal-title">{title}</h5>
+                        <button type="button" className="close" onClick={onClose}>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div className="modal-body">{children}</div>
                 </div>
-                <div className="body rounded-bottom">{children}</div>
             </div>
         </div>,
         document.body

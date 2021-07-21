@@ -101,7 +101,7 @@ export const Edit = ({name, match, history}) => {
             <Popup
                 show={inArray("members", modal.modals)}
                 title={Lang.get("Users")}
-                size='sm'
+                size='md'
                 onClose={() => modal.hide("members")}
             >
                 <UsersModal users={users}
@@ -222,7 +222,7 @@ export const Edit = ({name, match, history}) => {
                         </div>
 
                         {/** Permission **/}
-                        <div className='mt-4' >
+                        <div className='col-md-8 mt-4' style={{ position: 'relative' }} >
                             <label className='label mb-2' >{Lang.get('Permissions')}</label>
                             <Permissions state={state}
                                          setState={setState}

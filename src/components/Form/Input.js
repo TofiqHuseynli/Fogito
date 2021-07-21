@@ -33,47 +33,32 @@ export const InputLazy = ({
 };
 
 export const InputCheckbox = ({
-  label = null,
-  checked = false,
-  onChange,
-  disabled = false,
-  theme = "primary",
-  className = "",
-  style,
-}) => {
+    theme,
+    label,
+    checked,
+    disabled,
+    onChange,
+    className,
+  }) => {
+  const id = `_${Math.random().toString(36).substr(2, 9)}`;
   return (
-    <button
-      type="button"
-      className={classNames("form-check d-flex align-items-center p-0", {
-        [className]: className,
-      })}
-      onClick={() => {
-        if (!disabled) {
-          onChange(!checked);
-        }
-      }}
-    >
       <div
-        style={style}
-        className={classNames(
-          "checkbox d-flex align-items-center justify-content-center",
-          {
-            "bg-primary": theme === "primary" && checked,
-            "bg-success": theme === "success" && checked,
-            "bg-white": !checked,
-            disabled,
-          }
-        )}
+          className={classNames("custom-control custom-checkbox", {
+            "custom-control-alternative": theme === "alternative",
+            [className]: className,
+          })}
       >
-        {checked == true && (
-          <i className="feather feather-check font-weight-bold text-white" />
-        )}
-      </div>
-      {label && (
-        <label className="form-control-label mb-0 ml-2 text-muted">
+        <input
+            id={id}
+            type="checkbox"
+            checked={checked}
+            disabled={disabled}
+            onChange={onChange}
+            className="custom-control-input"
+        />
+        <label htmlFor={id} className="custom-control-label">
           {label}
         </label>
-      )}
-    </button>
+      </div>
   );
 };

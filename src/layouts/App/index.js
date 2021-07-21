@@ -100,6 +100,10 @@ export const App = () => {
     ));
   };
 
+  const modeChange = (e) => {
+    document.body.className = e.detail.mode;
+  };
+
   React.useEffect(() => {
     if (process.env.FRAME_MODE && parent.window?.historyPush) {
       history.listen((location) => {
@@ -114,6 +118,11 @@ export const App = () => {
 
   React.useEffect(() => {
     loadData();
+
+    window.addEventListener("modeChange", modeChange);
+    return () => {
+      window.removeEventListener("modeChange", modeChange);
+    };
   }, []);
 
   if (loading) {
@@ -121,21 +130,19 @@ export const App = () => {
   }
 
   if (!Auth.isAuth()) {
-    return <AuthError message={Lang.get("NotAutorized")} />;
+    return <AuthError message={Lang.get("NotAuthorized")} />;
   }
 
 
   return (
     <ErrorBoundary>
-      <SidebarProvider>
-        <Content>
-          <Switch>
-            {renderRoutes(MENU_ROUTES)}
-            {/* You must add your default root here */}
-            <Redirect from="*" to="/projects" />
-          </Switch>
-        </Content>
-      </SidebarProvider>
+      <Content>
+        <Switch>
+          {renderRoutes(MENU_ROUTES)}
+          {/* You must add your default root here */}
+          <Redirect from="*" to="/projects" />
+        </Switch>
+      </Content>
     </ErrorBoundary>
   );
 };

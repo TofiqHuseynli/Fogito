@@ -1,23 +1,23 @@
 //--------------Full reactive functional responsive Table component made by Rustam Fetullayev--------------//
 import React from "react";
 import classNames from "classnames";
-import { Lang } from "@plugins";
 import { inArray } from "@lib";
+import { Lang } from "@plugins";
 import { ErrorBoundary, InputCheckbox } from "@components";
 
 export const Table = ({
-            data = [],
-            columns = [],
-            pagination = {
-              count: 0,
-              skip: 0,
-              limit: 10,
-              limitArray: [],
-              paginationItemLimit: 5,
-            }, //If user will not send pagination property
-            select = { selectable: false }, //If user will not send select property
-            sortable = false, //If user will not send sort property
-          }) => {
+    data = [],
+    columns = [],
+    pagination = {
+      count: 0,
+      skip: 0,
+      limit: 10,
+      limitArray: [],
+      paginationItemLimit: 5,
+    }, //If user will not send pagination property
+    select = { selectable: false }, //If user will not send select property
+    sortable = false, //If user will not send sort property
+  }) => {
   let { selectable, selectedIDs, onSelect, onSelectAll } = select;
   let {
     count,
@@ -86,9 +86,12 @@ export const Table = ({
     let from = parseInt(skip) + 1;
     let to = parseInt(skip) + parseInt(limit);
     return (
-        <span className="ml-3">{`${Lang.get("Showing")} ${from} - ${
-            to < count ? to : count
-        } ${Lang.get("of")} ${count} ${Lang.get("records")}`}</span>
+        <span className="text-muted ml-3">
+        {Lang.get("TableShowsTotal")
+            .replace("{start}", from)
+            .replace("{to}", to < count ? to : count)
+            .replace("{total}", count)}
+      </span>
     );
   };
 
@@ -96,7 +99,7 @@ export const Table = ({
     if (limitArray && limitArray.length) {
       return (
           <select
-              className="form-control-alternative custom-select w-auto"
+              className="custom-select w-auto"
               value={limit}
               onChange={(e) => onTake(e.target.value)}
           >
@@ -142,9 +145,11 @@ export const Table = ({
                 {select && selectable && (
                     <th className="text-center" style={{ width: 40 }}>
                       <InputCheckbox
-                          checked={data.every((item) =>
-                              inArray(item.id, selectedIDs)
-                          )}
+                          theme="alternative"
+                          checked={
+                            selectedIDs.length &&
+                            data.every((item) => inArray(item.id, selectedIDs))
+                          }
                           onChange={onSelectAll}
                       />
                     </th>
@@ -159,8 +164,8 @@ export const Table = ({
                             item.sort && {
                               onClick: () =>
                                   sortable.onSort({
-                                    field: item.sort,
-                                    order:
+                                    sort: item.sort,
+                                    sort_type:
                                         sortable.sortType == "asc" ? "desc" : "asc",
                                   }),
                             })}
@@ -194,7 +199,7 @@ export const Table = ({
               {data.length === 0 ? (
                   <tr>
                     <td colSpan={columns.length + 1} className="text-center">
-                      {Lang.get("No Data to Display")}
+                      {Lang.get("NoData")}
                     </td>
                   </tr>
               ) : (
@@ -203,6 +208,7 @@ export const Table = ({
                         {select && selectable && (
                             <td className="text-center">
                               <InputCheckbox
+                                  theme="alternative"
                                   checked={inArray(item.id, selectedIDs)}
                                   onChange={() => onSelect(item.id)}
                               />

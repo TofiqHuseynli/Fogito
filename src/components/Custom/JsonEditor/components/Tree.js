@@ -627,7 +627,7 @@ const Type = ({item, types, changeType, index}) => {
 
     return (
         <ErrorBoundary>
-            <div className='text-danger d-flex'>
+            <div className='type d-flex'>
                 <Tooltip title={getTypes()}
                          trigger={'click'}
                          placement={'bottom'}

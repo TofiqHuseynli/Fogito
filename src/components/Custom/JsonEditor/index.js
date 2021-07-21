@@ -387,8 +387,15 @@ export const JsonEditor = ({state, setState}) => {
                 <div className='default-textarea p-0 overflow-hidden' style={{position: 'relative'}} >
 
                     {/*****  EDITOR's LINE NUMBERS ON THE LEFT SIDE  *****/}
-                    <div className='d-flex flex-column h-100 _ai-end pl-3 pr-2'
-                         style={{position: 'absolute', backgroundColor: '#E9EDEF', paddingTop:12, borderRadius: '5px 0 0 5px', zIndex: 10, userSelect: 'none' }}>
+                    <div className='editor-count d-flex flex-column h-100 _ai-end pl-3 pr-2'
+                         style={{
+                             position: 'absolute',
+                             paddingTop:12,
+                             borderRadius: '5px 0 0 5px',
+                             zIndex: 10,
+                             userSelect: 'none'
+                         }}
+                    >
                         {getLinesCount().map((item, i) => <div key={i} style={{color: '#AAA0A0', marginTop:10 }}>{item}</div>)}
                     </div>
 
@@ -397,7 +404,7 @@ export const JsonEditor = ({state, setState}) => {
                     <div className='pt-3 react-json_editor'>
                         <div className='d-flex editor-line _jc-between' onDoubleClick={() => setNewLineExample(true)} >
                             <div className='d-flex'>
-                                <div className='text-danger'>(object)</div>
+                                <div className='type'>(object)</div>
                                 <div className='ml-2'>{"{"}</div>
                             </div>
 
@@ -668,7 +675,7 @@ const Type = ({item, changeType, types, index}) => {
 
     return (
         <ErrorBoundary>
-            <div className='text-danger d-flex'>
+            <div className='type d-flex'>
                 <Tooltip title={getTypes()}
                          trigger={'click'}
                          placement={'bottom'}

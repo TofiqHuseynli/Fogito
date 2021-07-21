@@ -29,7 +29,6 @@ export const Add = ({ refresh, onClose }) => {
                                 onChange={(e) => setTitle(e.target.value)}
                                 placeholder={Lang.get("Title")}
                                 autoFocus={true}
-                                divClass=''
                         />
                     </div>
                 </div>

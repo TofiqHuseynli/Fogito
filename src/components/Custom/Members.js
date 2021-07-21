@@ -1,7 +1,6 @@
 import React from "react";
-import {ErrorBoundary, Permissions, CustomModal} from "@components";
+import {ErrorBoundary, Permissions, CustomModal, ProjectUsersTooltip} from "@components";
 import UsersTooltip from "./Tooltip/UsersTooltip";
-import {ProjectUsers} from "../../layouts/Projects/forms";
 import {projectUsersDelete} from "../../actions/user";
 import {App, Lang} from "@plugins";
 
@@ -51,11 +50,11 @@ export const Members = ({ state, users, setUsers, openMembersModal }) => {
                         {
                             // More Users
                             users.length > 3 &&
-                            <ProjectUsers item={users} >
+                            <ProjectUsersTooltip item={users} >
                                 <div className='btn more_users' >
                                     +{users.length - 3}
                                 </div>
-                            </ProjectUsers>
+                            </ProjectUsersTooltip>
                         }
 
                         <div className='row d-flex flex-column' >

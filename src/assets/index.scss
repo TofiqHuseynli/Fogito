@@ -1,11 +1,6 @@
 @import "variables";
-@import "content";
-@import "sidebar";
-@import "header";
-@import "loading";
 @import "buttons";
-@import "modal";
-@import "alert";
+@import "header";
 @import "table";
 @import "form";
 
@@ -22,7 +17,6 @@
 body {
   line-height: normal !important;
   font-family: "Roboto", sans-serif !important;
-  background-color: #f8f9fe !important;
 }
 
 

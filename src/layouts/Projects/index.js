@@ -2,14 +2,13 @@ import React from "react";
 import classNames from "classnames";
 import Tooltip from "antd/lib/tooltip";
 import { Link } from "react-router-dom";
-import {ErrorBoundary, Header, Loading, Popup, Table} from "@components";
+import {ErrorBoundary, Header, Loading, Popup, Table, ProjectUsersTooltip} from "@components";
 import { useModal, useToast } from "@hooks";
 import { AppContext } from "@contexts";
 import { App, Lang } from "@plugins";
 import { inArray } from "@lib";
 import { projectsDelete, projectsList } from "@actions";
 import { Add, Edit } from "./components";
-import { ProjectUsers } from "./forms";
 
 export const Projects = ({ name, match: { path }, type }) => {
 
@@ -54,49 +53,33 @@ export const Projects = ({ name, match: { path }, type }) => {
 
     const onDelete = (array) => {
         if (selectedIDs.length > 0)
-            toast
-                .fire({
-                    position: "center",
-                    toast: false,
-                    timer: null,
-                    title: Lang.get("DeleteAlertTitle"),
-                    text: Lang.get("DeleteAlertDescription"),
-                    buttonsStyling: false,
-                    showConfirmButton: true,
-                    showCancelButton: true,
-                    confirmButtonClass: "btn btn-success",
-                    cancelButtonClass: "btn btn-secondary",
-                    confirmButtonText: Lang.get("Confirm"),
-                    cancelButtonText: Lang.get("Cancel"),
-                })
-                .then((res) => {
-                    if (res?.value) {
-                        let count = 1;
-                        let total = array.length;
-                        array.forEach(async (id) => {
-                            setLoading(true);
-                            let response = await projectsDelete({id});
-                            if (response?.status === "success") {
-                                if (count >= total) {
-                                    setLoading(false);
-                                    setSelectedIDs([]);
-                                    toast.fire({
-                                        title: response.description,
-                                        icon: "success",
-                                    });
-                                    loadData();
-                                }
-                                count++;
-                            } else {
-                                setLoading(false);
-                                toast.fire({
-                                    title: response.description,
-                                    icon: "error",
-                                });
-                            }
+        App.deleteModal(()=>{
+            let count = 1;
+            let total = array.length;
+            array.forEach(async (id) => {
+                setLoading(true);
+                let response = await projectsDelete({id});
+                if (response?.status === "success") {
+                    if (count >= total) {
+                        setLoading(false);
+                        setSelectedIDs([]);
+                        toast.fire({
+                            title: response.description,
+                            icon: "success",
                         });
+                        loadData();
                     }
-                });
+                    count++;
+                } else {
+                    setLoading(false);
+                    toast.fire({
+                        title: response.description,
+                        icon: "error",
+                    });
+                }
+            });
+            }
+        )
     }
 
     const oneProjectDelete = async (id) => {
@@ -155,12 +138,12 @@ export const Projects = ({ name, match: { path }, type }) => {
                             </Tooltip>
                         ))}
                         {data.count > 3 && (
-                            <ProjectUsers item={data.data}>
+                            <ProjectUsersTooltip item={data.data}>
                                 <div
                                     className="cr-pointer rounded-circle bg-primary text-white d-flex align-items-center justify-content-center ml-2"
                                     style={{ width: 35, height: 35 }}
                                 >{`${data.count - 3}+`}</div>
-                            </ProjectUsers>
+                            </ProjectUsersTooltip>
                         )}
                     </div>
                 ) : (

@@ -4,7 +4,7 @@ import {apisCopy, apisDelete, apisInfo, projectsData} from "@actions";
 import {Editor} from "@tinymce/tinymce-react";
 import {JsonModal, OptionsBtn, TestApi} from "../forms";
 import {App, Lang} from "@plugins";
-import {Select} from "antd";
+import {Select, Radio, Checkbox} from "antd";
 import {inArray} from "@lib";
 import {useModal} from "@hooks";
 import classNames from "classnames";
@@ -42,6 +42,7 @@ export const DocsEdit = (props) => {
     React.useEffect(()=> {
         refreshInfo()
         window.scrollTo(0,0);
+        setState({ tab: 'params' })
     },[state.docs_id])
 
     React.useEffect(()=> {
@@ -206,6 +207,11 @@ const Desc = ({state, setState}) => {
 const Settings = (props) => {
 
     let {state, setState, refresh} = props;
+    const [status, setStatus] = React.useState({
+        label: state.data.status?.label,
+        value: state.data.status?.value,
+        dex: state.data.status?.dex
+    })
 
     async function onDelete() {
         setState({loading: true})
@@ -214,7 +220,7 @@ const Settings = (props) => {
         if (response.status === 'success') {
             setState({loading: false, docs_id: ''})
             props.history.push(`/docs/${state.id}`)
-            refresh()
+            refresh(false)
         } else {
             App.errorModal(response.description)
         }
@@ -228,12 +234,26 @@ const Settings = (props) => {
             position: "0"
         })
         if(response.status === 'success') {
-            refresh()
+            refresh(false)
         }
         else {
             App.errorModal(response.description)
         }
     }
+
+    const onStatus = () => {
+        switch (status.value) {
+            case 1:
+                setStatus({...status, label: 'Closed', value: 3})
+                setState({...state, data: {...state.data, status: 3}})
+                break;
+            case 3:
+                setStatus({...status, label: 'Active', value: 1})
+                setState({...state, data: {...state.data, status: 1}})
+                break;
+        }
+    }
+
 
     return (
         <>
@@ -248,14 +268,15 @@ const Settings = (props) => {
                             placeholder={'Title'}
                             label={'Title'}
                     />
-                    <Inputs type='select'
-                            onSelect={(e) => setState({...state, data: {...state.data, status: parseInt(e.target.value)}})}
-                            data={state.status_data}
-                            propsClass={'custom-input'}
-                            divClass={'row px-2 mt-3'}
-                            selected={state.data.status?.value}
-                            label={'Status'}
-                    />
+
+                    {/*<Inputs type='select'*/}
+                    {/*        onSelect={(e) => setState({...state, data: {...state.data, status: parseInt(e.target.value)}})}*/}
+                    {/*        data={state.status_data}*/}
+                    {/*        propsClass={'custom-input'}*/}
+                    {/*        divClass={'row px-2 mt-3'}*/}
+                    {/*        selected={state.data.status?.value}*/}
+                    {/*        label={'Status'}*/}
+                    {/*/>*/}
 
                     <Inputs type='input'
                             onChange={(e) => setState({...state, data: {...state.data, url: e.target.value}})}
@@ -286,14 +307,14 @@ const Settings = (props) => {
                             label={'Slug'}
                             placeholder={'Slug'}
                     />
-                    <Inputs type='select'
-                            onSelect={(e) => setState({...state, data: {...state.data, public: parseInt(e.target.value)}})}
-                            data={state.public_data}
-                            propsClass={'custom-input'}
-                            divClass={'row px-2 mt-3'}
-                            selected={state.data.public?.value}
-                            label={"Public"}
-                    />
+                    {/*<Inputs type='select'*/}
+                    {/*        onSelect={(e) => setState({...state, data: {...state.data, public: parseInt(e.target.value)}})}*/}
+                    {/*        data={state.public_data}*/}
+                    {/*        propsClass={'custom-input'}*/}
+                    {/*        divClass={'row px-2 mt-3'}*/}
+                    {/*        selected={state.data.public?.value}*/}
+                    {/*        label={"Public"}*/}
+                    {/*/>*/}
                 </div>
 
                 {/* Actions */}
@@ -309,6 +330,12 @@ const Settings = (props) => {
                         divClassName='px-2 text-primary row'
                         title={'Duplicate'}
                         onClick={()=> App.duplicateModal(()=> onDuplicate())}
+                    />
+                    <OptionsBtn
+                        style={{ marginTop: 20, color: status.value === 3 ? '#2dce89' : '#22BBD6' }}
+                        divClassName='px-2 row'
+                        title={status.value === 3 ? 'Active' : 'Closed'}
+                        onClick={()=> onStatus()}
                     />
                 </div>
             </div>

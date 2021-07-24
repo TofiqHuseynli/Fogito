@@ -1,11 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
-
 import {apisData} from "@actions";
 import {NewLine, Tree} from "./components";
 import {useOutsideAlerter} from "@hooks";
 import {ErrorBoundary} from "@components";
-import {Checkbox, Tooltip} from "antd";
-import {App, Lang} from "@plugins";
+import {Tooltip} from "antd";
+import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
+import classNames from 'classnames'
 
 export const JsonEditor = ({state, setState}) => {
 
@@ -29,6 +29,7 @@ export const JsonEditor = ({state, setState}) => {
         {value: true, label: 'true'},
         {value: false, label: 'false'}
     ])
+    const [columns, setColumns] = React.useState([]);
 
     const getTypes = async () => {
         let response = await apisData()
@@ -40,6 +41,12 @@ export const JsonEditor = ({state, setState}) => {
     useEffect(() => {
         getTypes()
     }, [])
+
+    useEffect(()=> {
+        setColumns(state.data.parameters)
+    },[state.data.parameters])
+
+    console.log('col', columns)
 
     // functions
     function removeLine(index) {
@@ -259,15 +266,17 @@ export const JsonEditor = ({state, setState}) => {
     }
 
     // RECURSIVE
-    function getRecursive(item) {
+    function getRecursive(item,uniqe_key) {
         let content = (
             <Tree
+                state={state}
                 children={item.value}
                 setState={setState}
                 line={line}
                 setLine={setLine}
                 types={types}
                 valueItem={item}
+                valueIndex={uniqe_key}
             />
         )
         switch (item.type) {
@@ -364,8 +373,81 @@ export const JsonEditor = ({state, setState}) => {
         }
     }
 
-    console.log(state.data.parameters)
 
+    const reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+
+        return result;
+    };
+
+    async function onDragEnd(result) {
+        console.log('result',result)
+        const columns = state.data.parameters;
+        if (!result.destination) return;
+
+        if (
+            result.destination.droppableId === result.source.droppableId &&
+            result.destination.index === result.source.index
+        ) { return; }
+
+        if (result.type === "children") {
+            let columnFrom = columns.find((item, index) => item.key+'_'+index+'__' === result.source.droppableId);
+            console.log('columnsss', columnFrom)
+            let columnTo = columns.find(
+                (item, index) => item.key+'_'+index+'__' === result.destination.droppableId
+            );
+
+            if (columnFrom === columnTo) {
+                let i = result.destination.droppableId.slice(-3, -2);
+                let sorted = Array.from(columnFrom.value);
+                let [card] = sorted.splice(result.source.index, 1);
+                sorted.splice(result.destination.index, 0, card);
+                let data = state.data.parameters[i].value = sorted
+                setState({...data});
+                console.log('sort', sorted)
+                console.log('sort', card)
+                console.log('iddd', i)
+                // setColumns(
+                //     columns.map((item) => {
+                //         if (item.id === columnFrom.id) {
+                //             item.cards = sorted;
+                //         }
+                //         return item;
+                //     })
+                // );
+            } else {
+                let sortedFrom = Array.from(columnFrom.value);
+                let sortedTo = Array.from(columnTo.value);
+                let [card] = sortedFrom.splice(result.source.index, 1);
+                card.column = columnTo.key;
+                sortedTo.splice(result.destination.index, 0, card);
+                setColumns(
+                    columns.map((item, i) => {
+                        if (item.key+'_'+i === columnFrom.id) {
+                            item.children = sortedFrom;
+                        }
+                        if (item.key+'_'+i === columnTo.id) {
+                            item.children = sortedTo;
+                        }
+                        return item;
+                    })
+                );
+            }
+        } else {
+            const items = reorder(
+                state.data.parameters,
+                result.source.index,
+                result.destination.index
+            );
+            console.log('changes', items)
+            let data = state.data.parameters = items
+            setState({...data});
+        }
+    }
+
+    console.log(state.data.parameters)
 
     // this function for inputs/forms onblur
     const onCloseForm = () => {
@@ -421,140 +503,161 @@ export const JsonEditor = ({state, setState}) => {
                                 getValueAdd, createExampleLine, getNewValue}}
                         />
 
-                        <div style={{ marginLeft: '1.2rem' }}  >
-                            {state.data?.parameters?.map((item, index) => (
-                                <div key={index}>
-                                    {/*<Tooltip title='text' trigger='contextMenu' >*/}
-                                    <div className='d-flex editor-line _jc-between'
-                                         onDoubleClick={()=> getNewLine(index)} style={{ paddingLeft: 50, position: 'relative' }}
-
+                        <DragDropContext onDragEnd={onDragEnd} >
+                            <Droppable droppableId="params"
+                                       direction="vertical"
+                                       type="parent"
+                            >
+                                {(provided) => (
+                                    <div style={{ marginLeft: '1.2rem' }}
+                                         {...provided.droppableProps}
+                                         ref={provided.innerRef}
                                     >
-                                        <div className='d-flex'>
-
-                                            <Key {...{item, edit, index, formRef, onEdit, setValue, setEdit, state}} />
-
-                                            <Type {...{item, changeType, types, index}} />  &nbsp;
-
-                                            <Value {...{editVal, index, formRef, onEdit, item, setValue, setNewLine, getValue}} />
-
-                                            <Comment {...{item, editComment, index, formRef, onEdit, setValue, setEditComment}} />
-
-                                        </div>
-
-
-                                        {/*****  ADD / REMOVE LINE  *****/}
-                                        <div className='d-flex _center a-r__buttons'>
-                                            {/*<Checkbox className='editor-line-btn'*/}
-                                            {/*          defaultChecked={item.is_required}*/}
-                                            {/*          style={{ margin: '-1px 10px 0 0' }}*/}
-                                            {/*          onChange={(e)=> {*/}
-                                            {/*              setValue(index, e.target.checked ? 1 : 0, 'is_required')*/}
-                                            {/*          }}*/}
-                                            {/*/>*/}
-                                            <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
-                                                setNewLine(index)
-                                                setCreate({field:'', type:'string', value:''})
-                                            }}/>
-                                            <i className='feather feather-trash-2 text-danger editor-line-btn mr-3' onClick={() => removeLine(index)}/>
-                                        </div>
-
-                                    </div>
-
-
-                                    {/* Create New */}
-                                    <NewLine getValueAdd={getValueAdd}
-                                             setNewLine={setNewLine}
-                                             createNew={createNew}
-                                             setCreate={setCreate}
-                                             newLine={newLine}
-                                             formRef={formRef}
-                                             create={create}
-                                             types={types}
-                                             index={index}
-                                             item={item}
-                                             valueItem={item}
-                                    />
-
-                                    {/* Recursive */}
-                                    {
-                                        // item.children?.length &&
-                                        <>
-                                            {getRecursive(item)}
-                                        </>
-                                    }
-
-                                    {/*****  ADD / REMOVE LINE for ONE ITEM  *****/}
-                                    {item.type === 'object' &&
-                                        <div style={{paddingLeft: 50}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
-                                            {item.type === 'object' && '}'}
-                                            <div className='d-flex _center a-r__buttons'>
-                                                <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
-                                                    setOneNewLine(index)
-                                                    setCreate({field:'', type:'string', value:''})
-                                                }}/>
-                                                <i className='feather feather-trash-2 text-danger editor-line-btn mr-3' onClick={() => removeLine(index)}/>
-                                            </div>
-                                        </div>
-                                    }
-
-                                    {/*****  ADD / REMOVE LINE for ONE ITEM  *****/}
-                                    {item.type === 'array' &&
-                                        <div style={{paddingLeft: 50}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
-                                            {item.type === 'array' && ']'}
-                                            <div className='d-flex _center a-r__buttons'>
-                                                <i className='feather feather-plus editor-line-btn mr-2'
-                                                   onClick={() => {
-                                                       setOneNewLine(index)
-                                                       setCreate({field:'', type:'string', value:''})
-                                                   }}
-                                                />
-                                                <i className='feather feather-trash-2 text-danger editor-line-btn mr-3' onClick={() => removeLine(index)}/>
-                                            </div>
-                                        </div>
-                                    }
-
-                                    {/* Create New One Item */}
-                                    {oneNewLine === index &&
-                                        <form onSubmit={() => createNewOneItem(index)} ref={formRef} className='static__width' >
-                                            <div className='px-5 d-flex'>
-                                                <input
-                                                    className='badge-input'
-                                                    placeholder={'field'}
-                                                    autoFocus={true}
-                                                    onChange={e => {
-                                                        setCreate({...create, key: e.target.value})
-                                                    }}
-                                                /> :
-                                                <select
-                                                    className='badge-select'
-                                                    defaultValue={'string'}
-                                                    onChange={e => {
-                                                            setCreate({...create,
-                                                                key: create.key,
-                                                                type: e.target.value,
-                                                                value: getNewValue(e.target.value)
-                                                            })
-                                                        }}
+                                        {state.data?.parameters?.map((item, index) => {
+                                            let uniqe_key = item.key+'_'+index+'_';
+                                            return(
+                                                <Draggable
+                                                    key={uniqe_key}
+                                                    draggableId={uniqe_key}
+                                                    index={index}
                                                 >
-                                                    <option value='' disabled={create.type !== ''} >Type</option>
-                                                    {types.map((d, i) =>
-                                                        <option key={i} value={d.value} >{d.label}</option>
+                                                    {(provided, snapshot) => (
+                                                        <div className={classNames("column d-flex flex-column", {
+                                                            dragging: snapshot.isDragging,
+                                                        })}
+                                                             ref={provided.innerRef}
+                                                             {...provided.draggableProps}
+                                                             {...provided.dragHandleProps}
+                                                        >
+                                                            <div className='d-flex editor-line _jc-between'
+                                                                 onDoubleClick={()=> getNewLine(index)} style={{ paddingLeft: 50, position: 'relative' }}
+                                                            >
+                                                                <div className='d-flex'>
+
+                                                                    <Key {...{item, edit, index, formRef, onEdit, setValue, setEdit, state}} />
+
+                                                                    <Type {...{item, changeType, types, index}} />  &nbsp;
+
+                                                                    <Value {...{editVal, index, formRef, onEdit, item, setValue, setNewLine, getValue}} />
+
+                                                                    <Comment {...{item, editComment, index, formRef, onEdit, setValue, setEditComment}} />
+
+                                                                </div>
+
+
+                                                                {/*****  ADD / REMOVE LINE  *****/}
+                                                                <div className='d-flex _center a-r__buttons'>
+                                                                    <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
+                                                                        setNewLine(index)
+                                                                        setCreate({field:'', type:'string', value:''})
+                                                                    }}/>
+                                                                    <i className='feather feather-trash-2 text-danger editor-line-btn mr-3' onClick={() => removeLine(index)}/>
+                                                                </div>
+
+                                                            </div>
+
+
+                                                            {/* Create New */}
+                                                            <NewLine getValueAdd={getValueAdd}
+                                                                     setNewLine={setNewLine}
+                                                                     createNew={createNew}
+                                                                     setCreate={setCreate}
+                                                                     newLine={newLine}
+                                                                     formRef={formRef}
+                                                                     create={create}
+                                                                     types={types}
+                                                                     index={index}
+                                                                     item={item}
+                                                                     valueItem={item}
+                                                            />
+
+                                                            {/* Recursive */}
+                                                            {
+                                                                <>
+                                                                    {getRecursive(item,uniqe_key)}
+                                                                </>
+                                                            }
+
+                                                            {/*****  ADD / REMOVE LINE for ONE ITEM  *****/}
+                                                            {item.type === 'object' &&
+                                                            <div style={{paddingLeft: 50}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
+                                                                {item.type === 'object' && '}'}
+                                                                <div className='d-flex _center a-r__buttons'>
+                                                                    <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
+                                                                        setOneNewLine(index)
+                                                                        setCreate({field:'', type:'string', value:''})
+                                                                    }}/>
+                                                                    <i className='feather feather-trash-2 text-danger editor-line-btn mr-3' onClick={() => removeLine(index)}/>
+                                                                </div>
+                                                            </div>
+                                                            }
+
+                                                            {/*****  ADD / REMOVE LINE for ONE ITEM  *****/}
+                                                            {item.type === 'array' &&
+                                                            <div style={{paddingLeft: 50}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
+                                                                {item.type === 'array' && ']'}
+                                                                <div className='d-flex _center a-r__buttons'>
+                                                                    <i className='feather feather-plus editor-line-btn mr-2'
+                                                                       onClick={() => {
+                                                                           setOneNewLine(index)
+                                                                           setCreate({field:'', type:'string', value:''})
+                                                                       }}
+                                                                    />
+                                                                    <i className='feather feather-trash-2 text-danger editor-line-btn mr-3' onClick={() => removeLine(index)}/>
+                                                                </div>
+                                                            </div>
+                                                            }
+
+                                                            {/* Create New One Item */}
+                                                            {oneNewLine === index &&
+                                                            <form onSubmit={() => createNewOneItem(index)} ref={formRef} className='static__width' >
+                                                                <div className='px-5 d-flex'>
+                                                                    <input
+                                                                        className='badge-input'
+                                                                        placeholder={'field'}
+                                                                        autoFocus={true}
+                                                                        onChange={e => {
+                                                                            setCreate({...create, key: e.target.value})
+                                                                        }}
+                                                                    /> :
+                                                                    <select
+                                                                        className='badge-select'
+                                                                        defaultValue={'string'}
+                                                                        onChange={e => {
+                                                                            setCreate({...create,
+                                                                                key: create.key,
+                                                                                type: e.target.value,
+                                                                                value: getNewValue(e.target.value)
+                                                                            })
+                                                                        }}
+                                                                    >
+                                                                        <option value='' disabled={create.type !== ''} >Type</option>
+                                                                        {types.map((d, i) =>
+                                                                            <option key={i} value={d.value} >{d.label}</option>
+                                                                        )}
+                                                                    </select>
+                                                                    {getValueAdd(create.type, false)}
+                                                                    <button className='btn badge-ok_btn'>
+                                                                        ok
+                                                                    </button>
+                                                                    <button className='btn badge-x_btn' onClick={() => setOneNewLine(false)} >
+                                                                        x
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                            }
+                                                        </div>
                                                     )}
-                                                </select>
-                                                {getValueAdd(create.type, false)}
-                                                <button className='btn badge-ok_btn'>
-                                                    ok
-                                                </button>
-                                                <button className='btn badge-x_btn' onClick={() => setOneNewLine(false)} >
-                                                    x
-                                                </button>
-                                            </div>
-                                        </form>
-                                    }
-                                    {/*</Tooltip>*/}
-                                </div>
-                            ))}
-                        </div>
+                                                </Draggable>
+                                            )
+
+                                            }
+                                        )}
+                                        {provided.placeholder}
+                                    </div>
+                                )}
+                            </Droppable>
+                        </DragDropContext>
                         <div>
                             <div className='editor-line'>{"}"}</div>
                         </div>
@@ -565,6 +668,27 @@ export const JsonEditor = ({state, setState}) => {
     );
 }
 
+export const Column = ({item, index}) => {
+    return (
+        <Draggable
+            key={item.key}
+            draggableId={item.key}
+            index={index}
+        >
+            {(provided, snapshot) => (
+                <div className={classNames("column bg-white d-flex flex-column", {
+                        dragging: snapshot.isDragging,
+                    })}
+                     ref={provided.innerRef}
+                     {...provided.draggableProps}
+                     {...provided.dragHandleProps}
+                >
+                    {item.key}
+                </div>
+            )}
+        </Draggable>
+    )
+}
 
 const ExampleLine = ({create ,setCreate ,newLineExample, setNewLineExample, formRef, types, getValueAdd, createExampleLine, getNewValue}) => {
     return (

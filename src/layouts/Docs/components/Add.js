@@ -7,9 +7,10 @@ import {apisCreate, apisCreateSub} from "@actions";
 export const Add = ({_id, refresh, type, onClose}) => {
     const [params, setParams] = React.useState({
         title: '',
-        slug: ''
+        slug: 'test'
     })
 
+    // cookie.set('_stripe_child_id')
     const onSubmit = async (e) => {
         e.preventDefault()
         let response = null
@@ -27,6 +28,7 @@ export const Add = ({_id, refresh, type, onClose}) => {
         }
     }
 
+
     return (
         <ErrorBoundary>
             <form onSubmit={onSubmit} >
@@ -36,11 +38,6 @@ export const Add = ({_id, refresh, type, onClose}) => {
                             onChange={(e) => setParams({...params, title: e.target.value})}
                             placeholder={Lang.get("Title")}
                             autoFocus={true}
-                    />
-                    <label className="form-control-label mt-3">{Lang.get("Slug")}</label>
-                    <Inputs type='input'
-                            onChange={(e) => setParams({...params, slug: e.target.value})}
-                            placeholder={Lang.get("Slug")}
                     />
                 </div>
                 <div className="d-flex">

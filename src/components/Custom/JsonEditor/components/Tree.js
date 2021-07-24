@@ -4,9 +4,11 @@ import {useOutsideAlerter} from "@hooks";
 import {ErrorBoundary} from "@components";
 import {NewLine} from "./NewLine";
 import {Checkbox, Tooltip} from "antd";
+import {Droppable, Draggable, DragDropContext} from "react-beautiful-dnd";
+import classNames from 'classnames'
 
 
-export function Tree({setState, line, setLine, children, types, valueItem}) {
+export function Tree({setState, line, setLine, children, types, valueItem, valueIndex, state}) {
 
     const formRef = useRef();
     // values
@@ -340,266 +342,324 @@ export function Tree({setState, line, setLine, children, types, valueItem}) {
 
     useOutsideAlerter(formRef, onCloseForm)
 
+    const reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
 
-    return children.length > 0 && children?.map((item, index) => {
-        let it = item.children
-        return (
-        <div key={index} style={{ paddingLeft: '3rem' }}  >
-            <div >
-                <div key={index} className='d-flex editor-line _jc-between'
-                     style={{ position: 'relative' }}
-                     onDoubleClick={()=> getNewLine(index)} >
-                    <div className='d-flex'  onDoubleClick={(e)=> e.stopPropagation()}   >
+        return result;
+    };
 
-                        {/*****  KEY  *****/}
-                        <input
-                            className={`is_required text-light ${children[index].is_required ? 'active' : '' }`}
-                            type='checkbox'
-                            onChange={(e)=> setValue(index, !!e.target.checked ? 1 : 0, 'is_required') + console.log('test')}
-                        />
+    const onDragEnd = async ({
+             draggableId,
+             type,
+             source,
+             destination,
+             remote = true,
+         }) => {
+        if (!destination) return;
+
+        if (
+            destination.droppableId === source.droppableId &&
+            destination.index === source.index
+        ) {
+            return;
+        }
+
+        if (type === "children") {
+            let i = valueIndex.slice(-1);
+            const items = reorder(
+                children,
+                source.index,
+                destination.index
+            );
+            let data = state.data.parameters[i].value = items
+            setState({...data});
+            console.log('changes', data)
+        }
+
+    }
+
+    return(
+        // <DragDropContext onDragEnd={onDragEnd} >
+        <Droppable droppableId={valueIndex+'_'} direction="vertical" type="children" >
+                {(provided) => (
+                    <div
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                    >
                         {
-                            edit === index ? (
-                                    <form onSubmit={() => onEdit(index)} ref={formRef} >
-                                        <div className='json_edit d-flex'>
-                                            <input
-                                                type="text"
-                                                className="json_input"
-                                                id="inlineFormInputGroup"
-                                                value={item.key}
-                                                autoFocus={true}
-                                                onChange={(e) => setValue(index, e.target.value, 'key')}
-                                            />
-                                            <i className='feather feather-check' onClick={() => onEdit(index)}/>
-                                        </div>
-                                    </form>
-                                ) :
-                                !item.key
-                                    ?
-                                    <>
-                                        {
-                                            valueItem.type !== 'array'
-                                                ?
-                                                <div onClick={() => setEdit(index)}>
-                                                    "field:"
+                            children.length > 0 && children?.map((item, index) => {
+                                let uniqe_key = item.key+'_val_'+index;
+                                return (
+                                    <Draggable
+                                        key={index}
+                                        draggableId={uniqe_key}
+                                        index={index}
+                                    >
+                                        {(provided, snapshot) => (
+                                            <div
+                                                className={classNames("task pl-5", { dragging: snapshot.isDragging })}
+                                                {...provided.dragHandleProps}
+                                                {...provided.draggableProps}
+                                                ref={provided.innerRef}
+                                            >
+                                                <div key={index} className='d-flex editor-line _jc-between'
+                                                     style={{ position: 'relative' }}
+                                                     onDoubleClick={()=> getNewLine(index)} >
+                                                    <div className='d-flex' onDoubleClick={(e)=> e.stopPropagation()} >
+
+                                                        {/*****  KEY  *****/}
+                                                        <input
+                                                            className={`is_required text-light ${children[index].is_required ? 'active' : '' }`}
+                                                            type='checkbox'
+                                                            onChange={(e)=> setValue(index, !!e.target.checked ? 1 : 0, 'is_required') + console.log('test')}
+                                                        />
+                                                        {
+                                                            edit === index ? (
+                                                                    <form onSubmit={() => onEdit(index)} ref={formRef} >
+                                                                        <div className='json_edit d-flex'>
+                                                                            <input
+                                                                                type="text"
+                                                                                className="json_input"
+                                                                                id="inlineFormInputGroup"
+                                                                                value={item.key}
+                                                                                autoFocus={true}
+                                                                                onChange={(e) => setValue(index, e.target.value, 'key')}
+                                                                            />
+                                                                            <i className='feather feather-check' onClick={() => onEdit(index)}/>
+                                                                        </div>
+                                                                    </form>
+                                                                ) :
+                                                                !item.key
+                                                                    ?
+                                                                    <>
+                                                                        {
+                                                                            valueItem.type !== 'array'
+                                                                                ?
+                                                                                <div onClick={() => setEdit(index)}>
+                                                                                    "field:"
+                                                                                </div>
+                                                                                :
+                                                                                <div>
+                                                                                    {`"${index}":`}
+                                                                                </div>
+                                                                        }
+                                                                    </>
+                                                                    :
+                                                                    <div onClick={() => setEdit(index)}>
+                                                                        {`${item.key && `"${item.key}":`}`}
+                                                                    </div>
+                                                        }
+
+                                                        &nbsp;
+
+
+                                                        {/* Type */}
+                                                        <Type {...{item, types, changeType, index}} />
+
+                                                        &nbsp;
+
+                                                        {/*****  VALUE  *****/}
+                                                        {editVal === index ? (
+                                                            <div className='json_edit d-flex' ref={formRef} >
+                                                                {item.type !== 'integer' ?
+                                                                    <form onSubmit={() => onEdit(index)} >
+                                                                        <input
+                                                                            type="text"
+                                                                            className="json_input"
+                                                                            value={item.value}
+                                                                            autoFocus
+                                                                            onChange={(e) => setValue(index, e.target.value, 'value')}
+                                                                        />
+                                                                        <i className='feather feather-check'
+                                                                           onClick={() => onEdit(index)}/>
+                                                                    </form>
+                                                                    :
+                                                                    <>
+                                                                        <input
+                                                                            type="text"
+                                                                            className="json_input onlyNumber"
+                                                                            name="quantity" id="quantity"
+                                                                            value={item.value}
+                                                                            autoFocus
+                                                                            onChange={(e) => setValue(index, e.target.value, 'value')}
+                                                                        />
+                                                                        <i className='feather feather-check'
+                                                                           onClick={() => onEdit(index)}/>
+                                                                    </>
+                                                                }
+                                                            </div>
+                                                        ) : (
+                                                            getValue(item, index)
+                                                        )}
+
+                                                        <div className="dropdown ml-auto">
+                                                            <div className="dropdown-menu" style={{marginRight: '6em'}}
+                                                                 aria-labelledby="dropdownMenuButton">
+                                                                {boolean?.map((d, i) =>
+                                                                    <p className="dropdown-item" key={i} onClick={() => changeBoolean(d.value, index)} >
+                                                                        {d.label}
+                                                                    </p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+
+                                                        {/*****  COMMENT  *****/}
+                                                        {editComment === index ?
+                                                            <form onSubmit={() => onEdit(index)} ref={formRef} >
+                                                                <div className='json_edit d-flex'>
+                                                                    <input
+                                                                        className="json_input ml-4  "
+                                                                        placeholder='Comment'
+                                                                        value={item.comment}
+                                                                        autoFocus
+                                                                        onChange={(e) => setValue(index, e.target.value, 'comment')}
+                                                                    />
+                                                                    <i className='feather feather-check' onClick={() => onEdit(index)}/>
+                                                                </div>
+                                                            </form>
+                                                            : <div className='text-muted ml-3 json_comment' onClick={() => {setEditComment(index); setEditVal(false); setEdit(false);}}>
+                                                                {!item.comment ? <div className='text-gold'>// write comment</div> : `// ${item.comment}`}
+                                                            </div>
+                                                        }
+                                                    </div>
+
+                                                    {/*****  ADD / REMOVE LINE  *****/}
+                                                    <div className='d-flex _center a-r__buttons'>
+                                                        <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
+                                                            setAddTree(index)
+                                                            setCreate({field:'', type:'string', value:''})
+                                                        }}/>
+                                                        <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
+                                                           onClick={() => removeLine(index)}/>
+                                                    </div>
                                                 </div>
-                                                :
-                                                <div>
-                                                    {`"${index}":`}
+
+
+                                                {/*****  CREATE NEW  *****/}
+                                                {/* Create New */}
+                                                <NewLine getValueAdd={getValueAdd}
+                                                         setNewLine={setAddTree}
+                                                         createNew={createNew}
+                                                         setCreate={setCreate}
+                                                         newLine={addTree}
+                                                         formRef={formRef}
+                                                         create={create}
+                                                         types={types}
+                                                         index={index}
+                                                         item={item}
+                                                         valueItem={valueItem}
+                                                />
+
+
+
+                                                {/*****  RECURSIVE  *****/}
+                                                {getRecursive(item)}
+
+
+                                                {item.type === 'array' &&
+                                                <div style={{paddingLeft: 100}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
+                                                    <div style={{ marginLeft: -45 }} >{item.type === 'array' && ']'}</div>
+                                                    {/*****  ADD / REMOVE LINE  *****/}
+                                                    <div className='d-flex _center a-r__buttons'>
+                                                        <i className='feather feather-plus editor-line-btn mr-2'
+                                                           onClick={() => {
+                                                               setAddTreeOne(index)
+                                                               setCreate({field:'', type:'string', value:''})
+                                                           }}
+                                                        />
+                                                        <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
+                                                           onClick={() => removeLine(index)}/>
+                                                    </div>
                                                 </div>
-                                        }
-                                    </>
-                                    :
-                                    <div onClick={() => setEdit(index)}>
-                                        {`${item.key && `"${item.key}":`}`}
-                                    </div>
-                        }
-
-                        &nbsp;
-
-
-                        {/* Type */}
-                        <Type {...{item, types, changeType, index}} />
-
-                        &nbsp;
-
-                        {/*****  VALUE  *****/}
-                        {editVal === index ? (
-                            <div className='json_edit d-flex' ref={formRef} >
-                                {item.type !== 'integer' ?
-                                    <form onSubmit={() => onEdit(index)} >
-                                        <input
-                                            type="text"
-                                            className="json_input"
-                                            value={item.value}
-                                            autoFocus
-                                            onChange={(e) => setValue(index, e.target.value, 'value')}
-                                        />
-                                        <i className='feather feather-check'
-                                           onClick={() => onEdit(index)}/>
-                                    </form>
-                                    :
-                                    <>
-                                        <input
-                                            type="text"
-                                            className="json_input onlyNumber"
-                                            name="quantity" id="quantity"
-                                            value={item.value}
-                                            autoFocus
-                                            onChange={(e) => setValue(index, e.target.value, 'value')}
-                                        />
-                                        <i className='feather feather-check'
-                                           onClick={() => onEdit(index)}/>
-                                    </>
+                                                }
+                                                {item.type === 'object' &&
+                                                <div style={{paddingLeft: 100}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
+                                                    <div style={{ marginLeft: -45 }} >{item.type === 'object' && '}'}</div>
+                                                    {/*****  ADD / REMOVE LINE  *****/}
+                                                    <div className='d-flex _center a-r__buttons'>
+                                                        <i className='feather feather-plus editor-line-btn mr-2'
+                                                           onClick={() => {
+                                                               setAddTreeOne(index)
+                                                               setCreate({field:'', type:'string', value:''})
+                                                           }}
+                                                        />
+                                                        <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
+                                                           onClick={() => removeLine(index)}/>
+                                                    </div>
+                                                </div>
+                                                }
+                                                {/*****  CREATE NEW  *****/}
+                                                {addTreeOne === index &&
+                                                <form onSubmit={() => {
+                                                    if (!create.type) {
+                                                        // Api.errorModal('Parameters are empty')
+                                                    } else {
+                                                        let new_item = {
+                                                            key: create.key,
+                                                            type: create.type,
+                                                            value: create.value,
+                                                        };
+                                                        children.splice(index + 1, 0, new_item)
+                                                        setState({...children})
+                                                        setAddTreeOne(false)
+                                                        setLine(line + 1)
+                                                    }
+                                                }}
+                                                      ref={formRef}
+                                                      className='static__width'
+                                                >
+                                                    <div className='pl-5 ml-2 d-flex'>
+                                                        {
+                                                            valueItem.type !== 'array' &&
+                                                            <>
+                                                                <input
+                                                                    className='badge-input'
+                                                                    placeholder={'field'}
+                                                                    autoFocus
+                                                                    onChange={e => {
+                                                                        setCreate({...create, key: e.target.value})
+                                                                    }}
+                                                                /> :
+                                                            </>
+                                                        }
+                                                        <select
+                                                            className='badge-select'
+                                                            defaultValue={'string'}
+                                                            onChange={e => {
+                                                                setCreate({...create,
+                                                                    key: (e.target.value === 'array') && '',
+                                                                    type: e.target.value,
+                                                                    value: getNewValue(e.target.value)
+                                                                });
+                                                            }}
+                                                        >
+                                                            <option value=''>Type</option>
+                                                            {types.map((d, i) =>
+                                                                <option key={i} value={d.value}>{d.label}</option>
+                                                            )}
+                                                        </select>
+                                                        {getValueAdd(create.type, valueItem, false)}
+                                                        <button className='btn badge-ok_btn'>ok</button>
+                                                        <button className='btn badge-x_btn' onClick={() => setAddTreeOne(false)}>
+                                                            x
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                                }
+                                            </div>
+                                        )}
+                                    </Draggable>
+                                )
                                 }
-                            </div>
-                        ) : (
-                            getValue(item, index)
-                        )}
-
-                        <div className="dropdown ml-auto">
-                            <div className="dropdown-menu" style={{marginRight: '6em'}}
-                                 aria-labelledby="dropdownMenuButton">
-                                {boolean?.map((d, i) =>
-                                    <p className="dropdown-item" key={i} onClick={() => changeBoolean(d.value, index)} >
-                                        {d.label}
-                                    </p>
-                                )}
-                            </div>
-                        </div>
-
-                        {/*****  COMMENT  *****/}
-                        {editComment === index ?
-                            <form onSubmit={() => onEdit(index)} ref={formRef} >
-                                <div className='json_edit d-flex'>
-                                    <input
-                                        className="json_input ml-4  "
-                                        placeholder='Comment'
-                                        value={item.comment}
-                                        autoFocus
-                                        onChange={(e) => setValue(index, e.target.value, 'comment')}
-                                    />
-                                    <i className='feather feather-check' onClick={() => onEdit(index)}/>
-                                </div>
-                            </form>
-                            : <div className='text-muted ml-3 json_comment' onClick={() => {setEditComment(index); setEditVal(false); setEdit(false);}}>
-                                {!item.comment ? <div className='text-gold'>// write comment</div> : `// ${item.comment}`}
-                            </div>
+                            )
                         }
                     </div>
-
-                    {/*****  ADD / REMOVE LINE  *****/}
-                    <div className='d-flex _center a-r__buttons'>
-                        {/*<Checkbox className='editor-line-btn'*/}
-                        {/*          defaultChecked={item.is_required}*/}
-                        {/*          style={{margin: '-1px 10px 0 0'}}*/}
-                        {/*          onChange={(e) => {*/}
-                        {/*              setValue(index, e.target.checked ? 1 : 0, 'is_required')*/}
-                        {/*          }}*/}
-                        {/*/>*/}
-                        <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
-                            setAddTree(index)
-                            setCreate({field:'', type:'string', value:''})
-                        }}/>
-                        <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
-                           onClick={() => removeLine(index)}/>
-                    </div>
-                </div>
-
-
-                {/*****  CREATE NEW  *****/}
-                {/* Create New */}
-                <NewLine getValueAdd={getValueAdd}
-                         setNewLine={setAddTree}
-                         createNew={createNew}
-                         setCreate={setCreate}
-                         newLine={addTree}
-                         formRef={formRef}
-                         create={create}
-                         types={types}
-                         index={index}
-                         item={item}
-                         valueItem={valueItem}
-                />
-
-
-
-                {/*****  RECURSIVE  *****/}
-                {getRecursive(item)}
-
-
-                {item.type === 'array' &&
-                <div style={{paddingLeft: 100}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
-                    <div style={{ marginLeft: -45 }} >{item.type === 'array' && ']'}</div>
-                    {/*****  ADD / REMOVE LINE  *****/}
-                    <div className='d-flex _center a-r__buttons'>
-                        <i className='feather feather-plus editor-line-btn mr-2'
-                           onClick={() => {
-                               setAddTreeOne(index)
-                               setCreate({field:'', type:'string', value:''})
-                           }}
-                        />
-                        <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
-                           onClick={() => removeLine(index)}/>
-                    </div>
-                </div>
-                }
-                {item.type === 'object' &&
-                <div style={{paddingLeft: 100}} className='editor-line _jc-between' onDoubleClick={()=> getOneNewLine(index)} >
-                    <div style={{ marginLeft: -45 }} >{item.type === 'object' && '}'}</div>
-                    {/*****  ADD / REMOVE LINE  *****/}
-                    <div className='d-flex _center a-r__buttons'>
-                        <i className='feather feather-plus editor-line-btn mr-2'
-                           onClick={() => {
-                               setAddTreeOne(index)
-                               setCreate({field:'', type:'string', value:''})
-                           }}
-                        />
-                        <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
-                           onClick={() => removeLine(index)}/>
-                    </div>
-                </div>
-                }
-                {/*****  CREATE NEW  *****/}
-                {addTreeOne === index &&
-                <form onSubmit={() => {
-                    if (!create.type) {
-                        // Api.errorModal('Parameters are empty')
-                    } else {
-                        let new_item = {
-                            key: create.key,
-                            type: create.type,
-                            value: create.value,
-                        };
-                        children.splice(index + 1, 0, new_item)
-                        setState({...children})
-                        setAddTreeOne(false)
-                        setLine(line + 1)
-                    }
-                }}
-                      ref={formRef}
-                      className='static__width'
-                >
-                    <div className='pl-5 ml-2 d-flex'>
-                        {
-                            valueItem.type !== 'array' &&
-                            <>
-                                <input
-                                    className='badge-input'
-                                    placeholder={'field'}
-                                    autoFocus
-                                    onChange={e => {
-                                        setCreate({...create, key: e.target.value})
-                                    }}
-                                /> :
-                            </>
-                        }
-                        <select
-                            className='badge-select'
-                            defaultValue={'string'}
-                            onChange={e => {
-                                setCreate({...create,
-                                    key: (e.target.value === 'array') && '',
-                                    type: e.target.value,
-                                    value: getNewValue(e.target.value)
-                                });
-                            }}
-                        >
-                            <option value=''>Type</option>
-                            {types.map((d, i) =>
-                                <option key={i} value={d.value}>{d.label}</option>
-                            )}
-                        </select>
-                        {getValueAdd(create.type, valueItem, false)}
-                        <button className='btn badge-ok_btn'>ok</button>
-                        <button className='btn badge-x_btn' onClick={() => setAddTreeOne(false)}>
-                            x
-                        </button>
-                    </div>
-                </form>
-                }
-            </div>
-        </div>
-    )})
+                )}
+            </Droppable>
+        // </DragDropContext>
+    )
 }
 
 

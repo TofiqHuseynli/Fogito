@@ -16,7 +16,14 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
     const [initData, setInitData] = React.useState([])
     const [data, setData] = React.useState([])
 
-    const fields = { dataSource: data, id:'id', text: 'title', child: 'children' }
+    const fields = {
+        dataSource: data,
+        id:'id',
+        parentID: 'parent_id',
+        text: 'title',
+        child: 'children',
+        selected: 'isSelected'
+    }
 
     const menuClick = () => modal.show("add_sub")
 
@@ -24,6 +31,8 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
         if(data.node.ariaExpanded !== null) {
             // save id for stripe api
             cookie.set('_stripe_id', data.node?.dataset.uid, 1)
+        } else {
+            cookie.set('_stripe_child_id', data.node?.dataset.uid, 1)
         }
         history.push(`/docs/${state?.project_id}/${data.node?.dataset.uid}`)
         setState({docs_id: data.node?.dataset.uid})
@@ -35,16 +44,18 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
     },[state.docs])
 
 
-
     const onOpen = () => {
         if(initData) {
             let row = initData.find(x => x.id === cookie.get('_stripe_id')) || '';
             let ret = initData.map(x => {
                 if (x.id === row.id) {
-                        let ret = {
-                            id: x.id, title: x.title,
-                            children: x.children, expanded: true,
-                        }
+                    let ret = {
+                        id: x.id,
+                        title: x.title,
+                        children: x.children,
+                        expanded: true,
+                        isSelected: true
+                    }
                     return ret
                     } else {
                         return {...x}
@@ -55,10 +66,41 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
         }
     }
 
+
     useEffect(() => {
         initData && onOpen()
     }, [initData])
 
+    const onFocus = () => {
+        let row = initData.find(x => x.id === state.docs_id);
+        console.log( 'rrr',row.children.slice(-1))
+        let ret = initData.map(x => {
+                if (x.id === row) {
+                    let ret = {
+                        id: x.id,
+                        title: x.title,
+                        children: x.children.map(c => {
+                            if(c.id === row.children.slice(-1).id)
+                            return {
+                                ...c,
+                                id: c.id,
+                                title: c.title,
+                                isSelected: true
+                            }
+                        }),
+                        expanded: true,
+                    }
+                    return ret
+                } else {
+                    return {...x}
+                }
+            }
+        )
+        console.log('ret',ret)
+        setData([...ret])
+    }
+
+    console.log('data',data)
 
     return (
         <ErrorBoundary>
@@ -75,6 +117,7 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
                     onClose={() => modal.hide("add_sub")}
                 />
             </Popup>
+            {/*<div onClick={()=> onFocus()} >Click</div>*/}
 
             <div className='content__scroll' >
                 {state.loadingStripe && <Loading />}
@@ -86,7 +129,7 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
                                 id='tree'
                                 fields={fields}
                                 allowDragAndDrop={true}
-                                expandOn={'Click'}
+                                expandOn='Click'
                                 nodeDragStop={(data)=>onDragEnd(data)}
                                 nodeClicked={(data)=> getNode(data)}
                             />

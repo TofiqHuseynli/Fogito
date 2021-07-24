@@ -43,6 +43,18 @@
   }
 }
 
+.column {
+  &.dragging {
+    box-shadow: 0 0 2rem 0 #00000026;
+  }
+}
+
+.task {
+  &.dragging {
+    box-shadow: 0 0 2rem 0 #00000026;
+  }
+}
+
 
 .docs__sidebar {
   position: fixed;

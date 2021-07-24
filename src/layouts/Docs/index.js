@@ -7,11 +7,13 @@ import {Add} from "./components";
 import {useModal} from "@hooks";
 import {genUuid, inArray} from "@lib";
 import {API_ROUTES} from "@config";
+import {useHistory} from 'react-router-dom';
 
 export const Docs = (props) => {
 
     let xhr = [];
     const modal = useModal()
+    const history = useHistory()
     const initialState = {
         docs_id: props.match.params.docs_id,
         id: props.match.params.id,
@@ -21,7 +23,7 @@ export const Docs = (props) => {
         status_data: [],
         public_data: [],
         docs: [],
-        file: {  },
+        file: {},
 
         options: [
             { value: 'get',       label: 'get' },
@@ -74,17 +76,19 @@ export const Docs = (props) => {
         }
     }
 
-    async function refresh() {
+    async function refresh(focus) {
         setState({ loadingStripe: true })
         let project_id = state.pro_id
         let response = await documentationStripe({project_id})
         if(response.status === 'success') {
+            !focus && onFocus(response.data.list)
             setState({
                 project_id: response.data.project_id,
                 docs: response.data.list,
                 loadingStripe: false
             })
         }
+
     }
 
     const getUpdate = async () => {
@@ -100,7 +104,7 @@ export const Docs = (props) => {
                 loading: false
             });
             App.successModal(response.description)
-            refresh()
+            refresh(true)
         } else {
             setState({
                 error: response.description,
@@ -147,8 +151,32 @@ export const Docs = (props) => {
 
 
     React.useEffect(()=> {
-        refresh()
+        refresh(true)
     },[])
+
+    const onFocus = (data) => {
+        history.push(`/docs/${state?.id}/${data.slice(-1)[0].id}`)
+
+        let row = data.find(x => x.id === data.slice(-1)[0].id)
+        let ret = data.map(x => {
+                if (x.id === row.id) {
+                    let ret = {
+                        id: x.id,
+                        title: x.title,
+                        children: x.children,
+                        expanded: true,
+                        isSelected: true
+                    }
+                    return ret
+                } else {
+                    return {...x}
+                }
+            }
+        )
+        console.log('row',row)
+        console.log('ret',ret)
+        setState({...state, docs: ret, docs_id: row.id})
+    }
 
 
     return (
@@ -162,7 +190,7 @@ export const Docs = (props) => {
                 <Add
                     _id={state.pro_id}
                     type={'add_docs'}
-                    refresh={() => refresh()}
+                    refresh={() => refresh(false)}
                     onClose={() => modal.hide("add")}
                 />
             </Popup>
@@ -231,6 +259,7 @@ export const Docs = (props) => {
                             <i className="feather feather-plus fs-18 align-middle mr-1" />
                             {Lang.get("Add")}
                         </button>
+
                         <DocsStripe state={state}
                                     setState={setState}
                                     onDragEnd={onDragEnd}

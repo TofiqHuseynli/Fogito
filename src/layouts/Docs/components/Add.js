@@ -4,7 +4,7 @@ import {App, Lang} from "@plugins";
 import {apisCreate, apisCreateSub} from "@actions";
 
 
-export const Add = ({_id, refresh, type, onClose}) => {
+export const Add = ({_id, refresh, type, onClose, reFocus, refreshBoolean}) => {
     const [params, setParams] = React.useState({
         title: '',
         slug: 'test'
@@ -21,7 +21,8 @@ export const Add = ({_id, refresh, type, onClose}) => {
         } else {}
 
         if(response.status === 'success') {
-            refresh()
+            reFocus()
+            refreshBoolean && refresh()
             onClose()
         } else {
             App.errorModal(response.description)

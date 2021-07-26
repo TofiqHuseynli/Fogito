@@ -124,7 +124,7 @@ export const Projects = ({ name, match: { path }, type }) => {
             render: (data) =>
                 data?.count > 0 ? (
                     <div className="d-flex">
-                        {data.data?.map((item, key) => key < 3 && (
+                        {data.data?.map((item, key) => key < 4 && (
                             <Tooltip title={item.fullname} key={key}>
                                 <img
                                     alt="avatar"
@@ -137,30 +137,30 @@ export const Projects = ({ name, match: { path }, type }) => {
                                 />
                             </Tooltip>
                         ))}
-                        {data.count > 3 && (
+                        {data.count > 4 && (
                             <ProjectUsersTooltip item={data.data}>
                                 <div
                                     className="cr-pointer rounded-circle bg-primary text-white d-flex align-items-center justify-content-center ml-2"
                                     style={{ width: 35, height: 35 }}
-                                >{`${data.count - 3}+`}</div>
+                                >{`${data.count - 4}+`}</div>
                             </ProjectUsersTooltip>
                         )}
                     </div>
                 ) : (
-                    <span className="text-muted">{Lang.get("NoUsers")}</span>
+                    <span className="text-muted">{Lang.get("noUser")}</span>
                 ),
         },
         {
             key: "actions",
             width: 160,
+            center: true,
             name: Lang.get("Docs"),
             render: (data) => (
-                <Link to={`docs/${data?.id}`}
-                      className={'table-line'}
-                      style={{wordBreak: 'break-all', whiteSpace: 'pre-wrap', padding: '20px 10px'}}
+                <div className={'table-line d-flex justify-content-center'}
+                     style={{wordBreak: 'break-all', whiteSpace: 'pre-wrap', padding: '20px 10px'}}
                 >
-                    <div className="table-line-title">{data.count ? `${data.count} Docs` : Lang.get("No Docs")}</div>
-                </Link>
+                    <p className="table-line-title m-0">{data.count ? `${data.count}` : <div className='text-muted' >0</div>}</p>
+                </div>
             ),
         },
         {

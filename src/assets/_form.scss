@@ -32,28 +32,9 @@ label {
 }
 
 
-.custom-file-input {
-  opacity: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #22BBD6;
-  &::before {
-    content: 'Import';
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-}
-
-.custom-file-input::-webkit-file-upload-button {
-  visibility: hidden !important;
-}
-
 .tooltip__header {
   padding: 5px 10px 0px 10px;
   display: flex;
-
   color: #7496AB;
   align-items: center;
   justify-content: space-between;

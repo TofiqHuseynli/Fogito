@@ -206,40 +206,12 @@ const Desc = ({state, setState}) => {
 
 const Settings = (props) => {
 
-    let {state, setState, refresh} = props;
+    let {state, setState} = props;
     const [status, setStatus] = React.useState({
         label: state.data.status?.label,
         value: state.data.status?.value,
         dex: state.data.status?.dex
     })
-
-    async function onDelete() {
-        setState({loading: true})
-        let id = state.docs_id
-        let response = await apisDelete({id})
-        if (response.status === 'success') {
-            setState({loading: false, docs_id: ''})
-            props.history.push(`/docs/${state.id}`)
-            refresh(false)
-        } else {
-            App.errorModal(response.description)
-        }
-    }
-
-    async function onDuplicate() {
-        let response = await apisCopy({
-            id: state.data?.id,
-            project_id: state.data?.project_id,
-            parent_id: state.data?.parent_id,
-            position: "0"
-        })
-        if(response.status === 'success') {
-            refresh(false)
-        }
-        else {
-            App.errorModal(response.description)
-        }
-    }
 
     const onStatus = () => {
         switch (status.value) {
@@ -307,32 +279,12 @@ const Settings = (props) => {
                             label={'Slug'}
                             placeholder={'Slug'}
                     />
-                    {/*<Inputs type='select'*/}
-                    {/*        onSelect={(e) => setState({...state, data: {...state.data, public: parseInt(e.target.value)}})}*/}
-                    {/*        data={state.public_data}*/}
-                    {/*        propsClass={'custom-input'}*/}
-                    {/*        divClass={'row px-2 mt-3'}*/}
-                    {/*        selected={state.data.public?.value}*/}
-                    {/*        label={"Public"}*/}
-                    {/*/>*/}
                 </div>
 
                 {/* Actions */}
                 <div className='col-md-4' >
                     <OptionsBtn
-                        divClassName='px-2 text-danger row'
-                        style={{ marginTop: 41 }}
-                        onClick={()=> App.deleteModal(()=> onDelete() )}
-                        title={'Delete'}
-                    />
-                    <OptionsBtn
-                        style={{ marginTop: 20 }}
-                        divClassName='px-2 text-primary row'
-                        title={'Duplicate'}
-                        onClick={()=> App.duplicateModal(()=> onDuplicate())}
-                    />
-                    <OptionsBtn
-                        style={{ marginTop: 20, color: status.value === 3 ? '#2dce89' : '#22BBD6' }}
+                        style={{ marginTop: 41, color: status.value === 3 ? '#2dce89' : '#22BBD6' }}
                         divClassName='px-2 row'
                         title={status.value === 3 ? 'Active' : 'Closed'}
                         onClick={()=> onStatus()}

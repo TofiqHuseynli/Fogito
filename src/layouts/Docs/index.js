@@ -1,10 +1,10 @@
 import React from 'react';
-import {apisDelete, apisMove, apisUpdate, documentationStripe} from "@actions";
+import {apisCopy, apisDelete, apisMove, apisUpdate, documentationStripe} from "@actions";
 import {ErrorBoundary, Header, Popup} from "@components";
 import {DocsEdit, DocsStripe} from "./components";
 import {App, Auth, Lang} from "@plugins";
 import {Add} from "./components";
-import {useModal} from "@hooks";
+import {useCookie, useModal} from "@hooks";
 import {genUuid, inArray} from "@lib";
 import {API_ROUTES} from "@config";
 import {useHistory} from 'react-router-dom';
@@ -14,6 +14,7 @@ export const Docs = (props) => {
     let xhr = [];
     const modal = useModal()
     const history = useHistory()
+    const cookie = useCookie()
     const initialState = {
         docs_id: props.match.params.docs_id,
         id: props.match.params.id,
@@ -45,6 +46,7 @@ export const Docs = (props) => {
             public: ''
         },
 
+        initData: [],
         perms_modal: false,
         loading: false,
         loadingStripe: false,
@@ -69,26 +71,59 @@ export const Docs = (props) => {
         await apisMove(url, obj);
     }
 
-    async function onDelete(id) {
+    async function onDelete() {
+        let id = state.docs_id;
         let response = await apisDelete({id})
         if(response.status === 'success') {
+            setState({
+                ...state,
+                loading: false,
+                docs_id: ''
+            })
+            props.history.push(`/docs/${state.id}`)
             refresh()
+        } else {
+            App.errorModal(response.description)
         }
     }
 
-    async function refresh(focus) {
+    async function onDuplicate() {
+        let response = await apisCopy({
+            id: state.data?.id,
+            project_id: state.data?.project_id,
+            parent_id: state.data?.parent_id,
+            position: "0"
+        })
+        if(response.status === 'success') {
+            refresh()
+        } else {
+            App.errorModal(response.description)
+        }
+    }
+
+    async function refresh() {
         setState({ loadingStripe: true })
         let project_id = state.pro_id
         let response = await documentationStripe({project_id})
         if(response.status === 'success') {
-            !focus && onFocus(response.data.list)
             setState({
                 project_id: response.data.project_id,
                 docs: response.data.list,
                 loadingStripe: false
             })
         }
+    }
 
+    async function refreshWidthFocus() {
+        setState({ loadingStripe: true })
+        let project_id = state.pro_id
+        let response = await documentationStripe({project_id})
+        if(response.status === 'success') {
+            setState({
+                loadingStripe: false
+            })
+            onFocus(response.data.list)
+        }
     }
 
     const getUpdate = async () => {
@@ -104,7 +139,7 @@ export const Docs = (props) => {
                 loading: false
             });
             App.successModal(response.description)
-            refresh(true)
+            refresh()
         } else {
             setState({
                 error: response.description,
@@ -149,14 +184,15 @@ export const Docs = (props) => {
         }
     };
 
+    console.log(state.docs)
 
     React.useEffect(()=> {
-        refresh(true)
+        refresh()
     },[])
 
     const onFocus = (data) => {
+        cookie.remove('_stripe_id')
         history.push(`/docs/${state?.id}/${data.slice(-1)[0].id}`)
-
         let row = data.find(x => x.id === data.slice(-1)[0].id)
         let ret = data.map(x => {
                 if (x.id === row.id) {
@@ -173,8 +209,6 @@ export const Docs = (props) => {
                 }
             }
         )
-        console.log('row',row)
-        console.log('ret',ret)
         setState({...state, docs: ret, docs_id: row.id})
     }
 
@@ -190,7 +224,8 @@ export const Docs = (props) => {
                 <Add
                     _id={state.pro_id}
                     type={'add_docs'}
-                    refresh={() => refresh(false)}
+                    refreshBoolean={false}
+                    reFocus={refreshWidthFocus}
                     onClose={() => modal.hide("add")}
                 />
             </Popup>
@@ -203,35 +238,66 @@ export const Docs = (props) => {
 
                     <div className="col-md-1 pl-0">
                         <button
-                            className="btn btn-lightblue text-white lh-24 px-3 text-center"
+                            className="btn btn-primary lh-24 px-3 text-center"
                             onClick={() => props.history.push('/projects')}
                         >
                             <i className="feather feather-chevron-left fs-22 align-middle" />
                         </button>
                     </div>
 
-                    <h3 className='text-primary mx-auto' >{Lang.get(state.data.title)}</h3>
+                    <h3 className='text-primary mx-auto' >
+                        {!!state.docs_id && Lang.get(state.data.title)}
+                    </h3>
 
                     <>
-                        <div className="col-md-1 pr-0">
-                            <input
-                                className="btn btn-lightblue text-white btn-block custom-file-input lh-24 px-3"
-                                onChange={(e) => onFileSelect(e, "file")}
-                                type={'file'}
-                                accept=".doc,.docx,.txt,.fog"
-                            />
-                        </div>
-                        <div className="col-md-1 pr-0">
-                            <a
-                                className="btn btn-lightblue btn-block lh-24 px-3"
-                                href={
-                                    `https://docs.fogito.com/apis/export?token=${Auth.get("token")}&lang=${Auth.get("lang")}&project_id=${state.pro_id}`
-                                }
-                                target="_blank"
-                                download
+                        <div className="dropdown">
+                            <button className="btn btn-primary d-flex align-items-center m-0"
+                                    id="actions"
+                                    data-toggle="dropdown"
                             >
-                                {Lang.get("Export")}
-                            </a>
+                                {Lang.get("Actions")}
+                                <i className='feather feather-chevron-down fs-18 ml-2'/>
+                            </button>
+                            <div className="dropdown-menu header_dropdown" aria-labelledby="actions">
+                                <a className="dropdown-item">
+                                    <div className="file-input">
+                                        <input
+                                            id="file"
+                                            type="file"
+                                            className="file"
+                                            accept=".doc,.docx,.txt,.fog"
+                                            onChange={(e) => onFileSelect(e, "file")}
+                                        />
+                                        <label htmlFor="file">{Lang.get("Import")}</label>
+                                    </div>
+
+                                </a>
+                                {
+                                    state.docs?.length > 0 ?
+                                    <a className="dropdown-item"
+                                       href={`https://docs.fogito.com/apis/export?token=${Auth.get("token")}&lang=${Auth.get("lang")}&project_id=${state.pro_id}`}
+                                       target="_blank"
+                                       download
+                                    >
+                                        {Lang.get("Export")}
+                                    </a> : null
+                                }
+                                {
+                                    !!state.docs_id &&
+                                        <>
+                                            <a className="dropdown-item delete_action"
+                                               onClick={() => App.deleteModal(() => onDelete())}
+                                            >
+                                                {Lang.get("Delete")}
+                                            </a>
+                                            <a className="dropdown-item"
+                                            onClick={()=> App.duplicateModal(()=> onDuplicate())}
+                                            >
+                                            {Lang.get("Duplicate")}
+                                            </a>
+                                        </>
+                                }
+                            </div>
                         </div>
                         <div className="col-md-2 pr-0">
                             <button
@@ -263,7 +329,6 @@ export const Docs = (props) => {
                         <DocsStripe state={state}
                                     setState={setState}
                                     onDragEnd={onDragEnd}
-                                    onDelete={onDelete}
                                     refresh={() => refresh()}
                                     openAddSubModal={() => modal.show("add_sub")}
                         />

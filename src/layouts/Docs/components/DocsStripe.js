@@ -13,8 +13,8 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
     const cookie = useCookie()
     const modal = useModal()
 
-    const [initData, setInitData] = React.useState([])
     const [data, setData] = React.useState([])
+    const [initData, setInitData] = React.useState([])
 
     const fields = {
         dataSource: data,
@@ -46,7 +46,7 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
 
     const onOpen = () => {
         if(initData) {
-            let row = initData.find(x => x.id === cookie.get('_stripe_id')) || '';
+            let row = initData.find(x => x.id === (cookie.get('_stripe_id')) && state.docs_id) || '';
             let ret = initData.map(x => {
                 if (x.id === row.id) {
                     let ret = {
@@ -72,23 +72,24 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
     }, [initData])
 
     const onFocus = () => {
-        let row = initData.find(x => x.id === state.docs_id);
-        console.log( 'rrr',row.children.slice(-1))
+        let row = initData.find(x => x.id === state.docs_id)
         let ret = initData.map(x => {
-                if (x.id === row) {
+                if (x.id === row.id) {
                     let ret = {
                         id: x.id,
                         title: x.title,
+                        expanded: true,
                         children: x.children.map(c => {
-                            if(c.id === row.children.slice(-1).id)
+                            history.push(`/docs/${state.id}/${x.children.slice(-1)[0].id}`)
                             return {
                                 ...c,
                                 id: c.id,
                                 title: c.title,
-                                isSelected: true
+                                isSelected: true,
+                                expanded: true,
+                                children: c.children
                             }
-                        }),
-                        expanded: true,
+                        })
                     }
                     return ret
                 } else {
@@ -96,8 +97,8 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
                 }
             }
         )
-        console.log('ret',ret)
         setData([...ret])
+        console.log('ret', ret)
     }
 
     console.log('data',data)
@@ -113,6 +114,8 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
                 <Add
                     _id={state.docs_id}
                     type={'add_sub'}
+                    reFocus={onOpen}
+                    refreshBoolean={true}
                     refresh={refresh}
                     onClose={() => modal.hide("add_sub")}
                 />

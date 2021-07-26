@@ -75,11 +75,36 @@
   }
 }
 
-.btn-lightblue {
-  background-color: $bg-success2;
-  transition: all 0.1s ease-in;
-  color: $bg-white;
-  &:hover {
-    color: $bg-white !important;
+.file {
+  opacity: 0;
+  width: 0.1px;
+  height: 0.1px;
+  position: absolute;
+}
+.file-input {
+  width: 100%;
+  label {
+    width: 100%;
+    color: inherit;
+    cursor: pointer;
+    margin: 0;
+  }
+}
+
+
+.header_dropdown {
+  top: 6px !important;
+  left: -54px !important;
+   a {
+     transition: all .2s ease;
+     &:hover {
+       padding-left: 20px;
+       color: #00A3FF !important;
+     }
+   }
+  .delete_action {
+    &:hover {
+      color: #f5365c !important;
+    }
   }
 }

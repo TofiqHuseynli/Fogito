@@ -154,6 +154,8 @@ export const JsonEditor = ({state, setState}) => {
         let items = state.data.parameters;
         items.map((d,i) => {
             if (i === index) {
+                console.log('ty',type)
+                console.log('dt',d.type)
                 d.type = type;
                 switch (type) {
                     case 'array':
@@ -168,7 +170,7 @@ export const JsonEditor = ({state, setState}) => {
                         d.value = false;
                         break;
                     default:
-                        d.value = d.value;
+                        d.value = ''
                         break;
                 }
 

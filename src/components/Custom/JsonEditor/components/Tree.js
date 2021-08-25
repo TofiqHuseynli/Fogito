@@ -208,14 +208,16 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                         d.value = false;
                         break;
                     default:
-                        d.value = d.value;
+                        d.value = '';
                         break;
                 }
 
                 switch (d.type) {
                     case 'array':
+                        d.value = '';
                         return setEditVal(false);
                     case 'object':
+                        d.value = '';
                         return setEditVal(false);
                     case 'boolean':
                         d.value = '';
@@ -225,6 +227,7 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                         return setEditVal(index);
                     case 'float':
                         d.value = d.value;
+
                         return setEditVal(index);
                     default:
                         d.value = '';

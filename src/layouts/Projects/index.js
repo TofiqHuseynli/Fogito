@@ -2,13 +2,21 @@ import React from "react";
 import classNames from "classnames";
 import Tooltip from "antd/lib/tooltip";
 import { Link } from "react-router-dom";
-import {ErrorBoundary, Header, Loading, Popup, Table, ProjectUsersTooltip} from "@components";
-import { useModal, useToast } from "@hooks";
-import { AppContext } from "@contexts";
-import { App, Lang } from "@plugins";
-import { inArray } from "@lib";
+import {ProjectUsersTooltip} from "@components";
 import { projectsDelete, projectsList } from "@actions";
 import { Add, Edit } from "./components";
+import {App, Lang} from '@plugins';
+import {
+    ErrorBoundary,
+    Header,
+    Loading,
+    Popup,
+    Table,
+    useModal,
+    inArray,
+    AppContext,
+    useToast
+} from "fogito-core-ui";
 
 export const Projects = ({ name, match: { path }, type }) => {
 
@@ -33,8 +41,9 @@ export const Projects = ({ name, match: { path }, type }) => {
         setSkip(params?.skip || 0);
         let requestParams = {
             limit,
-            sort,
             skip: params?.skip || 0,
+            sort,
+            ...params
         };
         let response = await projectsList(requestParams);
         if (response) {
@@ -49,38 +58,52 @@ export const Projects = ({ name, match: { path }, type }) => {
         }
     };
 
-
-
-    const onDelete = (array) => {
-        if (selectedIDs.length > 0)
-        App.deleteModal(()=>{
-            let count = 1;
-            let total = array.length;
-            array.forEach(async (id) => {
-                setLoading(true);
-                let response = await projectsDelete({id});
-                if (response?.status === "success") {
-                    if (count >= total) {
-                        setLoading(false);
-                        setSelectedIDs([]);
-                        toast.fire({
-                            title: response.description,
-                            icon: "success",
-                        });
-                        loadData();
-                    }
-                    count++;
-                } else {
-                    setLoading(false);
-                    toast.fire({
-                        title: response.description,
-                        icon: "error",
+    const onDelete = (array) =>
+        selectedIDs.length > 0 &&
+        toast
+            .fire({
+                position: "center",
+                toast: false,
+                timer: null,
+                title: Lang.get("DeleteAlertTitle"),
+                text: Lang.get("DeleteAlertDescription"),
+                buttonsStyling: false,
+                showConfirmButton: true,
+                showCancelButton: true,
+                confirmButtonClass: "btn btn-success",
+                cancelButtonClass: "btn btn-secondary",
+                confirmButtonText: Lang.get("Confirm"),
+                cancelButtonText: Lang.get("Cancel"),
+            })
+            .then((res) => {
+                if (res?.value) {
+                    let count = 1;
+                    let total = array.length;
+                    array.forEach(async (id) => {
+                        setLoading(true);
+                        let response = null;
+                        response = await projectsDelete({id});
+                        if (response?.status === "success") {
+                            if (count >= total) {
+                                setLoading(false);
+                                setSelectedIDs([]);
+                                toast.fire({
+                                    title: response.description,
+                                    icon: "success",
+                                });
+                                loadData();
+                            }
+                            count++;
+                        } else {
+                            setLoading(false);
+                            toast.fire({
+                                title: response.description,
+                                icon: "error",
+                            });
+                        }
                     });
                 }
             });
-            }
-        )
-    }
 
     const oneProjectDelete = async (id) => {
         let response = await projectsDelete({id})
@@ -215,41 +238,6 @@ export const Projects = ({ name, match: { path }, type }) => {
         }
     }
 
-    const sortable = {
-        sort: sort.field,
-        sortType: sort.order,
-        onSort: (data) => setSort(data),
-    };
-
-    const pagination = {
-        count,
-        limit,
-        skip,
-        paginationItemLimit: 5,
-        limitArray: [5, 10, 50, 100],
-        onTake: (take) => setLimit(take),
-        onPaginate: (data) => loadData({ skip: data * limit }),
-    };
-
-    const select = {
-        selectable: true,
-        selectedIDs,
-        onSelect: (id) => {
-            if (inArray(id, selectedIDs)) {
-                setSelectedIDs(selectedIDs.filter((item) => item !== id));
-            } else {
-                setSelectedIDs(selectedIDs.concat([id]));
-            }
-        },
-        onSelectAll: () => {
-            if (selectedIDs.length) {
-                setSelectedIDs([]);
-            } else {
-                setSelectedIDs(data.map((item) => item.id));
-            }
-        },
-    };
-
 
     return (
         <ErrorBoundary>
@@ -296,7 +284,40 @@ export const Projects = ({ name, match: { path }, type }) => {
             <section className="container-fluid position-relative px-md-3 px-2 pb-1">
                 <div className="card p-3">
                     {loading && <Loading />}
-                    <Table {...{ data, columns, pagination, select, sortable }} />
+                    <Table
+                        data={data}
+                        columns={columns}
+                        pagination={{
+                            skip,
+                            limit,
+                            count,
+                            onTake: (take) => setLimit(take),
+                            onPaginate: (data) => loadData({ skip: data * limit }),
+                        }}
+                        sortable={{
+                            sort: sort.field,
+                            sortType: sort.order,
+                            onSort: (data) => setSort(data),
+                        }}
+                        select={{
+                            selectable: true,
+                            selectedIDs,
+                            onSelect: (id) => {
+                                if (inArray(id, selectedIDs)) {
+                                    setSelectedIDs(selectedIDs.filter((item) => item !== id));
+                                } else {
+                                    setSelectedIDs(selectedIDs.concat([id]));
+                                }
+                            },
+                            onSelectAll: () => {
+                                if (selectedIDs.length) {
+                                    setSelectedIDs([]);
+                                } else {
+                                    setSelectedIDs(data.map((item) => item.id));
+                                }
+                            },
+                        }}
+                    />
                 </div>
             </section>
         </ErrorBoundary>

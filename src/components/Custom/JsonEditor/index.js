@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {apisData} from "@actions";
 import {NewLine, Tree} from "./components";
 import {useOutsideAlerter} from "@hooks";
-import {ErrorBoundary} from "@components";
+import {ErrorBoundary} from "fogito-core-ui";
 import {Tooltip} from "antd";
 import {DragDropContext, Draggable, Droppable} from 'react-beautiful-dnd';
 import classNames from 'classnames'
@@ -46,7 +46,6 @@ export const JsonEditor = ({state, setState}) => {
         setColumns(state.data.parameters)
     },[state.data.parameters])
 
-    console.log('col', columns)
 
     // functions
     function removeLine(index) {
@@ -89,16 +88,12 @@ export const JsonEditor = ({state, setState}) => {
             }
             setNewLine(!newLine)
             setLine(line + 1)
-            setCreate({
-                ...create,
-                key: '',
-                type: 'string',
-                value: ''
-            })
+            emptyValues()
         }
     }
 
-    const createNewOneItem = (index) => {
+    const createNewOneItem = (e, index) => {
+        e.preventDefault();
         if (!create.key || !create.type) {
             // App.errorModal(Lang.get('Parameters are empty'))
         } else {
@@ -111,6 +106,7 @@ export const JsonEditor = ({state, setState}) => {
             setState({...state.data.parameters})
             setOneNewLine(false)
             setLine(line + 1)
+            emptyValues()
         }
     }
 
@@ -136,6 +132,7 @@ export const JsonEditor = ({state, setState}) => {
     }
 
     function createExampleLine(e, index) {
+        e.preventDefault();
         if (!create.key || !create.type) {
             // App.errorModal(Lang.get('Parameters are empty'))
         } else {
@@ -149,11 +146,11 @@ export const JsonEditor = ({state, setState}) => {
             setNewLineExample(false)
             setLine(line + 1)
             getNewLine(index)
+            emptyValues()
         }
     }
 
     function changeType(type, index) {
-        let newJSONObj = {};
         let items = state.data.parameters;
         items.map((d,i) => {
             if (i === index) {
@@ -163,16 +160,35 @@ export const JsonEditor = ({state, setState}) => {
                         d.value = [];
                         break;
                     case 'object':
-                        for (let par of items) {
-                            newJSONObj[par.key] = index + 1;
-                        }
                         if (typeof d.value === 'string') {
                             d.value = []
                         }
                         break;
+                    case 'boolean':
+                        d.value = false;
+                        break;
+                    default:
+                        d.value = d.value;
+                        break;
+                }
+
+                switch (d.type) {
+                    case 'array':
+                        return setEditVal(false);
+                    case 'object':
+                        return setEditVal(false);
+                    case 'boolean':
+                        d.value = '';
+                        return setEditVal(false);
+                    case 'string':
+                        d.value = d.value;
+                        return setEditVal(index);
+                    case 'float':
+                        d.value = d.value;
+                        return setEditVal(index);
                     default:
                         d.value = '';
-                        break;
+                        return setEditVal(index);
                 }
             }
         })
@@ -191,11 +207,21 @@ export const JsonEditor = ({state, setState}) => {
     // TYPE INTEGER //
     $(document).ready(function () {
         $("#integer").keypress(function (e) {
-            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-                return false;
+            if(e.originalEvent.code !== 'Enter') {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    return false;
+                }
             }
         });
     });
+
+    const emptyValues = () => {
+        setCreate({
+            key: '',
+            type: 'string',
+            value: ''
+        })
+    }
 
 
     // VALUES
@@ -216,7 +242,7 @@ export const JsonEditor = ({state, setState}) => {
                             <div className='text-danger'>null</div>
                             :
                             <div className='d-flex' >
-                                <div style={{ width: item.value.length > 50 && 200, height:16, overflow:'hidden' }} >
+                                <div style={{ width: item.value.length > 50 && 200, height:16, overflow:'hidden', wordBreak: 'break-all' }} >
                                     {(((item.type !== 'array') && (item.type !== 'object')) && item.value)}
                                 </div>
                                 {item.value.length > 50 && '...'}
@@ -233,7 +259,6 @@ export const JsonEditor = ({state, setState}) => {
             case 'boolean':
                 return (
                     <>
-                        {  visibleBoolean === index &&
                         <Tooltip title={
                             <div className='dropdown_type'>
                                 {boolean.map((d, i) =>
@@ -246,22 +271,21 @@ export const JsonEditor = ({state, setState}) => {
                                 )}
                             </div>
                         }
-                                 trigger={'click'}
-                                 placement={'bottom'}
-                                 visible={visibleBoolean}
-                                 onVisibleChange={(visible) => setVisibleBoolean(visible)}
-                                 overlayStyle={{minWidth: 90}}
-                                 color='#FFF'
+                             trigger={'click'}
+                             placement={'bottom'}
+                             visible={visibleBoolean}
+                             onVisibleChange={(visible) => setVisibleBoolean(visible)}
+                             overlayStyle={{minWidth: 90}}
+                             color='#FFF'
                         >
-                            <div/>
+                            <div onClick={()=> setVisibleBoolean(index)} >
+                                {item.value === '' ? <div className='text-danger'>null</div> : String(item.value)}
+                            </div>
                         </Tooltip>
-                        }
-                        <div onClick={()=> setVisibleBoolean(index)} >
-                            {item.value === '' ? <div className='text-danger'>null</div> : String(item.value)}
-                        </div>
                     </>
                 );
             default:
+                return (content);
         }
     }
 
@@ -281,7 +305,13 @@ export const JsonEditor = ({state, setState}) => {
         )
         switch (item.type) {
             case 'object': return (content);
-            case 'array': return (content);
+            case 'array': return (
+                typeof item.value === 'string'
+                    ?
+                    <div className='ml-5 pl-3' >{item.value}</div>
+                    :
+                    (content)
+            );
             default:
         }
     }
@@ -387,61 +417,36 @@ export const JsonEditor = ({state, setState}) => {
         const columns = state.data.parameters;
         if (!result.destination) return;
 
-        if (
-            result.destination.droppableId === result.source.droppableId &&
-            result.destination.index === result.source.index
-        ) { return; }
+        // if (
+        //     result.destination.droppableId === result.source.droppableId &&
+        //     result.destination.index === result.source.index
+        // ) { return; }
 
         if (result.type === "children") {
             let columnFrom = columns.find((item, index) => item.key+'_'+index+'__' === result.source.droppableId);
             console.log('columnsss', columnFrom)
+            console.log('result.source.droppableId', result.source.droppableId)
             let columnTo = columns.find(
                 (item, index) => item.key+'_'+index+'__' === result.destination.droppableId
             );
-
-            if (columnFrom === columnTo) {
-                let i = result.destination.droppableId.slice(-3, -2);
-                let sorted = Array.from(columnFrom.value);
-                let [card] = sorted.splice(result.source.index, 1);
-                sorted.splice(result.destination.index, 0, card);
-                let data = state.data.parameters[i].value = sorted
-                setState({...data});
-                console.log('sort', sorted)
-                console.log('sort', card)
-                console.log('iddd', i)
-                // setColumns(
-                //     columns.map((item) => {
-                //         if (item.id === columnFrom.id) {
-                //             item.cards = sorted;
-                //         }
-                //         return item;
-                //     })
-                // );
-            } else {
-                let sortedFrom = Array.from(columnFrom.value);
-                let sortedTo = Array.from(columnTo.value);
-                let [card] = sortedFrom.splice(result.source.index, 1);
-                card.column = columnTo.key;
-                sortedTo.splice(result.destination.index, 0, card);
-                setColumns(
-                    columns.map((item, i) => {
-                        if (item.key+'_'+i === columnFrom.id) {
-                            item.children = sortedFrom;
-                        }
-                        if (item.key+'_'+i === columnTo.id) {
-                            item.children = sortedTo;
-                        }
-                        return item;
-                    })
-                );
-            }
+            let i = result.destination.droppableId.slice(-3, -2);
+            let sorted = Array.from(columnFrom.value);
+            const items = reorder(
+                sorted,
+                result.source.index,
+                result.destination.index
+            );
+            let data = state.data.parameters[i].value = items
+            setState({...data});
+            console.log('sort', sorted)
+            // console.log('sort', card)
+            console.log('iddd', i)
         } else {
             const items = reorder(
                 state.data.parameters,
                 result.source.index,
                 result.destination.index
             );
-            console.log('changes', items)
             let data = state.data.parameters = items
             setState({...data});
         }
@@ -463,9 +468,10 @@ export const JsonEditor = ({state, setState}) => {
     useOutsideAlerter(formRef, onCloseForm)
 
 
+
     return (
         <ErrorBoundary>
-            <div className='input-container col-12 cr-pointer'>
+            <div className='col-12 cr-pointer'>
                 <div className='default-textarea p-0 overflow-hidden' style={{position: 'relative'}} >
 
                     {/*****  EDITOR's LINE NUMBERS ON THE LEFT SIDE  *****/}
@@ -484,7 +490,9 @@ export const JsonEditor = ({state, setState}) => {
 
                     {/*****  EDITOR's CONTENT  *****/}
                     <div className='pt-3 react-json_editor'>
-                        <div className='d-flex editor-line _jc-between' onDoubleClick={() => setNewLineExample(true)} >
+                        <div className='d-flex editor-line _jc-between'
+                             onDoubleClick={() => setNewLineExample(true)}
+                        >
                             <div className='d-flex'>
                                 <div className='type'>(object)</div>
                                 <div className='ml-2'>{"{"}</div>
@@ -503,7 +511,7 @@ export const JsonEditor = ({state, setState}) => {
                                 getValueAdd, createExampleLine, getNewValue}}
                         />
 
-                        <DragDropContext onDragEnd={onDragEnd} >
+                        <DragDropContext onDragEnd={onDragEnd}>
                             <Droppable droppableId="params"
                                        direction="vertical"
                                        type="parent"
@@ -547,11 +555,13 @@ export const JsonEditor = ({state, setState}) => {
 
                                                                 {/*****  ADD / REMOVE LINE  *****/}
                                                                 <div className='d-flex _center a-r__buttons'>
-                                                                    <i className='feather feather-plus editor-line-btn mr-2' onClick={() => {
+                                                                    <i className='feather feather-plus editor-line-btn mr-2' onClick={(e) => {
                                                                         setNewLine(index)
                                                                         setCreate({field:'', type:'string', value:''})
                                                                     }}/>
-                                                                    <i className='feather feather-trash-2 text-danger editor-line-btn mr-3' onClick={() => removeLine(index)}/>
+                                                                    <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
+                                                                       onDoubleClick={(e)=> e.stopPropagation() + setNewLine(false)}
+                                                                       onClick={() => removeLine(index)}/>
                                                                 </div>
 
                                                             </div>
@@ -610,12 +620,13 @@ export const JsonEditor = ({state, setState}) => {
 
                                                             {/* Create New One Item */}
                                                             {oneNewLine === index &&
-                                                            <form onSubmit={() => createNewOneItem(index)} ref={formRef} className='static__width' >
+                                                            <form onSubmit={(e) => createNewOneItem(e,index)} ref={formRef} className='static__width' >
                                                                 <div className='px-5 d-flex'>
                                                                     <input
                                                                         className='badge-input'
                                                                         placeholder={'field'}
                                                                         autoFocus={true}
+                                                                        value={create.key}
                                                                         onChange={e => {
                                                                             setCreate({...create, key: e.target.value})
                                                                         }}
@@ -691,6 +702,8 @@ export const Column = ({item, index}) => {
 }
 
 const ExampleLine = ({create ,setCreate ,newLineExample, setNewLineExample, formRef, types, getValueAdd, createExampleLine, getNewValue}) => {
+
+
     return (
         <ErrorBoundary>
             <div className='ml-3' >
@@ -701,6 +714,7 @@ const ExampleLine = ({create ,setCreate ,newLineExample, setNewLineExample, form
                             <input
                                 className='badge-input'
                                 placeholder={'field'}
+                                value={create.key}
                                 autoFocus={true}
                                 onChange={e => {
                                     setCreate({...create, key: e.target.value})
@@ -843,8 +857,9 @@ const Value = ({editVal, index, formRef, onEdit, item, setValue, setNewLine, get
                                 <>
                                     <input
                                         type="text"
-                                        className="json_input onlyNumber"
-                                        name="integer" id="integer"
+                                        className="json_input"
+                                        name="integer"
+                                        id="integer"
                                         value={item.value}
                                         autoFocus
                                         onChange={(e) => setValue(index, e.target.value, 'value')}

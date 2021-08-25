@@ -1,6 +1,7 @@
 import React from 'react';
-import {ErrorBoundary} from "@components";
+import {ErrorBoundary, Textarea} from "fogito-core-ui";
 import {Lang} from "@plugins";
+
 
 export const JsonModal = ({state}) => {
 
@@ -53,13 +54,14 @@ export const JsonModal = ({state}) => {
     return (
         <ErrorBoundary>
             <div>
-                    <textarea
-                        placeholder={Lang.get("Request Parameters")}
-                        defaultValue={prepareText(state.data.parameters)}
-                        onChange={(e)=> setInput(e.target.value)}
-                        className='form-control custom-input'
-                        style={{ backgroundColor: '#fff', minHeight: 400 }}
-                    />
+                <Textarea
+                    placeholder={Lang.get("Request Parameters")}
+                    rows="10"
+                    maxLength="1500"
+                    className='form-control'
+                    defaultValue={prepareText(state.data.parameters)}
+                    onChange={(e)=> setInput(e.target.value)}
+                />
             </div>
         </ErrorBoundary>
     )

@@ -1,22 +1,22 @@
 import React from "react";
-import qs from "querystring";
-import { Switch, Route, Redirect, useHistory, useLocation } from "react-router-dom";
+import { Switch, Route, Redirect, useHistory } from "react-router-dom";
 import { settings, translations } from "@actions";
-import { SidebarProvider } from "@contexts";
-import { useCookie } from "@hooks";
-import { MENU_ROUTES } from "@config";
-import {Auth, Lang} from "@plugins";
+import { MENU_ROUTES ,API_ROUTES, config } from "@config";
 import {
   ErrorBoundary,
-  AuthError,
-  Loading,
+  Error,
   Content,
-} from "@components";
+  useCookie,
+  Loading,
+  Auth,
+  App as AppLib,
+} from "fogito-core-ui";
+import {Lang} from "@plugins";
+
 
 export const App = () => {
   const cookie = useCookie();
   const history = useHistory();
-  const location = useLocation();
   const [loading, setLoading] = React.useState(true);
 
   const loadSettings = async (params) => {
@@ -52,9 +52,9 @@ export const App = () => {
       Lang.setData({ ...translations, ...{ langs } });
       setLoading(false);
     } else {
-      const request_uri = qs.parse(location.search);
+      const token = cookie.get("_token") || false;
       // const token = request_uri.token || cookie.get("_token") || false;
-      const token = 'O9Nbbb4bI1b0H4RcTb76J5g5k9ma2A6Y779ddhd_cM7C22c85Rf25B6W5U4Adt6k9C9D4_a2d2a1ff5b46595c5b4617401c45e8c1759bcd92'
+      // const token = 'O9Nbbb4bI1b0H4RcTb76J5g5k9ma2A6Y779ddhd_cM7C22c85Rf25B6W5U4Adt6k9C9D4_a2d2a1ff5b46595c5b4617401c45e8c1759bcd92'
 
       const settings = await loadSettings({ token });
       const translations = await loadTranslations({ token });
@@ -117,8 +117,40 @@ export const App = () => {
   }, [history]);
 
   React.useEffect(() => {
-    loadData();
+    AppLib.setData({
+      ...config,
+      API_ROUTES,
+      NODE_ENV: process.env.NODE_ENV,
 
+      // functions
+      jsonDesign (json) {
+        if (typeof json != 'string') {
+          json = JSON.stringify(json, undefined, 4);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+          var cls = 'number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'key';
+            } else {
+              cls = 'string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+          } else if (/null/.test(match)) {
+            cls = 'null';
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        })
+      },
+
+      createMarkup(text) {
+        return { __html: text };
+      }
+    });
+
+    loadData();
     window.addEventListener("modeChange", modeChange);
     return () => {
       window.removeEventListener("modeChange", modeChange);
@@ -126,11 +158,11 @@ export const App = () => {
   }, []);
 
   if (loading) {
-    return <Loading bgClass="bg-white" />;
+    return <Loading type='whole' />;
   }
 
   if (!Auth.isAuth()) {
-    return <AuthError message={Lang.get("NotAuthorized")} />;
+    return <Error message={Lang.get("NotAuthorized")} />;
   }
 
 

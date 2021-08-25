@@ -1,9 +1,8 @@
 // One Members tooltip
 import React from "react";
 
-import { ErrorBoundary } from "@components";
+import { ErrorBoundary, Lang } from "fogito-core-ui";
 import { Tooltip } from 'antd';
-import {Lang} from "@plugins";
 
 
 const memberBorders = (type) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ErrorBoundary} from "@components";
+import {Lang, ErrorBoundary} from "fogito-core-ui";
 
 export const NewLine = ({
         getValueAdd,
@@ -13,9 +13,7 @@ export const NewLine = ({
         index,
         item,
         valueItem,
-        childItem
     }) => {
-
 
     const getKey = () => {
         if (item.type === 'array') {
@@ -26,6 +24,7 @@ export const NewLine = ({
                     <input
                         className='badge-input'
                         placeholder={'field'}
+                        value={create.key}
                         autoFocus={true}
                         onChange={e => {
                             setCreate({...create, key: e.target.value})
@@ -42,6 +41,7 @@ export const NewLine = ({
                         className='badge-input'
                         placeholder={'field'}
                         autoFocus={true}
+                        value={create.key}
                         onChange={e => {
                             setCreate({...create, key: e.target.value})
                         }}
@@ -55,6 +55,7 @@ export const NewLine = ({
                         autoFocus={true}
                         className='badge-input'
                         placeholder={'field'}
+                        value={create.key}
                         onChange={e => {
                             setCreate({...create, key: e.target.value})
                         }}
@@ -78,6 +79,7 @@ export const NewLine = ({
         }
     }
 
+
     return (
         <ErrorBoundary>
             {
@@ -100,16 +102,15 @@ export const NewLine = ({
                                     value: getNewValue(e.target.value)
                                 });
                             }}
-                            // autoFocus={true}
                         >
-                            <option value='' disabled={create.type !== ''}>Type</option>
+                            <option value='' disabled={create.type !== ''}>{Lang.get("Type")}</option>
                             {types.map((d, i) =>
                                 <option key={i} value={d.value}>{d.label}</option>
                             )}
                         </select>
                             {getValueAdd(create.type, item, valueItem)}
                         <button className='btn badge-ok_btn'  >
-                            ok
+                            {Lang.get("ok")}
                         </button>
                         <button className='btn badge-x_btn' onClick={() => setNewLine(false)}>
                             x

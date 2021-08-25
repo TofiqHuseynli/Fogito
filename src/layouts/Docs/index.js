@@ -1,17 +1,21 @@
 import React from 'react';
-import {apisCopy, apisDelete, apisMove, apisUpdate, documentationStripe} from "@actions";
-import {ErrorBoundary, Header, Popup} from "@components";
-import {DocsEdit, DocsStripe} from "./components";
-import {App, Auth, Lang} from "@plugins";
+import { apisInfo, apisMove, documentationStripe, proxyList} from "@actions";
+import {DocsEdit, DocsStripe, HEADER, TestStripe} from "./components";
 import {Add} from "./components";
-import {useCookie, useModal} from "@hooks";
-import {genUuid, inArray} from "@lib";
-import {API_ROUTES} from "@config";
 import {useHistory} from 'react-router-dom';
+import {
+    ErrorBoundary,
+    Header,
+    useCookie,
+    Auth,
+    Popup,
+    useModal,
+    inArray
+} from "fogito-core-ui";
+import {Lang} from "@plugins";
 
 export const Docs = (props) => {
 
-    let xhr = [];
     const modal = useModal()
     const history = useHistory()
     const cookie = useCookie()
@@ -25,6 +29,7 @@ export const Docs = (props) => {
         public_data: [],
         docs: [],
         file: {},
+        proxyData: [],
 
         options: [
             { value: 'get',       label: 'get' },
@@ -51,7 +56,6 @@ export const Docs = (props) => {
         loading: false,
         loadingStripe: false,
         tab: 'params',
-        jsonValue: ''
     };
 
     //  actions
@@ -59,6 +63,19 @@ export const Docs = (props) => {
         return {...prevState, ...newState};
     }, initialState);
 
+    const [status, setStatus] = React.useState({})
+    const [params, setParams] = React.useState({
+        title: "",
+        slug: "",
+        description: "",
+        parameters: [],
+        parameters_note: {},
+        url: "",
+        methods: [],
+        index: "",
+        status: null,
+        public: ''
+    })
 
     async function onDragEnd(data) {
         const url = 'dataMove';
@@ -71,36 +88,6 @@ export const Docs = (props) => {
         await apisMove(url, obj);
     }
 
-    async function onDelete() {
-        let id = state.docs_id;
-        let response = await apisDelete({id})
-        if(response.status === 'success') {
-            setState({
-                ...state,
-                loading: false,
-                docs_id: ''
-            })
-            props.history.push(`/docs/${state.id}`)
-            refresh()
-        } else {
-            App.errorModal(response.description)
-        }
-    }
-
-    async function onDuplicate() {
-        let response = await apisCopy({
-            id: state.data?.id,
-            project_id: state.data?.project_id,
-            parent_id: state.data?.parent_id,
-            position: "0"
-        })
-        if(response.status === 'success') {
-            refresh()
-        } else {
-            App.errorModal(response.description)
-        }
-    }
-
     async function refresh() {
         setState({ loadingStripe: true })
         let project_id = state.pro_id
@@ -108,10 +95,25 @@ export const Docs = (props) => {
         if(response.status === 'success') {
             setState({
                 project_id: response.data.project_id,
-                docs: response.data.list,
+                docs: response.data,
                 loadingStripe: false
             })
         }
+    }
+
+    const refreshInfo = async () => {
+        setState({loading: true})
+        let id = state.docs_id;
+        let response = await apisInfo({id})
+        if (response.status === 'success') {
+            setState({
+                data: response.data,
+                loading: false,
+            })
+            setStatus(response.data.status)
+            setParams(response.data)
+        }
+        setState({ loading: false })
     }
 
     async function refreshWidthFocus() {
@@ -122,73 +124,30 @@ export const Docs = (props) => {
             setState({
                 loadingStripe: false
             })
-            onFocus(response.data.list)
+            onFocus(response.data)
         }
     }
 
-    const getUpdate = async () => {
-        let response = await apisUpdate({
-            id: state.pro_id,
-            data: state.data
-        })
-        setState({loading:true });
-        if (response.status === 'success') {
+    async function loadProxy() {
+        setState({loading: true})
+        let data = { api_id: state.docs_id }
+        let response = await proxyList({data});
+        if(response.status === 'success') {
             setState({
-                success: response.description,
-                error: false,
-                loading: false
-            });
-            App.successModal(response.description)
-            refresh()
-        } else {
-            setState({
-                error: response.description,
+                proxyData: response.data,
                 loading: false
             })
-            App.errorModal(response.description);
         }
     }
 
-    const sendFormData = ({ key, data, target }) => {
-        xhr[key] = new XMLHttpRequest();
-
-        xhr[key].addEventListener("load", function (e) {
-            let response = JSON.parse(e.target.responseText);
-            if(response.status === 'success') {
-                refresh()
-            } else {
-                App.errorModal(response.description)
-            }
-        });
-
-        xhr[key].open("POST", API_ROUTES["apisImport"], true);
-        xhr[key].send(data);
-    };
-
-    const onFileSelect = (e, target) => {
-        let { pro_id } = state;
-        for (let file of e.target.files) {
-            let key = genUuid();
-            file.loading = true;
-            file.key = key;
-
-            let formData = new FormData();
-            formData.append("token", Auth.get("token"));
-            formData.append("project_id", pro_id);
-            formData.append("file", file);
-            sendFormData({
-                key,
-                data: formData,
-                target,
-            });
-        }
-    };
-
-    console.log(state.docs)
 
     React.useEffect(()=> {
         refresh()
     },[])
+
+    React.useEffect(()=> {
+        loadProxy()
+    },[state.docs_id])
 
     const onFocus = (data) => {
         cookie.remove('_stripe_id')
@@ -232,83 +191,12 @@ export const Docs = (props) => {
 
             {/*** Header ***/}
             <Header>
-                <div className="col d-flex justify-content-between align-items-center px-0">
-
-                    <div className='col-3 mx-3' />
-
-                    <div className="col-md-1 pl-0">
-                        <button
-                            className="btn btn-primary lh-24 px-3 text-center"
-                            onClick={() => props.history.push('/projects')}
-                        >
-                            <i className="feather feather-chevron-left fs-22 align-middle" />
-                        </button>
-                    </div>
-
-                    <h3 className='text-primary mx-auto' >
-                        {!!state.docs_id && Lang.get(state.data.title)}
-                    </h3>
-
-                    <>
-                        <div className="dropdown">
-                            <button className="btn btn-primary d-flex align-items-center m-0"
-                                    id="actions"
-                                    data-toggle="dropdown"
-                            >
-                                {Lang.get("Actions")}
-                                <i className='feather feather-chevron-down fs-18 ml-2'/>
-                            </button>
-                            <div className="dropdown-menu header_dropdown" aria-labelledby="actions">
-                                <a className="dropdown-item">
-                                    <div className="file-input">
-                                        <input
-                                            id="file"
-                                            type="file"
-                                            className="file"
-                                            accept=".doc,.docx,.txt,.fog"
-                                            onChange={(e) => onFileSelect(e, "file")}
-                                        />
-                                        <label htmlFor="file">{Lang.get("Import")}</label>
-                                    </div>
-
-                                </a>
-                                {
-                                    state.docs?.length > 0 ?
-                                    <a className="dropdown-item"
-                                       href={`https://docs.fogito.com/apis/export?token=${Auth.get("token")}&lang=${Auth.get("lang")}&project_id=${state.pro_id}`}
-                                       target="_blank"
-                                       download
-                                    >
-                                        {Lang.get("Export")}
-                                    </a> : null
-                                }
-                                {
-                                    !!state.docs_id &&
-                                        <>
-                                            <a className="dropdown-item delete_action"
-                                               onClick={() => App.deleteModal(() => onDelete())}
-                                            >
-                                                {Lang.get("Delete")}
-                                            </a>
-                                            <a className="dropdown-item"
-                                            onClick={()=> App.duplicateModal(()=> onDuplicate())}
-                                            >
-                                            {Lang.get("Duplicate")}
-                                            </a>
-                                        </>
-                                }
-                            </div>
-                        </div>
-                        <div className="col-md-2 pr-0">
-                            <button
-                                className="btn btn-success btn-block lh-24 px-3"
-                                onClick={() => getUpdate()}
-                            >
-                                {Lang.get("Save")}
-                            </button>
-                        </div>
-                    </>
-                </div>
+                <HEADER
+                    state={state}
+                    setState={setState}
+                    refresh={refresh}
+                    refreshInfo={refreshInfo}
+                />
             </Header>
             {/*** Content ***/}
             <section className="container-fluid position-relative pb-1">
@@ -326,6 +214,10 @@ export const Docs = (props) => {
                             {Lang.get("Add")}
                         </button>
 
+                        {/*<TestStripe*/}
+                        {/*    state={state}*/}
+                        {/*    setState={setState}*/}
+                        {/*/>*/}
                         <DocsStripe state={state}
                                     setState={setState}
                                     onDragEnd={onDragEnd}
@@ -344,9 +236,13 @@ export const Docs = (props) => {
                                     {...props}
                                     _id={state.docs_id}
                                     state={state}
+                                    status={status}
+                                    params={params}
+                                    setParams={setParams}
+                                    setStatus={setStatus}
                                     setState={setState}
+                                    refreshInfo={() => refreshInfo()}
                                     refresh={() => refresh()}
-                                    getUpdate={()=> getUpdate()}
                                 />
                                 :
                                 <div className='d-flex flex-column justify-content-center align-items-center pt-5 mt-5' >

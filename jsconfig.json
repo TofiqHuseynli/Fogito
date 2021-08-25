@@ -6,13 +6,11 @@
     "noImplicitAny": false,
     "paths": {
       // common
-      "@lib": ["./src/lib"],
       "@hooks": ["./src/hooks"],
       "@config": ["./src/config"],
       "@actions": ["./src/actions"],
       "@plugins": ["./src/plugins"],
       "@layouts": ["./src/layouts"],
-      "@contexts": ["./src/contexts"],
       "@components": ["./src/components"]
     }
   }

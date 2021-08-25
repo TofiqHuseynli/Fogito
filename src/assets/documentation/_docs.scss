@@ -89,6 +89,36 @@
   padding-right: 0;
 }
 
+.response-card {
+  overflow-x: auto;
+  padding: 3px;
+  code { color: #a3acb9;  }
+  div {
+    word-break: initial;
+    border: 1px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 5px 10px;
+  }
+  pre {
+    color: #a3acb9;
+    .key {
+      color: #a3acb9;
+    }
+    .string {
+      color: #1ea672;
+    }
+    .integer {
+      color: #e56f4a;
+    }
+    .number {
+      color: #ff8c00;
+    }
+    .boolean {
+      color: #6c8eef;
+    }
+  }
+}
+
 
 @media (max-width: 768px) {
   .docs__sidebar {
@@ -100,6 +130,25 @@
     padding-left: 0;
   }
 }
+
+.response {
+  background: #f2f5f9;
+  border-radius: 6px;
+  color: #fff;
+  .key {
+    color: red;
+  }
+  .string {
+    color: green;
+  }
+  .number {
+    color: darkorange;
+  }
+  .boolean {
+    color: blue;
+  }
+}
+
 
 
 /*** DARK MODE ***/

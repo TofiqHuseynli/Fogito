@@ -5,6 +5,7 @@ import {
   Projects,
 } from "@layouts";
 import {Edit} from "../layouts/Projects/components";
+import {proxyRequest} from "@actions";
 
 export const CRM_API_URL = "https://crm.fogito.com";
 export const FILE_API_URL = "https://files.fogito.com";
@@ -45,7 +46,7 @@ export const API_ROUTES = {
   // Documentation
   documentationList:       API_DOC_PANEL + "/documentation/list",
   documentationInfo:       API_DOC_PANEL + "/documentation/info",
-  documentationStripe:     API_DOC_PANEL + "/documentation/stripe",
+  documentationStripe:     API_DOC_PANEL + "/documentation/list",
 
   // Project Users
   projectUsersList:        API_DOC_PANEL + "/projects/users/list",
@@ -57,8 +58,9 @@ export const API_ROUTES = {
   permissionsList:         API_DOC_PANEL + "/permissions/list",
   permissionsSet:          API_DOC_PANEL + "/permissions/set",
 
-  // Files
-  filesUpload: FILE_API_URL + "/file/upload",
+  // Proxy
+  proxyList:               API_DOC_PANEL + "/requests/list",
+  proxyRequest:            API_DOC_PANEL + "/requests/proxy",
 };
 
 

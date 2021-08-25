@@ -1,33 +1,17 @@
 import React from 'react';
-import {ErrorBoundary, Inputs, JsonEditor, Loading, Popup} from "@components";
-import {apisCopy, apisDelete, apisInfo, projectsData} from "@actions";
+import {JsonEditor, TestApi} from "@components";
+import { projectsData} from "@actions";
 import {Editor} from "@tinymce/tinymce-react";
-import {JsonModal, OptionsBtn, TestApi} from "../forms";
-import {App, Lang} from "@plugins";
-import {Select, Radio, Checkbox} from "antd";
-import {inArray} from "@lib";
-import {useModal} from "@hooks";
+import {JsonModal} from "../forms";
+import {Select, Checkbox} from "antd";
 import classNames from "classnames";
-
+import {Popup, ErrorBoundary, Loading, useModal, inArray, App} from 'fogito-core-ui';
+import {Lang} from "@plugins";
 
 export const DocsEdit = (props) => {
 
     const modal = useModal()
-    let {refresh, state, setState} = props;
-
-    const refreshInfo = async () => {
-        setState({loading: true})
-        let id = state.docs_id;
-        let response = await apisInfo({id})
-        if (response.status === 'success') {
-            setState({
-                data: response.data,
-                jsonValue: response.data.parameters,
-                loading: false,
-            })
-        }
-        setState({ loading: false })
-    }
+    let {refreshInfo, state, setState, status, setStatus, params, setParams} = props;
 
     const getList = async () => {
         let response = await projectsData()
@@ -40,9 +24,8 @@ export const DocsEdit = (props) => {
     }
 
     React.useEffect(()=> {
-        refreshInfo()
         window.scrollTo(0,0);
-        setState({ tab: 'params' })
+        refreshInfo()
     },[state.docs_id])
 
     React.useEffect(()=> {
@@ -58,12 +41,12 @@ export const DocsEdit = (props) => {
         {
             key: 'params',
             title: 'Parameters',
-            component: <Params state={state} setState={setState} />
+            component: <Params state={state} setState={setState} status={status} setStatus={setStatus} params={params} setParams={setParams} />
         },
         {
             key: 'settings',
-            title: 'Settings',
-            component: <Settings {...props} state={state} setState={setState} refresh={refresh} />
+            title: 'Responses',
+            component: <Settings {...props} state={state}  />
         },
     ]
 
@@ -87,14 +70,13 @@ export const DocsEdit = (props) => {
             <Popup
                 show={inArray("testApi", modal.modals)}
                 title={Lang.get("Simple Request")}
-                size={'md'}
+                size={'xl'}
                 onClose={() => modal.hide("testApi")}
             >
-                Coming Soon!
-                {/*<TestApi*/}
-                {/*    onClose={()=> modal.show('testApi')}*/}
-                {/*    state={state}*/}
-                {/*/>*/}
+                <TestApi
+                    onClose={()=> modal.show('testApi')}
+                    state={state}
+                />
             </Popup>
 
             {/* TABS */}
@@ -118,7 +100,7 @@ export const DocsEdit = (props) => {
                     <button className='btn options-btn mt-1' onClick={()=> modal.show('jsonModal')} >
                         <i className='feather feather-file-text text-primary' />
                     </button>
-                    <a href={`/frame/docs/api/${state.project_id}/${state.docs_id}`}
+                    <a href={`/frame/docs/api/${state.pro_id}/${state.docs_id}`}
                        target='_blank'
                        className='btn options-btn mt-1' >
                         {Lang.get("GoDocs")}
@@ -136,11 +118,29 @@ export const DocsEdit = (props) => {
 }
 
 
-const Params = ({ state, setState }) => {
+const Params = ({ state, setState, status, setStatus, params, setParams }) => {
+
+    const onStatus = (e) => {
+        switch (e.target.checked) {
+            case false:
+                setStatus({...status, label: 'Closed', value: 3})
+                setState({...state, data: {...state.data, status: 3}})
+                break;
+            case true:
+                setStatus({...status, label: 'Active', value: 1})
+                setState({...state, data: {...state.data, status: 1}})
+                break;
+        }
+    }
+
     return (
-        <>
+        <ErrorBoundary>
             <label className='parent__label mt-2' >{Lang.get("Parameters")}</label>
             <div className='row' >
+                {/*<MyComp*/}
+                {/*    param={params.parameters}*/}
+                {/*    setParam={setParams}*/}
+                {/*/>*/}
                 {
                     <JsonEditor
                         state={state}
@@ -149,21 +149,59 @@ const Params = ({ state, setState }) => {
                 }
             </div>
 
-            {/* Json Response */}
             <div className='row' >
                 <div className='col' >
-                    <Inputs type='text-area'
-                            onChange={(e) => setState({...state, data: {...state.data, parameters_note: e.target.value}})}
-                            value={state.data.parameters_note}
-                            propsClass={'custom-input'}
-                            divClass={'row px-2 mt-3'}
-                            placeholder={'Response'}
-                            label={'Response (example)'}
-                            style={{ minHeight: 250 }}
-                    />
+                    <div className='row px-2 mt-3' >
+                        <label>{Lang.get("Title")}<span className='text-danger fs-18 ml-1' >*</span></label>
+                        <input className='form-control'
+                               placeholder={Lang.get('Title')}
+                               value={state.data.title}
+                               onChange={(e) => setState({...state, data: {...state.data, title: e.target.value}})}
+                        />
+                    </div>
+
+                    <div className='row px-2 mt-3' >
+                        <label>{Lang.get("ApiUrl")}<span className='text-danger fs-18 ml-1' >*</span></label>
+                        <input className='form-control'
+                               placeholder={Lang.get('ApiUrl')}
+                               value={state.data.url}
+                               onChange={(e) => setState({...state, data: {...state.data, url: e.target.value}})}
+                        />
+                    </div>
+
+                    <div className='row mt-3' style={{ margin:'0' }} >
+                        <label>{Lang.get("Methods")}<span className='text-danger fs-18 ml-1' >*</span></label>
+                        <Select mode="tags"
+                                allowClear
+                                style={{ width: '100%' }}
+                                placeholder=""
+                                value={state.data.methods?.length ? state.data.methods : []}
+                                options={state.options}
+                                onChange={(e) => {
+                                    setState({...state, data: {...state.data, methods: e}})
+                                }}
+                        />
+                    </div>
+
+                    <div className='row px-2 mt-3' >
+                        <label>{Lang.get("Slug")}</label>
+                        <input className='form-control'
+                               placeholder={Lang.get('Slug')}
+                               value={state.data.slug}
+                               onChange={(e) => setState({...state, data: {...state.data, slug: e.target.value}})}
+                        />
+                    </div>
+
+                    <div className='mb-2 mt-3 d-flex flex-column w-25' >
+                        <label className='label mb-1' >{Lang.get("Status")}</label>
+                        <Checkbox checked={status.value === 1 && true} onChange={(e)=> onStatus(e)} >
+                            {status.value === 1 ? 'Active' : null}
+                        </Checkbox>
+                    </div>
+
                 </div>
             </div>
-        </>
+        </ErrorBoundary>
     )
 }
 
@@ -175,7 +213,7 @@ const Desc = ({state, setState}) => {
     },2000)
 
     return (
-        <>
+        <ErrorBoundary>
             {/* Text Editor */}
             <label className='parent__label mt-4' >
                 {Lang.get("Description")}{loading && Lang.get(' - Loading...')}
@@ -200,97 +238,40 @@ const Desc = ({state, setState}) => {
                     }}
                 />
             </div>
-        </>
+        </ErrorBoundary>
     )
 }
 
-const Settings = (props) => {
-
-    let {state, setState} = props;
-    const [status, setStatus] = React.useState({
-        label: state.data.status?.label,
-        value: state.data.status?.value,
-        dex: state.data.status?.dex
-    })
-
-    const onStatus = () => {
-        switch (status.value) {
-            case 1:
-                setStatus({...status, label: 'Closed', value: 3})
-                setState({...state, data: {...state.data, status: 3}})
-                break;
-            case 3:
-                setStatus({...status, label: 'Active', value: 1})
-                setState({...state, data: {...state.data, status: 1}})
-                break;
-        }
-    }
-
-
-    return (
-        <>
-            {/* Form */}
+const Settings = ({state}) => {
+    return(
+        <ErrorBoundary>
+            {/* Json Response */}
+            {!!state.proxyData.length && <label className='parent__label mt-4'>{Lang.get("Response Examples")}</label>}
             <div className='row' >
-                <div className='col-md-8' >
-                    <Inputs type='input'
-                            onChange={(e) => setState({...state, data: {...state.data, title: e.target.value}})}
-                            value={state.data.title}
-                            propsClass={'custom-input'}
-                            divClass={'row px-2 mt-3'}
-                            placeholder={'Title'}
-                            label={'Title'}
-                    />
-
-                    {/*<Inputs type='select'*/}
-                    {/*        onSelect={(e) => setState({...state, data: {...state.data, status: parseInt(e.target.value)}})}*/}
-                    {/*        data={state.status_data}*/}
-                    {/*        propsClass={'custom-input'}*/}
-                    {/*        divClass={'row px-2 mt-3'}*/}
-                    {/*        selected={state.data.status?.value}*/}
-                    {/*        label={'Status'}*/}
-                    {/*/>*/}
-
-                    <Inputs type='input'
-                            onChange={(e) => setState({...state, data: {...state.data, url: e.target.value}})}
-                            value={state.data.url}
-                            propsClass={'custom-input'}
-                            divClass={'row px-2 mt-3'}
-                            label={'ApiUrl'}
-                            placeholder={'ApiUrl'}
-                    />
-                    <div className='row mt-3' style={{ margin:'0' }} >
-                        <label className='label' >{Lang.get("Methods")}</label>
-                        <Select mode="tags"
-                                allowClear
-                                style={{ width: '100%' }}
-                                placeholder=""
-                                defaultValue={state.data.methods}
-                                options={state.options}
-                                onChange={(e) => {
-                                    setState({...state, data: {...state.data, methods: e}})
-                                }}
-                        />
-                    </div>
-                    <Inputs type='input'
-                            onChange={(e) => setState({...state, data: {...state.data, slug: e.target.value}})}
-                            value={state.data.slug}
-                            propsClass={'custom-input'}
-                            divClass={'row px-2 mt-3'}
-                            label={'Slug'}
-                            placeholder={'Slug'}
-                    />
-                </div>
-
-                {/* Actions */}
-                <div className='col-md-4' >
-                    <OptionsBtn
-                        style={{ marginTop: 41, color: status.value === 3 ? '#2dce89' : '#22BBD6' }}
-                        divClassName='px-2 row'
-                        title={status.value === 3 ? 'Active' : 'Closed'}
-                        onClick={()=> onStatus()}
-                    />
+                <div className='col' >
+                    {
+                        state.proxyData.length
+                            ?
+                            <div className='response-card' >
+                                {
+                                    !!state.proxyData && state.proxyData.map((row,i) =>
+                                        <code key={i} >
+                                        <pre className='fs-14'>
+                                            <div style={{lineHeight: 1.3}} dangerouslySetInnerHTML={App.getData().createMarkup(App.getData().jsonDesign(row.response))}/>
+                                        </pre>
+                                        </code>
+                                    )
+                                }
+                            </div>
+                            :
+                            <div className='d-flex justify-content-center align-items-center flex-column pt-5' >
+                                <img src='/frame/docspanel/assets/icons/empty.svg' alt='' />
+                                <p className='text-muted mt-3' >{Lang.get('NotYet')}</p>
+                            </div>
+                    }
                 </div>
             </div>
-        </>
+        </ErrorBoundary>
     )
 }
+

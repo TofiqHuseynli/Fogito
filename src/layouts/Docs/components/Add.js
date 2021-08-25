@@ -1,6 +1,8 @@
 import React from 'react';
-import {ErrorBoundary, Inputs} from "@components";
-import {App, Lang} from "@plugins";
+import {Inputs} from "@components";
+import {App} from "@plugins";
+import {ErrorBoundary} from "fogito-core-ui";
+import {Lang} from "@plugins";
 import {apisCreate, apisCreateSub} from "@actions";
 
 
@@ -34,11 +36,11 @@ export const Add = ({_id, refresh, type, onClose, reFocus, refreshBoolean}) => {
         <ErrorBoundary>
             <form onSubmit={onSubmit} >
                 <div className="form-group">
-                    <label className="form-control-label">{Lang.get("Title")}</label>
-                    <Inputs type='input'
-                            onChange={(e) => setParams({...params, title: e.target.value})}
-                            placeholder={Lang.get("Title")}
-                            autoFocus={true}
+                    <label className='form-control-label' >{Lang.get("Title")}</label>
+                    <input className='form-control'
+                           placeholder={Lang.get('Title')}
+                           autoFocus={true}
+                           onChange={(e) => setParams({...params, title: e.target.value})}
                     />
                 </div>
                 <div className="d-flex">

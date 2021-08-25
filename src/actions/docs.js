@@ -1,4 +1,4 @@
-import {Api} from "@plugins";
+import {Api} from "fogito-core-ui";
 
 export const documentationStripe = (params) => {
     return Api.post("documentationStripe", params);

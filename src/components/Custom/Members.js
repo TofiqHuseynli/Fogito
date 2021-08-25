@@ -1,9 +1,9 @@
 import React from "react";
-import {ErrorBoundary, Permissions, CustomModal, ProjectUsersTooltip} from "@components";
+import {Permissions, ProjectUsersTooltip} from "@components";
 import UsersTooltip from "./Tooltip/UsersTooltip";
 import {projectUsersDelete} from "../../actions/user";
-import {App, Lang} from "@plugins";
-
+import {Popup, ErrorBoundary, Lang} from 'fogito-core-ui';
+import {App} from '@plugins'
 
 export const Members = ({ state, users, setUsers, openMembersModal }) => {
 
@@ -28,19 +28,21 @@ export const Members = ({ state, users, setUsers, openMembersModal }) => {
                             users.map((item,i) => i < 3 &&
                                 <div key={i} >
                                     {/** User Permission **/}
-                                    <CustomModal
+                                    <Popup
                                         show={modal === i}
                                         title={Lang.get('UserPermissions')}
-                                        onHide={()=> setModal(false)}
+                                        onClose={()=> setModal(false)}
                                     >
                                         <Permissions state={state} userID={item.id} />
-                                    </CustomModal>
+                                    </Popup>
                                     <div className='px-1' key={i} >
                                         <UsersTooltip item={item}
                                                       onDelete={()=> removeUser(item)}
                                                       onPermission={()=> setModal(i)}
                                         >
-                                            <img src={item.avatar} alt={item.fullname} style={App.memberBorders(item.type)} />
+                                            <img src={item.avatar} alt={item.fullname}
+                                                 style={App.memberBorders(item.type)}
+                                            />
                                         </UsersTooltip>
                                     </div>
                                 </div>

@@ -1,7 +1,7 @@
 import React from 'react';
-
-import {ErrorBoundary} from "@components";
+import {ErrorBoundary} from "fogito-core-ui";
 import {Lang} from "@plugins";
+
 
 
 export const OptionsBtn = ({

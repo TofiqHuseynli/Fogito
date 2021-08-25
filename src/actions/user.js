@@ -1,8 +1,10 @@
-import { Api } from "@plugins";
+import { Api } from "fogito-core-ui";
 
+// All User
 export const userList = (params) => {
   return Api.get("userList", params);
 };
+
 
 export const projectUsersList = (params) => {
   return Api.get("projectUsersList", params);

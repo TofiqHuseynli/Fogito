@@ -1,11 +1,9 @@
-import React, {useRef, useState} from "react";
-import {Api} from "@plugins";
+import React, {useEffect, useRef, useState} from "react";
 import {useOutsideAlerter} from "@hooks";
-import {ErrorBoundary} from "@components";
+import {ErrorBoundary} from "fogito-core-ui";
 import {NewLine} from "./NewLine";
-import {Checkbox, Tooltip} from "antd";
-import {Droppable, Draggable, DragDropContext} from "react-beautiful-dnd";
-import classNames from 'classnames'
+import {Tooltip} from "antd";
+import {Droppable} from "react-beautiful-dnd";
 
 
 export function Tree({setState, line, setLine, children, types, valueItem, valueIndex, state}) {
@@ -23,6 +21,12 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
         type: 'string',
         value: ''
     });
+
+    useEffect(() => {
+        console.log("");
+        console.log('valueindex', valueIndex, valueItem);
+        console.log("");
+    }, [])
 
     const [boolean] = React.useState([
         {value: true, label: 'true'},
@@ -62,6 +66,12 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                     setState({...children})
             }
             setAddTree(false)
+            setAddTreeOne(false)
+            setCreate({
+                key: '',
+                type: 'string',
+                value: ''
+            })
             setLine(line + 1)
         }
     }
@@ -96,8 +106,10 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
     // TYPE INTEGER //
     $(document).ready(function () {
         $("#quantity").keypress(function (e) {
-            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-                return false;
+            if(e.originalEvent.code !== 'Enter') {
+                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                    return false;
+                }
             }
         });
     });
@@ -119,7 +131,7 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                             <div className='text-danger'>null</div>
                             :
                             <div className='d-flex' >
-                                <div style={{ width: item.value.length > 50 && 200, height:16, overflow:'hidden' }} >
+                                <div style={{ width: item.value.length > 50 && 200, height:16, overflow:'hidden', wordBreak: 'break-all' }} >
                                     {(((item.type !== 'array') && (item.type !== 'object')) && item.value)}
                                 </div>
                                 {item.value.length > 50 && '...'}
@@ -136,32 +148,29 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
             case 'boolean':
                 return (
                     <>
-                        {  visibleBoolean === index &&
-                            <Tooltip title={
-                                <div className='dropdown_type'>
-                                    {boolean.map((d, i) =>
-                                        <p className='dropdown-item fs-12 cr-pointer'
-                                           key={i}
-                                           onClick={() => changeBoolean(d.value, index) + setVisibleBoolean(false)}
-                                        >
-                                            {d.label}
-                                        </p>
-                                    )}
-                                </div>
-                            }
-                                     trigger={'click'}
-                                     placement={'bottom'}
-                                     visible={visibleBoolean}
-                                     onVisibleChange={(visible) => setVisibleBoolean(visible)}
-                                     overlayStyle={{minWidth: 90}}
-                                     color='#FFF'
-                            >
-                                <div/>
-                            </Tooltip>
+                        <Tooltip title={
+                            <div className='dropdown_type'>
+                                {boolean.map((d, i) =>
+                                    <p className='dropdown-item fs-12 cr-pointer'
+                                       key={i}
+                                       onClick={() => changeBoolean(d.value, index) + setVisibleBoolean(false)}
+                                    >
+                                        {d.label}
+                                    </p>
+                                )}
+                            </div>
                         }
-                        <div onClick={()=> setVisibleBoolean(index)} >
-                            {item.value === '' ? <div className='text-danger'>null</div> : String(item.value)}
-                        </div>
+                             trigger={'click'}
+                             placement={'bottom'}
+                             visible={visibleBoolean}
+                             onVisibleChange={(visible) => setVisibleBoolean(visible)}
+                             overlayStyle={{minWidth: 90}}
+                             color='#FFF'
+                        >
+                            <div onClick={()=> setVisibleBoolean(index)} >
+                                {item.value === '' ? <div className='text-danger'>null</div> : String(item.value)}
+                            </div>
+                        </Tooltip>
                     </>
                     // <div className='dropdown'>
                     //     <div id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -182,22 +191,44 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
 
 
     function changeType(type, index) {
-        let newJSONObj = {};
         let items = children;
         items.map((d,i) => {
             if (i === index) {
                 d.type = type;
                 switch (type) {
-                    case 'array': d.value = []; break;
+                    case 'array':
+                        d.value = [];
+                        break;
                     case 'object':
-                        for (let par of items) {
-                            newJSONObj[par.key] = index + 1;
-                        }
                         if (typeof d.value === 'string') {
                             d.value = []
                         }
                         break;
-                    default: d.value = ''; break;
+                    case 'boolean':
+                        d.value = false;
+                        break;
+                    default:
+                        d.value = d.value;
+                        break;
+                }
+
+                switch (d.type) {
+                    case 'array':
+                        return setEditVal(false);
+                    case 'object':
+                        return setEditVal(false);
+                    case 'boolean':
+                        d.value = '';
+                        return setEditVal(false);
+                    case 'string':
+                        d.value = d.value;
+                        return setEditVal(index);
+                    case 'float':
+                        d.value = d.value;
+                        return setEditVal(index);
+                    default:
+                        d.value = '';
+                        return setEditVal(index);
                 }
             }
         })
@@ -218,7 +249,13 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
         )
         switch (item.type) {
             case 'object': return (content);
-            case 'array': return (content);
+            case 'array': return (
+                typeof item.value === 'string'
+                    ?
+                    <div className='ml-5 pl-3' >{item.value}</div>
+                    :
+                    (content)
+            );
             default: break;
         }
     }
@@ -235,6 +272,7 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                 return (
                     <select
                         className='badge-select'
+                        value={create.type}
                         onChange={(e) => setCreate({ ...create, value: e.target.value })}
                     >
                         <option value={true} disabled={create.value !== false} >Type</option>
@@ -247,7 +285,8 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                 return (
                     <input
                         className='badge-input'
-                        name="quantity" id="quantity"
+                        name="quantity"
+                        id="quantity"
                         autoFocus={(item.type === 'array' ? true : false) || (valueItem.type === 'array' ? true : false)}
                         placeholder={'value'}
                         value={create.value}
@@ -350,38 +389,8 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
         return result;
     };
 
-    const onDragEnd = async ({
-             draggableId,
-             type,
-             source,
-             destination,
-             remote = true,
-         }) => {
-        if (!destination) return;
-
-        if (
-            destination.droppableId === source.droppableId &&
-            destination.index === source.index
-        ) {
-            return;
-        }
-
-        if (type === "children") {
-            let i = valueIndex.slice(-1);
-            const items = reorder(
-                children,
-                source.index,
-                destination.index
-            );
-            let data = state.data.parameters[i].value = items
-            setState({...data});
-            console.log('changes', data)
-        }
-
-    }
 
     return(
-        // <DragDropContext onDragEnd={onDragEnd} >
         <Droppable droppableId={valueIndex+'_'} direction="vertical" type="children" >
                 {(provided) => (
                     <div
@@ -392,17 +401,15 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                             children.length > 0 && children?.map((item, index) => {
                                 let uniqe_key = item.key+'_val_'+index;
                                 return (
-                                    <Draggable
-                                        key={index}
-                                        draggableId={uniqe_key}
-                                        index={index}
-                                    >
-                                        {(provided, snapshot) => (
+                                    // <Draggable
+                                    //     key={index}
+                                    //     draggableId={uniqe_key}
+                                    //     index={index}
+                                    // >
+                                    //     {(provided, snapshot) => (
                                             <div
-                                                className={classNames("task pl-5", { dragging: snapshot.isDragging })}
-                                                {...provided.dragHandleProps}
-                                                {...provided.draggableProps}
-                                                ref={provided.innerRef}
+                                                className='pl-5'
+                                                // className={classNames("task pl-5", { dragging: snapshot.isDragging })}
                                             >
                                                 <div key={index} className='d-flex editor-line _jc-between'
                                                      style={{ position: 'relative' }}
@@ -463,6 +470,7 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                                                         {/*****  VALUE  *****/}
                                                         {editVal === index ? (
                                                             <div className='json_edit d-flex' ref={formRef} >
+                                                                <form onSubmit={() => onEdit(index)} >
                                                                 {item.type !== 'integer' ?
                                                                     <form onSubmit={() => onEdit(index)} >
                                                                         <input
@@ -479,8 +487,9 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                                                                     <>
                                                                         <input
                                                                             type="text"
-                                                                            className="json_input onlyNumber"
-                                                                            name="quantity" id="quantity"
+                                                                            className="json_input"
+                                                                            name="quantity"
+                                                                            id="quantity"
                                                                             value={item.value}
                                                                             autoFocus
                                                                             onChange={(e) => setValue(index, e.target.value, 'value')}
@@ -489,6 +498,7 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                                                                            onClick={() => onEdit(index)}/>
                                                                     </>
                                                                 }
+                                                                </form>
                                                             </div>
                                                         ) : (
                                                             getValue(item, index)
@@ -532,13 +542,12 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                                                             setCreate({field:'', type:'string', value:''})
                                                         }}/>
                                                         <i className='feather feather-trash-2 text-danger editor-line-btn mr-3'
-                                                           onClick={() => removeLine(index)}/>
+                                                           onClick={() => removeLine(index)} />
                                                     </div>
                                                 </div>
 
 
                                                 {/*****  CREATE NEW  *****/}
-                                                {/* Create New */}
                                                 <NewLine getValueAdd={getValueAdd}
                                                          setNewLine={setAddTree}
                                                          createNew={createNew}
@@ -592,7 +601,8 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                                                 }
                                                 {/*****  CREATE NEW  *****/}
                                                 {addTreeOne === index &&
-                                                <form onSubmit={() => {
+                                                <form onSubmit={(e) => {
+                                                    e.preventDefault()
                                                     if (!create.type) {
                                                         // Api.errorModal('Parameters are empty')
                                                     } else {
@@ -617,7 +627,8 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                                                                 <input
                                                                     className='badge-input'
                                                                     placeholder={'field'}
-                                                                    autoFocus
+                                                                    value={create.key}
+                                                                    autoFocus={true}
                                                                     onChange={e => {
                                                                         setCreate({...create, key: e.target.value})
                                                                     }}
@@ -627,9 +638,11 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                                                         <select
                                                             className='badge-select'
                                                             defaultValue={'string'}
+                                                            value={create.type}
                                                             onChange={e => {
                                                                 setCreate({...create,
-                                                                    key: (e.target.value === 'array') && '',
+                                                                    // key: (e.target.value === 'array') ? '' : create.key,
+                                                                    key: create.key,
                                                                     type: e.target.value,
                                                                     value: getNewValue(e.target.value)
                                                                 });
@@ -649,8 +662,9 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                                                 </form>
                                                 }
                                             </div>
-                                        )}
-                                    </Draggable>
+                                    // {/*        </div>*/}
+                                    // {/*    )}*/}
+                                    // {/*</Draggable>*/}
                                 )
                                 }
                             )

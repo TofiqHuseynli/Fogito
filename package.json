@@ -12,20 +12,14 @@
     "@syncfusion/ej2-react-navigations": "^19.1.66",
     "@tinymce/tinymce-react": "^3.12.6",
     "antd": "^4.16.2",
-    "bootstrap": "^4.6.0",
     "classnames": "2.2.6",
+    "fogito-core-ui": "^1.0.5",
     "jquery": "^3.6.0",
-    "moment": "^2.27.0",
-    "moment-timezone": "0.5.28",
     "node-sass": "4.14.1",
     "react": "16.13.1",
     "react-beautiful-dnd": "^13.1.0",
-    "react-bootstrap": "^1.6.1",
     "react-dom": "16.13.1",
-    "react-highlight.js": "^1.0.7",
-    "react-router-dom": "5.2.0",
-    "respinner": "3.0.2",
-    "sweetalert2": "^9.10.12"
+    "react-router-dom": "5.2.0"
   },
   "devDependencies": {
     "@babel/core": "7.9.0",

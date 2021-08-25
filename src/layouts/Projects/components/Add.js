@@ -1,6 +1,7 @@
 import React from 'react';
-import {ErrorBoundary, Inputs} from "@components";
+import {Inputs} from "@components";
 import {App, Lang} from "@plugins";
+import {ErrorBoundary} from 'fogito-core-ui'
 import {projectsCreate} from "@actions";
 
 
@@ -24,11 +25,12 @@ export const Add = ({ refresh, onClose }) => {
             <form onSubmit={onSubmit} >
                 <div className="form-group">
                     <div className="form-group">
-                        <label className="form-control-label">{Lang.get("Title")}</label>
-                        <Inputs type='input'
-                                onChange={(e) => setTitle(e.target.value)}
-                                placeholder={Lang.get("Title")}
-                                autoFocus={true}
+                        <label className='form-control-label' >{Lang.get("Title")}</label>
+                        <input className='form-control'
+                               placeholder={Lang.get('Title')}
+                               value={title}
+                               autoFocus={true}
+                               onChange={(e) => setTitle(e.target.value)}
                         />
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-import { Api } from "@plugins";
+import { Api } from "fogito-core-ui";
 
 export const projectsList = (params) => {
     return Api.post("projectsList", params);

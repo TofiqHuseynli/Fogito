@@ -1,15 +1,13 @@
 import React from 'react';
 
-import {ErrorBoundary, Header, Inputs, Loading, Members, Permissions, Popup} from "@components";
-import {App, Lang} from "@plugins";
+import {Inputs, Members, Permissions} from "@components";
 import {projectsData, projectsInfo, projectsUpdate} from "@actions";
-import {inArray} from "@lib";
-import {useModal} from "@hooks";
 import {UsersModal} from "../forms";
 import {Link} from "react-router-dom";
 import {projectUsersList} from "../../../actions/user";
-import {AppContext} from "@contexts";
-
+import {Popup, ErrorBoundary, Header, Loading, AppContext, useModal, inArray, InputLazy, Textarea} from 'fogito-core-ui'
+import {Lang, App} from '@plugins'
+import {Input} from "antd";
 
 export const Edit = ({name, match, history}) => {
     const initialState = {
@@ -150,59 +148,72 @@ export const Edit = ({name, match, history}) => {
                 <div className="card p-3">
                     <div style={{ minHeight: 500 }} >
                         <div className="row">
-                            <Inputs type='input'
-                                    onChange={(e) => setState({...state, data: {...state.data, title: e.target.value}})}
-                                    value={state.data.title}
-                                    propsClass={'custom-input'}
-                                    divClass={'col-md-8 px-2 mt-1'}
-                                    placeholder={'Title'}
-                                    label={'Title'}
-                            />
-                            <Inputs type='select'
-                                    onSelect={(e) => setState({...state, data: {...state.data, status: parseInt(e.target.value)}})}
-                                    data={state.status_data}
-                                    propsClass={'custom-input'}
-                                    divClass={'col-md-4 px-2 mt-1'}
-                                    selected={state.data.status?.value}
-                                    label={'Status'}
-                            />
+                            <div className='col-md-8 px-2 mt-1' >
+                                <label>{Lang.get("Title")}<span className='text-danger fs-18 ml-1' >*</span></label>
+                                <input className='form-control'
+                                       placeholder={Lang.get('Title')}
+                                       value={state.data.title}
+                                       onChange={(e) => setState({...state, data: {...state.data, title: e.target.value}})}
+                                />
+                            </div>
+                            <div className='col-md-4 px-2 mt-2' >
+                                <label>{Lang.get("Status")}</label>
+                                <select
+                                    className="custom-select"
+                                    onChange={(e) => setState({...state, data: {...state.data, status: parseInt(e.target.value)}})}
+                                >
+                                    <option value="" selected="" >{Lang.get("Select")}</option>
+                                    {state.status_data.map((item, key) => (
+                                        <option value={item.value} key={key} selected={item.value === state.data.status?.value} >
+                                            {Lang.get(item.label)}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                         <div className="row">
-                            <Inputs type='input'
-                                    onChange={(e) => setState({...state, data: {...state.data, slug: e.target.value}})}
-                                    value={state.data.slug}
-                                    propsClass={'custom-input'}
-                                    divClass={'col-md-8 px-2 mt-4'}
-                                    placeholder={'Slug'}
-                                    label={'Slug'}
-                            />
-                            <Inputs type='select'
-                                    onSelect={(e) => setState({...state, data: {...state.data, public: parseInt(e.target.value)}})}
-                                    data={state.public_data}
-                                    propsClass={'custom-input'}
-                                    divClass={'col-md-4 px-2 mt-4'}
-                                    selected={state.data.public?.value}
-                                    label={"Public"}
-                            />
+                            <div className='col-md-8 px-2 mt-3' >
+                                <label>{Lang.get("Slug")}</label>
+                                <input className='form-control'
+                                       placeholder={Lang.get('Slug')}
+                                       value={state.data.slug}
+                                       onChange={(e) => setState({...state, data: {...state.data, slug: e.target.value}})}
+                                />
+                            </div>
+                            <div className='col-md-4 px-2 mt-3' >
+                                <label>{Lang.get("Public")}</label>
+                                <select
+                                    className="custom-select"
+                                    onChange={(e) => setState({...state, data: {...state.data, public: parseInt(e.target.value)}})}
+                                >
+                                    <option value="" selected="" >{Lang.get("Select")}</option>
+                                    {state.public_data.map((item, key) => (
+                                        <option value={item.value} key={key} selected={item.value === state.data.public?.value} >
+                                            {Lang.get(item.label)}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                         <div className="row">
-                            <Inputs type='input'
-                                    onChange={(e) => setState({...state, data: {...state.data, api_url: e.target.value}})}
-                                    value={state.data.api_url}
-                                    propsClass={'custom-input'}
-                                    divClass={'col-md-4 px-2 mt-4'}
-                                    placeholder={'ApiUrl'}
-                                    label={'ApiUrl'}
-                            />
-                            <Inputs type='input'
-                                    onChange={(e) => setState({...state, data: {...state.data, api_path: e.target.value}})}
-                                    value={state.data.api_path}
-                                    propsClass={'custom-input'}
-                                    divClass={'col-md-4 px-2 mt-4'}
-                                    placeholder={'ApiPath'}
-                                    label={'ApiPath'}
-                            />
-                            <div className='mt-5' >
+                            <div className='col-md-4 px-2 mt-3' >
+                                <label>{Lang.get("ApiUrl")}<span className='text-danger fs-18 ml-1' >*</span></label>
+                                <input className='form-control'
+                                       placeholder={Lang.get('Slug')}
+                                       value={state.data.api_url}
+                                       onChange={(e) => setState({...state, data: {...state.data, api_url: e.target.value}})}
+                                />
+                            </div>
+                            <div className='col-md-4 px-2 mt-3' >
+                                <label>{Lang.get("ApiPath")}</label>
+                                <input className='form-control'
+                                       placeholder={Lang.get('Slug')}
+                                       value={state.data.api_path}
+                                       onChange={(e) => setState({...state, data: {...state.data, api_path: e.target.value}})}
+                                />
+                            </div>
+                            <div className='mt-3' >
+                                <label>{Lang.get("Members")}</label>
                                 <Members state={state}
                                          users={users}
                                          setUsers={setUsers}
@@ -211,14 +222,17 @@ export const Edit = ({name, match, history}) => {
                             </div>
                         </div>
                         <div className="row">
-                            <Inputs type='text-area'
-                                    onChange={(e) => setState({...state, data: {...state.data, description: e.target.value}})}
+                            <div className='col-md-8 px-2 mt-3' >
+                                <label>{Lang.get("Description")}</label>
+                                <Textarea
+                                    rows="4"
+                                    maxLength="1500"
                                     value={state.data.description}
-                                    propsClass={'custom-input'}
-                                    divClass={'col-md-8 px-2 mt-4'}
-                                    placeholder={'Description'}
-                                    label={'Description'}
-                            />
+                                    onChange={(e) => setState({...state, data: {...state.data, description: e.target.value}})}
+                                    placeholder={Lang.get("Description")}
+                                    className="form-control"
+                                />
+                            </div>
                         </div>
 
                         {/** Permission **/}

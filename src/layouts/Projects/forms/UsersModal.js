@@ -1,10 +1,9 @@
 // All Users Modal
 import React from 'react';
-import {ErrorBoundary, Loading, Permissions, CustomModal, Inputs} from "@components";
+import {Permissions} from "@components";
 import {projectUsersAdd, projectUsersDelete, userList} from "../../../actions/user";
-import {inArray} from "@lib";
-import {App, Lang} from "@plugins";
-
+import {Popup, inArray, ErrorBoundary, Loading} from "fogito-core-ui";
+import {App, Lang} from '@plugins'
 
 export const UsersModal = ({users, project_id, setUsers}) => {
 
@@ -68,12 +67,10 @@ export const UsersModal = ({users, project_id, setUsers}) => {
             {/*** Content ***/}
             {state.loading && <Loading />}
             <div>
-                <Inputs
-                    onChange={(e)=> setInput(e.target.value)}
-                    placeholder={Lang.get("Search")}
-                    autoFocus={true}
-                    divClass='mb-3'
-                    type='input'
+                <input className='form-control'
+                       placeholder={Lang.get('Search')}
+                       onChange={(e)=> setInput(e.target.value)}
+                       autoFocus={true}
                 />
                 {state.data.filter(x => x.fullname.toLowerCase().includes(input.toLowerCase())).map((item,i) => {
                     let selected = inArray(item.id, users.map(row => row.id))
@@ -81,17 +78,19 @@ export const UsersModal = ({users, project_id, setUsers}) => {
                     return (
                         <div key={i} >
                             {/* User Permissions */}
-                            <CustomModal
+                            <Popup
                                 show={permsModal === i}
                                 title={Lang.get('UserPermissions')}
-                                onHide={()=> setPermsModal(false)}
+                                onClose={()=> setPermsModal(false)}
                             >
                                 <Permissions state={state} userID={item.id} />
-                            </CustomModal>
+                            </Popup>
                             <div className='users_list' key={i} >
                                 <div className='list__item justify-content-between' style={{ opacity: selected ? 1 : .6 }} onClick={()=> getUpdate(item, selected)} >
                                     <div className='d-flex align-items-center ' >
-                                        <img src={item.avatar} alt='' style={App.memberBorders(item.type)} />
+                                        <img src={item.avatar} alt=''
+                                             style={App.memberBorders(item.type)}
+                                        />
                                         <div className='list__info' >
                                             <p>{item.fullname} {selected && <i className='feather feather-check text-success mt-5' />}</p>
                                             <p className='badge badge-primary' >{item.type}</p>

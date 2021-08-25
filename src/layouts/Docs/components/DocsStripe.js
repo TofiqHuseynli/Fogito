@@ -1,11 +1,9 @@
 import React, {useEffect} from "react";
 import {Add} from "./Add";
-import {inArray} from "@lib";
-import {Lang} from "@plugins";
-import {useCookie, useModal} from "@hooks";
 import { useHistory } from "react-router-dom";
-import {ErrorBoundary, Loading, Popup} from "@components";
 import { TreeViewComponent, ContextMenuComponent } from '@syncfusion/ej2-react-navigations';
+import {Popup, ErrorBoundary, Loading, useCookie, useModal, inArray} from 'fogito-core-ui'
+import {Lang} from "@plugins";
 
 export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
 
@@ -14,15 +12,15 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
     const modal = useModal()
 
     const [data, setData] = React.useState([])
-    const [initData, setInitData] = React.useState([])
+    const initData = state.docs;
 
     const fields = {
         dataSource: data,
         id:'id',
         parentID: 'parent_id',
         text: 'title',
-        child: 'children',
-        selected: 'isSelected'
+        selected: 'isSelected',
+        hasChildren: 'hasChild'
     }
 
     const menuClick = () => modal.show("add_sub")
@@ -32,76 +30,47 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
             // save id for stripe api
             cookie.set('_stripe_id', data.node?.dataset.uid, 1)
         } else {
-            cookie.set('_stripe_child_id', data.node?.dataset.uid, 1)
+            // cookie.set('_stripe_child_id', data.node?.dataset.uid, 1)
         }
-        history.push(`/docs/${state?.project_id}/${data.node?.dataset.uid}`)
+        history.push(`/docs/${state?.pro_id}/${data.node?.dataset.uid}`)
         setState({docs_id: data.node?.dataset.uid})
     }
 
 
-    React.useEffect(()=>{
-        setInitData(state.docs)
-    },[state.docs])
-
 
     const onOpen = () => {
         if(initData) {
-            let row = initData.find(x => x.id === (cookie.get('_stripe_id')) && state.docs_id) || '';
-            let ret = initData.map(x => {
-                if (x.id === row.id) {
-                    let ret = {
-                        id: x.id,
-                        title: x.title,
-                        children: x.children,
-                        expanded: true,
-                        isSelected: true
-                    }
-                    return ret
-                    } else {
-                        return {...x}
-                    }
-                }
-            )
-            setData([...ret])
+            let menuArr = {};
+            for(let i in initData){
+                let menu = initData[i];
+                if(!menuArr[menu.parent_id])
+                    menuArr[menu.parent_id] = [];
+                    menuArr[menu.parent_id].push(menu.id);
+            }
+            let menuList = [];
+            for(let i in initData){
+                let menu = initData[i];
+                menu.hasChild = menuArr[menu.id] && menuArr[menu.id].length > 0 ? true : false;
+                menu.expandAll = false
+                if(menu.parent_id == 0 && menu.hasChild)
+                    delete menu.parent_id;
+                else if(menu.parent_id == 0 && !menu.hasChild)
+                    delete menu.parent_id
+                menuList.push(menu)
+
+                const row = initData.find(x => x.id === cookie.get('_stripe_id')) || ''
+                const rowChild = initData.find(x => x.id === state.docs_id) || ''
+                Object.assign(row, { expanded: true })
+                Object.assign(rowChild, { expanded: true, isSelected: true })
+            }
+            setData(menuList)
         }
     }
-
 
     useEffect(() => {
         initData && onOpen()
     }, [initData])
 
-    const onFocus = () => {
-        let row = initData.find(x => x.id === state.docs_id)
-        let ret = initData.map(x => {
-                if (x.id === row.id) {
-                    let ret = {
-                        id: x.id,
-                        title: x.title,
-                        expanded: true,
-                        children: x.children.map(c => {
-                            history.push(`/docs/${state.id}/${x.children.slice(-1)[0].id}`)
-                            return {
-                                ...c,
-                                id: c.id,
-                                title: c.title,
-                                isSelected: true,
-                                expanded: true,
-                                children: c.children
-                            }
-                        })
-                    }
-                    return ret
-                } else {
-                    return {...x}
-                }
-            }
-        )
-        setData([...ret])
-        console.log('ret', ret)
-    }
-
-    console.log('data',data)
 
     return (
         <ErrorBoundary>

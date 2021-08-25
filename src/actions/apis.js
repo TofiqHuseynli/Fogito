@@ -1,4 +1,4 @@
-import { Api } from "@plugins";
+import { Api } from "fogito-core-ui";
 
 export const apisList = (params) => {
     return Api.post("apisList", params);
@@ -46,14 +46,4 @@ export const apisExport = (params) => {
 
 export const apisImport = (params) => {
     return Api.post("apisImport", (params));
-};
-
-
-// Permissions
-export const permissionsList = (params) => {
-    return Api.post("permissionsList", params);
-};
-
-export const permissionsSet = (params) => {
-    return Api.post("permissionsSet", params);
 };

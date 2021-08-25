@@ -1,0 +1,39 @@
+.stripe {
+  padding: 10px 0;
+  overflow-y: auto;
+  .stripe_item {
+    padding: 10px;
+    background: #00A3FF;
+    color: #fff;
+    margin-bottom: 2px;
+    &:hover {
+      background: #3f51b5;
+      cursor: pointer;
+    }
+  }
+  .child_item {
+    padding: 10px;
+    background: #00A3FF;
+    color: #fff;
+    margin-left: 1rem;
+    margin-bottom: 2px;
+    &:hover {
+      background: #3f51b5;
+      cursor: pointer;
+    }
+  }
+
+  .board {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: #00A3FF;
+    padding: 15px;
+    min-height: 100px;
+    margin-bottom: 1rem;
+    .card {
+      padding: 15px;
+      background: #fff;
+    }
+  }
+}

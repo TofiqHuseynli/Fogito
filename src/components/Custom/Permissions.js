@@ -1,7 +1,7 @@
 import React from "react";
-import {ErrorBoundary, Inputs, Loading} from "@components";
 import {permissionsList, permissionsSet} from "@actions";
 import classNames from "classnames";
+import {ErrorBoundary, InputCheckbox, Loading} from 'fogito-core-ui';
 
 
 export const Permissions = ({state, userID}) => {
@@ -66,10 +66,9 @@ export const Permissions = ({state, userID}) => {
             {loading && <Loading />}
             {data.map((item, key) => (
                 <div className={classNames({ "mt-3": key !== 0 })} key={key}>
-                    <Inputs type={'checkbox'}
-                            label={item.title}
-                            checked={item.value}
-                            onChange={(e) => onChange(item.key, e.target.checked)}
+                    <InputCheckbox label={item.title}
+                                   checked={item.value}
+                                   onChange={(e) => onChange(item.key, e.target.checked)}
                     />
                 </div>
             ))}

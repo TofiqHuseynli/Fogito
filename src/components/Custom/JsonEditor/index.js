@@ -86,6 +86,13 @@ export const JsonEditor = ({state, setState}) => {
                     state.data.parameters.splice(index + 1, 0, new_item)
                     setState({...state.data.parameters})
             }
+            // document.addEventListener('keydown', e => {
+            //     if (e.code === 'Enter') {
+            //         setNewLine(index)
+            //     } else {
+            //         setNewLine(!newLine)
+            //     }
+            // })
             setNewLine(!newLine)
             setLine(line + 1)
             emptyValues()
@@ -154,8 +161,6 @@ export const JsonEditor = ({state, setState}) => {
         let items = state.data.parameters;
         items.map((d,i) => {
             if (i === index) {
-                console.log('ty',type)
-                console.log('dt',d.type)
                 d.type = type;
                 switch (type) {
                     case 'array':
@@ -176,8 +181,12 @@ export const JsonEditor = ({state, setState}) => {
 
                 switch (d.type) {
                     case 'array':
+                        d.value = [];
                         return setEditVal(false);
                     case 'object':
+                        if (typeof d.value === 'string') {
+                            d.value = []
+                        }
                         return setEditVal(false);
                     case 'boolean':
                         d.value = '';
@@ -244,7 +253,7 @@ export const JsonEditor = ({state, setState}) => {
                             <div className='text-danger'>null</div>
                             :
                             <div className='d-flex' >
-                                <div style={{ width: item.value.length > 50 && 200, height:16, overflow:'hidden', wordBreak: 'break-all' }} >
+                                <div style={{ width: item.value.length > 50 && 200, height:17, overflow:'hidden', wordBreak: 'break-all' }} >
                                     {(((item.type !== 'array') && (item.type !== 'object')) && item.value)}
                                 </div>
                                 {item.value.length > 50 && '...'}
@@ -468,8 +477,6 @@ export const JsonEditor = ({state, setState}) => {
     }
 
     useOutsideAlerter(formRef, onCloseForm)
-
-
 
     return (
         <ErrorBoundary>

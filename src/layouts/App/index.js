@@ -100,8 +100,8 @@ export const App = () => {
     ));
   };
 
-  const modeChange = (e) => {
-    document.body.className = e.detail.mode;
+  window.onModeChange = (mode) => {
+    document.body.className = mode;
   };
 
   React.useEffect(() => {
@@ -151,10 +151,6 @@ export const App = () => {
     });
 
     loadData();
-    window.addEventListener("modeChange", modeChange);
-    return () => {
-      window.removeEventListener("modeChange", modeChange);
-    };
   }, []);
 
   if (loading) {

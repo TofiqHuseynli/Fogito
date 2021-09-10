@@ -16,52 +16,29 @@ export const NewLine = ({
     }) => {
 
     const getKey = () => {
+        let content = (
+            <>
+                <input
+                    autoFocus={true}
+                    className='badge-input'
+                    placeholder={'field'}
+                    value={create.key}
+                    onChange={e => {
+                        setCreate({...create, key: e.target.value})
+                    }}
+                /> :
+            </>
+        )
         if (item.type === 'array') {
             return <div/>
         } else if (item.type === 'object') {
-            return (
-                <>
-                    <input
-                        className='badge-input'
-                        placeholder={'field'}
-                        value={create.key}
-                        autoFocus={true}
-                        onChange={e => {
-                            setCreate({...create, key: e.target.value})
-                        }}
-                    /> :
-                </>
-            )
+            return content;
         } else if (valueItem.type === 'array') {
             return <div/>
         } else if (valueItem.type === 'array' && item.type === 'object') {
-            return (
-                <>
-                    <input
-                        className='badge-input'
-                        placeholder={'field'}
-                        autoFocus={true}
-                        value={create.key}
-                        onChange={e => {
-                            setCreate({...create, key: e.target.value})
-                        }}
-                    /> :
-                </>
-            )
+            return content;
         } else {
-            return (
-                <>
-                    <input
-                        autoFocus={true}
-                        className='badge-input'
-                        placeholder={'field'}
-                        value={create.key}
-                        onChange={e => {
-                            setCreate({...create, key: e.target.value})
-                        }}
-                    /> :
-                </>
-            )
+            return content
         }
     }
 

@@ -5,15 +5,30 @@ import classNames from "classnames";
 
 
 
-export const MyComp = ({ param, setParam }) => {
+export const MyComp = ({ setParam, index }) => {
+
+    const param = [
+        {
+            key: 'test 1'
+        },
+        {
+            key: 'test 3'
+        },
+        {
+            key: 'test 4'
+        },
+        {
+            key: 'test 5'
+        },
+    ]
 
 
-    const getValue = (item) => {
+    const getValue = (item, index) => {
         switch (item.type) {
             case 'array':
-                return <MyComp param={item.value} />
+                return <MyComp param={item.value} index={index} />
             case 'object':
-                return <MyComp param={item.value} />
+                return <MyComp param={item.value} index={index} />
             default:
                 // return item.value
         }
@@ -46,15 +61,15 @@ export const MyComp = ({ param, setParam }) => {
 
     return(
         <ErrorBoundary>
-            <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="droppable">
+            <DragDropContext >
+                <Droppable droppableId='droppable' >
                     {(provided, snapshot) => (
                         <div
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                         >
                             {param.map((item, index) => (
-                                <Draggable key={item.id} draggableId={item.key+'_'+index} index={index}>
+                                <Draggable key={index} draggableId={item.key+'_'+index} index={index} >
                                     {(provided, snapshot) => (
                                         <div
                                             ref={provided.innerRef}
@@ -62,7 +77,7 @@ export const MyComp = ({ param, setParam }) => {
                                             {...provided.dragHandleProps}
                                         >
                                             {item.key}
-                                            {getValue(item)}
+                                            <div className='ml-3' >{getValue(item, index)}</div>
                                         </div>
                                     )}
                                 </Draggable>

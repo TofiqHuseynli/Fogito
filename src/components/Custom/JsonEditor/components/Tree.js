@@ -131,7 +131,7 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                             <div className='text-danger'>null</div>
                             :
                             <div className='d-flex' >
-                                <div style={{ width: item.value.length > 50 && 200, height:16, overflow:'hidden', wordBreak: 'break-all' }} >
+                                <div style={{ width: item.value.length > 50 && 200, height:17, overflow:'hidden', wordBreak: 'break-all' }} >
                                     {(((item.type !== 'array') && (item.type !== 'object')) && item.value)}
                                 </div>
                                 {item.value.length > 50 && '...'}
@@ -214,10 +214,12 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
 
                 switch (d.type) {
                     case 'array':
-                        d.value = '';
+                        d.value = []
                         return setEditVal(false);
                     case 'object':
-                        d.value = '';
+                        if (typeof d.value === 'string') {
+                            d.value = []
+                        }
                         return setEditVal(false);
                     case 'boolean':
                         d.value = '';

@@ -1,5 +1,5 @@
 import React from 'react';
-import {JsonEditor, TestApi} from "@components";
+import {JsonEditor, MyComp, TestApi} from "@components";
 import { projectsData} from "@actions";
 import {Editor} from "@tinymce/tinymce-react";
 import {JsonModal} from "../forms";
@@ -141,12 +141,10 @@ const Params = ({ state, setState, status, setStatus, params, setParams }) => {
                 {/*    param={params.parameters}*/}
                 {/*    setParam={setParams}*/}
                 {/*/>*/}
-                {
-                    <JsonEditor
-                        state={state}
-                        setState={setState}
-                    />
-                }
+                <JsonEditor
+                    state={state}
+                    setState={setState}
+                />
             </div>
 
             <div className='row' >

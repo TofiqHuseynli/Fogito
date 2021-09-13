@@ -223,6 +223,8 @@ const Desc = ({state, setState}) => {
                     apiKey='82nbg8ctqdxe6wzh685u0inzhlffhw2yr10iptjmngucrniy'
                     value={state.data.description}
                     init={{
+                        skin: document.body.className === 'dark' ? "oxide-dark" : null,
+                        content_css: document.body.className === 'dark' ? "dark" : null,
                         height: 300,
                         menubar: false,
                         plugins: [

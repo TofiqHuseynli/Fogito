@@ -13,7 +13,7 @@
     "@tinymce/tinymce-react": "^3.12.6",
     "antd": "^4.16.2",
     "classnames": "2.2.6",
-    "fogito-core-ui": "^1.0.5",
+    "fogito-core-ui": "^1.0.7",
     "jquery": "^3.6.0",
     "node-sass": "4.14.1",
     "react": "16.13.1",

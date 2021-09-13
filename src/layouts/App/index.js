@@ -6,7 +6,6 @@ import {
   ErrorBoundary,
   Error,
   Content,
-  useCookie,
   Loading,
   Auth,
   App as AppLib,
@@ -15,7 +14,6 @@ import {Lang} from "@plugins";
 
 
 export const App = () => {
-  const cookie = useCookie();
   const history = useHistory();
   const [loading, setLoading] = React.useState(true);
 
@@ -43,26 +41,21 @@ export const App = () => {
   const loadData = async () => {
     const common = parent.window.common;
     if (common) {
-      let { account_data, token, lang, langs } = common;
-      const translations = await loadTranslations({
-        token,
-        lang: lang?.short_code,
-      });
-      Auth.setData({ ...account_data, token });
+      let { account_data, lang, langs, USER } = common;
+      const translations = await loadTranslations({ lang: lang?.short_code });
+      Auth.setData({ ...account_data });
       Lang.setData({ ...translations, ...{ langs } });
+      AppLib.setData({ USER });
       setLoading(false);
     } else {
-      const token = cookie.get("_token") || false;
-      // const token = request_uri.token || cookie.get("_token") || false;
-      // const token = 'O9Nbbb4bI1b0H4RcTb76J5g5k9ma2A6Y779ddhd_cM7C22c85Rf25B6W5U4Adt6k9C9D4_a2d2a1ff5b46595c5b4617401c45e8c1759bcd92'
-
-      const settings = await loadSettings({ token });
-      const translations = await loadTranslations({ token });
-      Auth.setData({ ...settings.account_data, token });
+      const settings = await loadSettings();
+      const translations = await loadTranslations();
+      Auth.setData({ ...settings.account_data });
       Lang.setData({ ...translations, ...{ langs: settings.langs } });
       setLoading(false);
     }
   };
+
 
 
   const renderRoutes = (routes) => {

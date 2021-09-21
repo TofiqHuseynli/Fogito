@@ -1,17 +1,19 @@
 import React from 'react';
 import {JsonEditor, MyComp, TestApi} from "@components";
 import { projectsData} from "@actions";
-import {Editor} from "@tinymce/tinymce-react";
 import {JsonModal} from "../forms";
 import {Select, Checkbox} from "antd";
 import classNames from "classnames";
 import {Popup, ErrorBoundary, Loading, useModal, inArray, App} from 'fogito-core-ui';
 import {Lang} from "@plugins";
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export const DocsEdit = (props) => {
 
     const modal = useModal()
     let {refreshInfo, state, setState, status, setStatus, params, setParams} = props;
+    const [left, setLeft] = React.useState(192)
 
     const getList = async () => {
         let response = await projectsData()
@@ -36,17 +38,20 @@ export const DocsEdit = (props) => {
         {
             key: 'description',
             title: 'Description',
-            component: <Desc state={state} setState={setState} />
+            component: <Desc state={state} setState={setState} />,
+            left: 0
         },
         {
             key: 'params',
             title: 'Parameters',
-            component: <Params state={state} setState={setState} status={status} setStatus={setStatus} params={params} setParams={setParams} />
+            component: <Params state={state} setState={setState} status={status} setStatus={setStatus} params={params} setParams={setParams} />,
+            left: 192
         },
         {
             key: 'settings',
             title: 'Responses',
-            component: <Settings {...props} state={state}  />
+            component: <Settings {...props} state={state}  />,
+            left: 382
         },
     ]
 
@@ -86,11 +91,12 @@ export const DocsEdit = (props) => {
                         <button
                             key={i}
                             className={classNames("tab_item",{active: state.tab === item.key})}
-                            onClick={()=> setState({tab: item.key})}
+                            onClick={()=> setState({tab: item.key}) + setLeft(item.left)}
                         >
                             {Lang.get(item.title)}
                         </button>
                     )}
+                    <div className='tab_animation_line' style={{ left: left }} />
                 </div>
 
                 <div className='go_docs__button' >
@@ -204,38 +210,22 @@ const Params = ({ state, setState, status, setStatus, params, setParams }) => {
 }
 
 const Desc = ({state, setState}) => {
-    const [loading, setLoading] = React.useState(true)
-
-    setTimeout(()=> {
-        setLoading(false)
-    },2000)
 
     return (
         <ErrorBoundary>
             {/* Text Editor */}
             <label className='parent__label mt-4' >
-                {Lang.get("Description")}{loading && Lang.get(' - Loading...')}
+                {Lang.get("Description")}
             </label>
             <div className='w-100 mb-4' style={{ borderRadius:10 }}  >
-                <Editor
-                    style={{ borderRadius:10 }}
-                    onEditorChange={(content)=> setState({...state, data: {...state.data, description: content}})}
-                    apiKey='82nbg8ctqdxe6wzh685u0inzhlffhw2yr10iptjmngucrniy'
-                    value={state.data.description}
-                    init={{
-                        skin: document.body.className === 'dark' ? "oxide-dark" : null,
-                        content_css: document.body.className === 'dark' ? "dark" : null,
-                        height: 300,
-                        menubar: false,
-                        plugins: [
-                            'advlist autolink link image lists charmap print preview hr anchor pagebreak',
-                            'searchreplace wordcount visualblocks code fullscreen insertdatetime media nonbreaking',
-                            'table emoticons template paste help'
-                        ],
-                        toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | ' +
-                            'bullist numlist outdent indent | link image | print preview media fullpage | ' +
-                            'forecolor backcolor emoticons | help',
-                    }}
+                <CKEditor
+                    editor={ ClassicEditor }
+                    data={state.data.description}
+                    onChange={ ( event, editor ) => {
+                        const data = editor.getData();
+                        console.log( { event, editor, data } );
+                        setState({...state, data: {...state.data, description: data}})
+                    } }
                 />
             </div>
         </ErrorBoundary>

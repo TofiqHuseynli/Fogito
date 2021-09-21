@@ -22,7 +22,7 @@
 
 .ant-select {
   .ant-select-selector {
-    background-color: #F2F5F9 !important;
+    background-color: #f6f9fc !important;
     border: none !important;
     box-shadow: none !important;
     border-radius: 5px !important;
@@ -54,6 +54,25 @@
         position: relative;
         border-radius: 8px;
       }
+    }
+  }
+  .ant-select {
+    .ant-select-selector {
+      background-color: $bg-dark !important;
+      .ant-select-selection-overflow-item {
+        .ant-select-selection-item {
+          background: $bg-darkV2 !important;
+          border: none;
+        }
+      }
+    }
+    .ant-select-clear {
+      background: none;
+    }
+  }
+  .ant-checkbox-wrapper {
+    span {
+      color: #fff;
     }
   }
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import {Auth, ErrorBoundary} from "fogito-core-ui";
+import {Auth, ErrorBoundary, Api, useToast} from "fogito-core-ui";
 import {App, Lang} from "@plugins";
 import {apisCopy, apisDelete, apisUpdate} from "@actions";
 import {API_ROUTES} from "@config";
@@ -7,6 +7,7 @@ import {useHistory} from "react-router-dom";
 
 
 export const HEADER = ({state, setState, refresh, refreshInfo}) => {
+    const toast = useToast()
 
     let xhr = [];
     const history = useHistory()
@@ -23,7 +24,10 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
                 error: false,
                 loading: false
             });
-            App.successModal(response.description)
+            toast.fire({
+                title: response.description,
+                icon: "success",
+            });
             refresh()
             refreshInfo()
         } else {
@@ -31,7 +35,10 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
                 error: response.description,
                 loading: false
             })
-            App.errorModal(response.description);
+            toast.fire({
+                title: response.description,
+                icon: "error",
+            });
         }
     }
 
@@ -44,10 +51,17 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
                 loading: false,
                 docs_id: ''
             })
+            toast.fire({
+                title: response.data,
+                icon: "success",
+            });
             history.push(`/docs/${state.id}`)
             refresh()
         } else {
-            App.errorModal(response.description)
+            toast.fire({
+                title: response.data,
+                icon: "error",
+            });
         }
     }
 
@@ -60,8 +74,15 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
         })
         if(response.status === 'success') {
             refresh()
+            toast.fire({
+                title: response.description,
+                icon: "success",
+            });
         } else {
-            App.errorModal(response.description)
+            toast.fire({
+                title: response.description,
+                icon: "error",
+            });
         }
     }
 
@@ -71,13 +92,21 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
         xhr[key].addEventListener("load", function (e) {
             let response = JSON.parse(e.target.responseText);
             if(response.status === 'success') {
+                toast.fire({
+                    title: response.description,
+                    icon: "success",
+                });
                 refresh()
             } else {
-                App.errorModal(response.description)
+                toast.fire({
+                    title: response.description,
+                    icon: "error",
+                });
             }
         });
 
-        xhr[key].open("POST", API_ROUTES["apisImport"], true);
+        xhr[key].open("POST", Api.convert(API_ROUTES["apisImport"]), true);
+        xhr[key].withCredentials = true;
         xhr[key].send(data);
     };
 
@@ -87,7 +116,6 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
             file.loading = true;
 
             let formData = new FormData();
-            formData.append("token", Auth.get("token"));
             formData.append("project_id", pro_id);
             formData.append("file", file);
             sendFormData({
@@ -100,7 +128,7 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
 
     return(
         <ErrorBoundary>
-            <div className="col d-flex justify-content-between align-items-center px-0">
+            <div className="col d-flex justify-content-between align-items-center px-0" >
 
                 <div className='col-3 mx-3' />
 
@@ -143,7 +171,7 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
                             {
                                 state.docs?.length > 0 ?
                                     <a className="dropdown-item"
-                                       href={`https://docs.fogito.com/apis/export?token=${Auth.get("token")}&lang=${Auth.get("lang")}&project_id=${state.pro_id}`}
+                                       href={`https://docs.fogito.com/apis/export?token?&lang=${Auth.get("lang")}&project_id=${state.pro_id}`}
                                        target="_blank"
                                        download
                                     >

@@ -1,12 +1,12 @@
 import React from 'react';
-import {Inputs} from "@components";
 import {App} from "@plugins";
-import {ErrorBoundary} from "fogito-core-ui";
+import {ErrorBoundary, useToast} from "fogito-core-ui";
 import {Lang} from "@plugins";
 import {apisCreate, apisCreateSub} from "@actions";
 
 
 export const Add = ({_id, refresh, type, onClose, reFocus, refreshBoolean}) => {
+    const toast = useToast()
     const [params, setParams] = React.useState({
         title: '',
         slug: 'test'
@@ -23,11 +23,18 @@ export const Add = ({_id, refresh, type, onClose, reFocus, refreshBoolean}) => {
         } else {}
 
         if(response.status === 'success') {
+            toast.fire({
+                title: response.data,
+                icon: "success",
+            });
             reFocus()
             refreshBoolean && refresh()
             onClose()
         } else {
-            App.errorModal(response.description)
+            toast.fire({
+                title: response.data,
+                icon: "error",
+            });
         }
     }
 

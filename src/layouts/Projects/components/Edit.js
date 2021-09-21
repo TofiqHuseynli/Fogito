@@ -1,13 +1,22 @@
 import React from 'react';
-
-import {Inputs, Members, Permissions} from "@components";
+import {Members, Permissions} from "@components";
 import {projectsData, projectsInfo, projectsUpdate} from "@actions";
 import {UsersModal} from "../forms";
 import {Link} from "react-router-dom";
 import {projectUsersList} from "../../../actions/user";
-import {Popup, ErrorBoundary, Header, Loading, AppContext, useModal, inArray, InputLazy, Textarea} from 'fogito-core-ui'
+import {
+    Popup,
+    ErrorBoundary,
+    Header,
+    Loading,
+    AppContext,
+    useModal,
+    inArray,
+    InputLazy,
+    Textarea,
+    useToast
+} from 'fogito-core-ui'
 import {Lang, App} from '@plugins'
-import {Input} from "antd";
 
 export const Edit = ({name, match, history}) => {
     const initialState = {
@@ -35,6 +44,7 @@ export const Edit = ({name, match, history}) => {
         return {...prevState, ...newState};
     }, initialState);
 
+    const toast = useToast()
     const modal = useModal();
     const { setProps } = React.useContext(AppContext);
 
@@ -74,10 +84,15 @@ export const Edit = ({name, match, history}) => {
             data: state.data
         })
         if(response.status === 'success') {
-            App.successModal(response.description)
-            // props.history.goBack()
+            toast.fire({
+                title: response.description,
+                icon: "success",
+            });
         } else {
-            App.errorModal(response.description)
+            toast.fire({
+                title: response.description,
+                icon: "error",
+            });
         }
     }
 
@@ -205,7 +220,7 @@ export const Edit = ({name, match, history}) => {
                                 />
                             </div>
                             <div className='col-md-4 px-2 mt-3' >
-                                <label>{Lang.get("ApiPath")}</label>
+                                <label style={{ marginTop: 5 }} >{Lang.get("ApiPath")}</label>
                                 <input className='form-control'
                                        placeholder={Lang.get('Slug')}
                                        value={state.data.api_path}

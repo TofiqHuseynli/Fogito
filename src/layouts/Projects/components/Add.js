@@ -1,22 +1,29 @@
 import React from 'react';
-import {Inputs} from "@components";
 import {App, Lang} from "@plugins";
-import {ErrorBoundary} from 'fogito-core-ui'
+import {ErrorBoundary, useToast} from 'fogito-core-ui'
 import {projectsCreate} from "@actions";
 
 
 export const Add = ({ refresh, onClose }) => {
 
+    const toast = useToast();
     const [title, setTitle] = React.useState('')
 
     const onSubmit = async (e) => {
         e.preventDefault()
         let response = await projectsCreate({data: { title: title }})
         if(response.status === 'success') {
+            toast.fire({
+                title: response.description,
+                icon: "success" ,
+            });
             refresh()
             onClose()
         } else {
-            App.errorModal(response.description)
+            toast.fire({
+                title: response.description,
+                icon: "error",
+            });
         }
     }
 

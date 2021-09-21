@@ -10,6 +10,7 @@
   width: 100%;
   background-color: #f2f5f9;
   border-radius: 5px;
+  overflow: hidden;
   .editor-line {
     padding-left: 50px;
     height: 27px;
@@ -191,6 +192,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-left: 1px solid $bg-darkV2;
       .type {
         color: #ffd600 ;
       }

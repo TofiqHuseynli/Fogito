@@ -1,0 +1,24 @@
+.ck-content {
+  min-height: 300px;
+}
+
+
+/* Dark Mode */
+.dark {
+  .ck-editor {
+    color: var(--white);
+    .ck.ck-reset_all * {
+      background: $bg-dark;
+      color: var(--white);
+    }
+    .ck-editor__main {
+      .ck-content {
+        background: $bg-dark;
+        border: 1px solid #c4c4c4;
+      }
+      .ck-focused {
+        border: 1px solid var(--primary);
+      }
+    }
+  }
+}

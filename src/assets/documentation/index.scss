@@ -1,5 +1,6 @@
 @import "jsonEditor";
 @import "treeStyles";
+@import "ckeditor";
 @import "my-comp";
 @import "stripe";
 @import "docs";
@@ -8,4 +9,25 @@
 
 .bg-white {
   background-color: #fff !important;
+}
+
+.test_card {
+  width: 10rem;
+  border: 1px solid black;
+  margin: 5px 0;
+  .test_card_children {
+    min-height: 15px;
+    border: 1px solid black;
+  }
+  .item {
+  }
+}
+
+.children_ {
+  margin-left: 1rem;
+  .children_item {
+    width: 10rem;
+    border: 1px solid black;
+    margin: 5px 0
+  }
 }

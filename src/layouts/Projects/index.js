@@ -108,7 +108,16 @@ export const Projects = ({ name, match: { path }, type }) => {
     const oneProjectDelete = async (id) => {
         let response = await projectsDelete({id})
         if(response.status === 'success') {
+            toast.fire({
+                title: response.description,
+                icon: "success",
+            });
             loadData()
+        } else {
+            toast.fire({
+                title: response.description,
+                icon: "error",
+            });
         }
     }
 

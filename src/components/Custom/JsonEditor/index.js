@@ -487,7 +487,7 @@ export const JsonEditor = ({state, setState}) => {
                     <div className='editor-count d-flex flex-column h-100 _ai-end pl-3 pr-2'
                          style={{
                              position: 'absolute',
-                             paddingTop:12,
+                             paddingTop: 3,
                              borderRadius: '5px 0 0 5px',
                              zIndex: 10,
                              userSelect: 'none'
@@ -498,7 +498,7 @@ export const JsonEditor = ({state, setState}) => {
 
 
                     {/*****  EDITOR's CONTENT  *****/}
-                    <div className='pt-3 react-json_editor'>
+                    <div className='react-json_editor py-2'>
                         <div className='d-flex editor-line _jc-between'
                              onDoubleClick={() => setNewLineExample(true)}
                         >

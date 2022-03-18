@@ -13,21 +13,14 @@
 
 .test_card {
   width: 10rem;
-  border: 1px solid black;
-  margin: 5px 0;
-  .test_card_children {
-    min-height: 15px;
-    border: 1px solid black;
-  }
-  .item {
-  }
 }
 
-.children_ {
-  margin-left: 1rem;
-  .children_item {
-    width: 10rem;
-    border: 1px solid black;
-    margin: 5px 0
-  }
+.over,
+.item {
+  transition: all .2s ease-in-out;
+}
+
+
+.item.over {
+  padding-top: 20px;
 }

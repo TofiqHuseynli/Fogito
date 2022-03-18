@@ -13,7 +13,6 @@ export const DocsEdit = (props) => {
 
     const modal = useModal()
     let {refreshInfo, state, setState, status, setStatus, params, setParams} = props;
-    const [left, setLeft] = React.useState(192)
 
     const getList = async () => {
         let response = await projectsData()
@@ -39,19 +38,16 @@ export const DocsEdit = (props) => {
             key: 'description',
             title: 'Description',
             component: <Desc state={state} setState={setState} />,
-            left: 0
         },
         {
             key: 'params',
             title: 'Parameters',
             component: <Params state={state} setState={setState} status={status} setStatus={setStatus} params={params} setParams={setParams} />,
-            left: 192
         },
         {
             key: 'settings',
             title: 'Responses',
             component: <Settings {...props} state={state}  />,
-            left: 382
         },
     ]
 
@@ -91,12 +87,11 @@ export const DocsEdit = (props) => {
                         <button
                             key={i}
                             className={classNames("tab_item",{active: state.tab === item.key})}
-                            onClick={()=> setState({tab: item.key}) + setLeft(item.left)}
+                            onClick={()=> setState({tab: item.key})}
                         >
                             {Lang.get(item.title)}
                         </button>
                     )}
-                    <div className='tab_animation_line' style={{ left: left }} />
                 </div>
 
                 <div className='go_docs__button' >
@@ -223,9 +218,12 @@ const Desc = ({state, setState}) => {
                     data={state.data.description}
                     onChange={ ( event, editor ) => {
                         const data = editor.getData();
-                        console.log( { event, editor, data } );
+                        console.log( { event, editor, data } )
                         setState({...state, data: {...state.data, description: data}})
-                    } }
+                    }}
+                    style={{
+                      "border": "1px solid blue"
+                    }}
                 />
             </div>
         </ErrorBoundary>

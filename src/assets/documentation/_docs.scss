@@ -16,7 +16,7 @@
 
 
 .docs__tab {
-  width: 55%;
+  width: 62%;
   position: relative;
   button {
     width: 33.33333%;
@@ -39,13 +39,8 @@
     }
     &.active {
       transform: scale(1.1);
+      border-bottom: 2px solid #f5365c;
     }
-  }
-  .tab_animation_line {
-    position: absolute;
-    transition: all .2s ease-in-out;
-    width: 33.333333%;
-    border-bottom: 2px solid #f5365c;
   }
 }
 

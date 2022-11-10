@@ -2,7 +2,7 @@
 import React from 'react';
 import {Permissions} from "@components";
 import {projectUsersAdd, projectUsersDelete, userList} from "../../../actions/user";
-import {Popup, inArray, ErrorBoundary, Loading} from "fogito-core-ui";
+import {Popup, ErrorBoundary, Loading} from "fogito-core-ui";
 import {App, Lang} from '@plugins'
 
 export const UsersModal = ({users, project_id, setUsers}) => {
@@ -73,7 +73,7 @@ export const UsersModal = ({users, project_id, setUsers}) => {
                        autoFocus={true}
                 />
                 {state.data.filter(x => x.fullname.toLowerCase().includes(input.toLowerCase())).map((item,i) => {
-                    let selected = inArray(item.id, users.map(row => row.id))
+                    let selected = users.map(row => row.id).includes(item.id)
 
                     return (
                         <div key={i} >

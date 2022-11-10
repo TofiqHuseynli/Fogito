@@ -1,5 +1,5 @@
 import React from "react";
-import { Switch, Route, Redirect, useHistory } from "react-router-dom";
+import { Switch, Route, Redirect, useLocation } from "react-router-dom";
 import { settings, translations } from "@actions";
 import { MENU_ROUTES ,API_ROUTES, config } from "@config";
 import {
@@ -7,6 +7,7 @@ import {
   Error,
   Content,
   Loading,
+    Api,
   Auth,
   App as AppLib,
 } from "fogito-core-ui";
@@ -14,7 +15,7 @@ import {Lang} from "@plugins";
 
 
 export const App = () => {
-  const history = useHistory();
+  const location = useLocation()
   const [loading, setLoading] = React.useState(true);
 
   const loadSettings = async (params) => {
@@ -22,7 +23,9 @@ export const App = () => {
     return response
         ? {
           account_data: response.account_data,
+          company: response.company,
           langs: response.langs,
+          permissions: response.permissions,
         }
         : false;
   };
@@ -50,7 +53,11 @@ export const App = () => {
     } else {
       const settings = await loadSettings();
       const translations = await loadTranslations();
-      Auth.setData({ ...settings.account_data });
+      Auth.setData({
+        ...settings.account_data,
+        permissions: settings.permissions,
+        company: settings.company,
+      });
       Lang.setData({ ...translations, ...{ langs: settings.langs } });
       setLoading(false);
     }
@@ -98,18 +105,22 @@ export const App = () => {
   };
 
   React.useEffect(() => {
-    if (process.env.FRAME_MODE && parent.window?.historyPush) {
-      history.listen((location) => {
-        parent.window.historyPush(
-            process.env.PUBLIC_URL.replace("/frame", "") +
-            location.pathname +
-            location.search
-        );
-      });
+    if (process.env.frameMode) {
+      const path =
+          process.env.publicPath.replace('/service', '') +
+          location.pathname +
+          location.search;
+      if (parent.window?.historyPush) {
+        parent.window.historyPush(path);
+      } else {
+        parent.window.replace(path);
+      }
     }
-  }, [history]);
+  }, [location]);
 
   React.useEffect(() => {
+    Api.setRoutes(API_ROUTES);
+    Api.setParams({ app_id: config.appID });
     AppLib.setData({
       ...config,
       API_ROUTES,
@@ -150,14 +161,14 @@ export const App = () => {
     return <Loading type='whole' />;
   }
 
-  if (!Auth.isAuth()) {
+  if (!Auth.isAuthorized()) {
     return <Error message={Lang.get("NotAuthorized")} />;
   }
 
 
   return (
     <ErrorBoundary>
-      <Content>
+      <Content sidebar={false}>
         <Switch>
           {renderRoutes(MENU_ROUTES)}
           {/* You must add your default root here */}

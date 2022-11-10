@@ -9,7 +9,7 @@ import "antd/dist/antd.css";
 import "./assets/index.scss";
 
 ReactDOM.render(
-    <BrowserRouter basename={process.env.PUBLIC_URL}>
+    <BrowserRouter basename={process.env.publicPath}>
         <ConfigProvider locale={en_GB}>
             <AppProvider>
                 <App />

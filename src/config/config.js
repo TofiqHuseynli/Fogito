@@ -1,4 +1,4 @@
 export const config = {
-  appName: "Docs Panel",
+  appName: "DocsPanel",
   appID: 461,
 };

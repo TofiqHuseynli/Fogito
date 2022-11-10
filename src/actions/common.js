@@ -1,6 +1,5 @@
-import { Api } from "fogito-core-ui";
+import { Api, getTimeBySeconds } from "fogito-core-ui";
 import { config } from "@config";
-import {getTimeBySeconds} from "fogito-core-ui";
 
 const getFromStorage = async (key, url, expire_time, params) => {
   let response = JSON.parse(window.localStorage.getItem(key) || false);

@@ -10,7 +10,6 @@ import {
     Auth,
     Popup,
     useModal,
-    inArray
 } from "fogito-core-ui";
 import {Lang} from "@plugins";
 
@@ -176,7 +175,7 @@ export const Docs = (props) => {
         <ErrorBoundary>
             {/** Docs Add Modal **/}
             <Popup
-                show={inArray("add", modal.modals)}
+                show={modal.modals.includes("add")}
                 title={Lang.get("AddDocs")}
                 onClose={() => modal.hide("add")}
             >

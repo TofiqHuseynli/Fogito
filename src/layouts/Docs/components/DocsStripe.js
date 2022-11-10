@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {Add} from "./Add";
 import { useHistory } from "react-router-dom";
 import { TreeViewComponent, ContextMenuComponent } from '@syncfusion/ej2-react-navigations';
-import {Popup, ErrorBoundary, Loading, useCookie, useModal, inArray} from 'fogito-core-ui'
+import {Popup, ErrorBoundary, Loading, useCookie, useModal} from 'fogito-core-ui'
 import {Lang} from "@plugins";
 
 export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
@@ -76,7 +76,7 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
         <ErrorBoundary>
             {/** Docs Sub Add Modal **/}
             <Popup
-                show={inArray("add_sub", modal.modals)}
+                show={modal.modals.includes("add_sub")}
                 title={Lang.get("AddSub")}
                 onClose={() => modal.hide("add_sub")}
             >

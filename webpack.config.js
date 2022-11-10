@@ -1,49 +1,122 @@
+const path = require("path");
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const CopyPlugin = require("copy-webpack-plugin");
-const path = require("path");
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-module.exports = (env, argv) => {
-  const config = require(`./config/webpack.${
-    argv.mode === "development" ? "dev" : "prod"
-  }`);
-
-  const { publicPath = false, frameMode = false } = argv;
-
-  config.entry = path.resolve(__dirname, "src/index.js");
-  config.output = {
-    path: path.resolve(__dirname, "build"),
-    filename: "[hash].bundle.js",
-    chunkFilename: "[hash].chunk.js",
-    publicPath: publicPath || "/",
+module.exports = (env, args) => {
+  return {
+    entry: path.resolve(__dirname, "src/index.js"),
+    output: {
+      path: path.resolve(__dirname, "build"),
+      filename: "[hash].bundle.js",
+      publicPath: args.publicPath || "/",
+    },
+    devServer: {
+      port: 4011,
+      compress: true,
+      publicPath: "/",
+      host: "localhost",
+      watchContentBase: true,
+      historyApiFallback: true,
+      contentBase: path.resolve(__dirname, "public"),
+    },
+    resolve: {
+      symlinks: false,
+      alias: {
+        "@config": path.resolve(__dirname, "src/config"),
+        "@actions": path.resolve(__dirname, "src/actions"),
+        "@layouts": path.resolve(__dirname, "src/layouts"),
+        "@hooks": path.resolve(__dirname, "src/hooks"),
+        "@plugins": path.resolve(__dirname, "src/plugins"),
+        "@components": path.resolve(__dirname, "src/components"),
+      },
+    },
+    module: {
+      rules: [
+        {
+          test: /\.(js|jsx)$/,
+          exclude: /node_modules/,
+          loader: "babel-loader",
+          options: {
+            presets: [
+              [
+                "@babel/preset-env",
+                {
+                  modules: false,
+                },
+              ],
+              "@babel/preset-react",
+            ],
+            plugins: [
+              "@babel/plugin-transform-runtime",
+              "@babel/plugin-proposal-class-properties",
+              "@babel/plugin-syntax-dynamic-import",
+              "@babel/plugin-proposal-export-default-from",
+            ],
+          },
+        },
+        {
+          test: /\.html$/,
+          use: [
+            {
+              loader: "html-loader",
+            },
+          ],
+        },
+        {
+          test: /\.css$/,
+          use: [
+            "style-loader",
+            {
+              loader: "css-loader",
+              options: {
+                modules: false,
+                localIdentName: "[local]__[hash:base64:6]",
+              },
+            },
+          ],
+        },
+        {
+          test: /\.s[ac]ss$/i,
+          use: ["style-loader", "css-loader", "sass-loader"],
+        },
+        {
+          test: /\.(eot|otf|ttf|woff|woff2)$/,
+          use: "file-loader",
+        },
+        {
+          test: /\.(jpg|png|gif|svg)$/,
+          use: [
+            {
+              loader: "url-loader",
+              options: {
+                limit: 10 * 1024,
+              },
+            },
+          ],
+        },
+      ],
+    },
+    plugins: [
+      new CleanWebpackPlugin(),
+      new webpack.DefinePlugin({
+        "process.env": {
+          publicPath: JSON.stringify(args.publicPath),
+          frameMode: JSON.stringify(args.frameMode),
+        },
+      }),
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, "public/index.html"),
+        filename: "index.html",
+        inject: "body",
+      }),
+      new CopyWebpackPlugin([
+        {
+          from: path.resolve(__dirname, "public"),
+          to: path.resolve(__dirname, "build"),
+        },
+      ]),
+    ],
   };
-
-  config.plugins = [
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, "public/index.html"),
-      filename: "index.html",
-    }),
-    new CopyPlugin([
-      {
-        from: path.resolve(__dirname, "public/assets"),
-        to: path.resolve(__dirname, "build/assets"),
-      },
-    ]),
-    new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: JSON.stringify(argv.mode),
-        APP_VERSION: JSON.stringify(process.env.npm_package_version),
-        TEST_API: JSON.stringify(argv.test ? true : false),
-        PUBLIC_URL: JSON.stringify(publicPath),
-        FRAME_MODE: JSON.stringify(frameMode),
-      },
-    }),
-    new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery",
-      "window.jQuery": "jquery",
-    }),
-  ];
-
-  return config;
 };

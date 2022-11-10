@@ -112,7 +112,7 @@ export const Edit = ({name, match, history}) => {
         <ErrorBoundary>
             {/*** Modals ***/}
             <Popup
-                show={inArray("members", modal.modals)}
+                show={modal.modals.includes("members")}
                 title={Lang.get("Users")}
                 size='md'
                 onClose={() => modal.hide("members")}

@@ -4,7 +4,7 @@ import { projectsData} from "@actions";
 import {JsonModal} from "../forms";
 import {Select, Checkbox} from "antd";
 import classNames from "classnames";
-import {Popup, ErrorBoundary, Loading, useModal, inArray, App} from 'fogito-core-ui';
+import {Popup, ErrorBoundary, Loading, useModal, App} from 'fogito-core-ui';
 import {Lang} from "@plugins";
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -56,7 +56,7 @@ export const DocsEdit = (props) => {
         <ErrorBoundary>
             {/* Modals */}
             <Popup
-                show={inArray("jsonModal", modal.modals)}
+                show={modal.modals.includes("jsonModal")}
                 title={Lang.get("Json format")}
                 size={'md'}
                 onClose={() => modal.hide("jsonModal")}
@@ -69,7 +69,7 @@ export const DocsEdit = (props) => {
                     />
             </Popup>
             <Popup
-                show={inArray("testApi", modal.modals)}
+                show={modal.modals.includes("testApi")}
                 title={Lang.get("Simple Request")}
                 size={'xl'}
                 onClose={() => modal.hide("testApi")}

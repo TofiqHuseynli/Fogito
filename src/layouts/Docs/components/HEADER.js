@@ -171,11 +171,21 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
                             {
                                 state.docs?.length > 0 ?
                                     <a className="dropdown-item"
-                                       href={Api.convert(API_ROUTES.apisExport)+`?token?&lang=${Auth.get("lang")}&project_id=${state.pro_id}`}
+                                       href={Api.convert(API_ROUTES.apisExport)+`?project_id=${state.pro_id}`}
                                        target="_blank"
                                        download
                                     >
                                         {Lang.get("Export")}
+                                    </a> : null
+                            }
+                            {
+                                state.docs?.length > 0 ?
+                                    <a className="dropdown-item"
+                                       href={Api.convert(API_ROUTES.documentationPrintable)+`?project_id=${state.pro_id}`}
+                                       target="_blank"
+                                       download
+                                    >
+                                        {Lang.get("Printable")}
                                     </a> : null
                             }
                             {

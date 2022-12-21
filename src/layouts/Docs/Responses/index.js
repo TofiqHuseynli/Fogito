@@ -3,6 +3,7 @@ import {App, ErrorBoundary} from "fogito-core-ui";
 import {Lang} from "@plugins";
 import {useEffect} from "react";
 import {proxyList} from "@actions";
+import {DateLib} from "@plugins/DateLib";
 
 export function Responses({id, project_id})
 {
@@ -34,7 +35,6 @@ export function Responses({id, project_id})
     return(
         <ErrorBoundary>
             {/* Json Response */}
-            {!!state.list.length && <label className='parent__label mt-4'>{Lang.get("Response Examples")}</label>}
             <div className='row' >
                 <div className='col' >
                     {
@@ -63,8 +63,10 @@ export function Responses({id, project_id})
                                                 <code>
                                                 <pre className='fs-14'>
                                                     {
-                                                        !!row.request?.parameters &&
+                                                        !!row.request?.parameters ?
                                                         <div style={{lineHeight: 1.3}} dangerouslySetInnerHTML={App.getData().createMarkup(App.getData().jsonDesign(row.request?.parameters))}/>
+                                                            :
+                                                            '{}'
                                                     }
                                                 </pre>
                                                 </code>
@@ -74,12 +76,20 @@ export function Responses({id, project_id})
                                                     <span className="response-label">{Lang.get("Response")}:</span>
                                                 </div>
                                             </div>
-                                            <div className='response-code'>
+                                            <div className='response-code  mb-2'>
                                                 <code>
                                                 <pre className='fs-14'>
-                                                    <div style={{lineHeight: 1.3}} dangerouslySetInnerHTML={App.getData().createMarkup(App.getData().jsonDesign(row.response))}/>
+                                                    {
+                                                        !!row.response &&
+                                                        <div style={{lineHeight: 1.3}} dangerouslySetInnerHTML={App.getData().createMarkup(App.getData().jsonDesign(row.response))}/>
+                                                    }
                                                 </pre>
                                                 </code>
+                                            </div>
+                                            <div className='row' >
+                                                <div className='col'>
+                                                    <span className="response-label">{DateLib.date("Y-m-d H:i:s", row.created_at)}</span>
+                                                </div>
                                             </div>
                                         </div>
                                     )

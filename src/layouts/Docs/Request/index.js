@@ -4,7 +4,7 @@ import {Lang} from "@plugins";
 import {JsonEditor} from "@components";
 import {Checkbox, Select} from "antd";
 
-export function Parameters({ state, setState, status, setStatus, params, setParams })
+export function Request({ state, setState, status, setStatus, params, setParams })
 {
     const onStatus = (e) => {
         switch (e.target.checked) {

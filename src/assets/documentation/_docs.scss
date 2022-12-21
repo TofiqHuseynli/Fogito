@@ -97,7 +97,7 @@
     border: 1px solid #e1e1e1;
     border-radius: 0.5rem;
     padding: 1rem 1rem;
-    margin-bottom: 1rem;
+    margin-top: 1rem;
   }
   code { color: #2e3034;  }
   .response-label{
@@ -110,6 +110,8 @@
     border-radius: 6px;
     padding: 10px;
     background: #f3f5f9;
+    overflow-y: auto;
+    max-height: 250px;
   }
   pre {
     margin-bottom: 0;

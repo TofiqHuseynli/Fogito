@@ -46,6 +46,7 @@ export const API_ROUTES = {
   documentationList:       MICROSERVICE_URL + "/documentation/list",
   documentationInfo:       MICROSERVICE_URL + "/documentation/info",
   documentationStripe:     MICROSERVICE_URL + "/documentation/list",
+  documentationPrintable:  MICROSERVICE_URL + "/documentation/printable",
 
   // Project Users
   projectUsersList:        MICROSERVICE_URL + "/projects/users/list",

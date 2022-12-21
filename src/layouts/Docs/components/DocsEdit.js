@@ -6,7 +6,7 @@ import classNames from "classnames";
 import {Popup, ErrorBoundary, Loading, useModal, App} from 'fogito-core-ui';
 import {Lang} from "@plugins";
 import {Responses} from "@layouts/Docs/Responses";
-import {Parameters} from "@layouts/Docs/Parameters";
+import {Request} from "@layouts/Docs/Request";
 import {Content} from "@layouts/Docs/Content";
 
 export const DocsEdit = (props) => {
@@ -36,12 +36,12 @@ export const DocsEdit = (props) => {
     const TABS = [
         {
             key: 'params',
-            title: 'Parameters',
-            component: <Parameters state={state} setState={setState} status={status} setStatus={setStatus} params={params} setParams={setParams} />,
+            title: 'Request',
+            component: <Request state={state} setState={setState} status={status} setStatus={setStatus} params={params} setParams={setParams} />,
         },
         {
             key: 'description',
-            title: 'Description',
+            title: 'Content',
             component: <Content state={state} setState={setState} />,
         },
         {

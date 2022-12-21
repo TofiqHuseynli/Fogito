@@ -3,4 +3,4 @@ export * from './Permissions';
 export * from './Tooltip';
 export * from './Members';
 export * from './MyComp';
-export * from './Api';
+export * from '../../layouts/Docs/TestApi';

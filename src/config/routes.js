@@ -60,13 +60,16 @@ export const API_ROUTES = {
   // Proxy
   proxyList:               MICROSERVICE_URL + "/requests/list",
   proxyRequest:            MICROSERVICE_URL + "/requests/proxy",
+  requestSave:            MICROSERVICE_URL + "/requests/save",
+  requestDelete:            MICROSERVICE_URL + "/requests/delete",
+  requestEdit:            MICROSERVICE_URL + "/requests/edit",
 };
 
 
 export const MENU_ROUTES = [
   {
     path: "/projects",
-    name: "Projects",
+    name: "TechnicalDocuments",
     icon: <i className="symbol feather feather-list text-muted" />,
     isExact: true,
     isHidden: false,
@@ -74,7 +77,7 @@ export const MENU_ROUTES = [
   },
   {
     path: "/projects/edit/:id/:title",
-    name: "Project Edit",
+    name: "Edit",
     isExact: true,
     isHidden: true,
     component: (props) => <Edit {...props} />,

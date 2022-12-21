@@ -12,6 +12,7 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
     const modal = useModal()
 
     const [data, setData] = React.useState([])
+    const [addType, setAddType] = React.useState("document")
     const initData = state.docs;
 
     const fields = {
@@ -23,7 +24,10 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
         hasChildren: 'hasChild'
     }
 
-    const menuClick = () => modal.show("add_sub")
+    const menuClick = (addType) => {
+        setAddType(addType);
+        modal.show("add_sub")
+    }
 
     const getNode = (data) => {
         if(data.node.ariaExpanded !== null) {
@@ -83,6 +87,7 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
                 <Add
                     _id={state.docs_id}
                     type={'add_sub'}
+                    docType={addType}
                     reFocus={onOpen}
                     refreshBoolean={true}
                     refresh={refresh}
@@ -92,7 +97,9 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
             {/*<div onClick={()=> onFocus()} >Click</div>*/}
 
             <div className='content__scroll' >
+
                 {state.loadingStripe && <Loading />}
+
                 {
                     data.length
                         ?
@@ -107,8 +114,8 @@ export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
                             />
                             <ContextMenuComponent
                                 target='#tree'
-                                items={[{ text: 'Add Sub' }]}
-                                select={() => menuClick()}
+                                items={[{ id: "document", text: Lang.get('AddDocument') }, { id: "folder", text: Lang.get('AddFolder') }]}
+                                select={(selectedItem) => menuClick(selectedItem?.item?.properties?.id)}
                             />
                         </>
                         :

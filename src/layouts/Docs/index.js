@@ -145,7 +145,7 @@ export const Docs = (props) => {
     },[])
 
     React.useEffect(()=> {
-        loadProxy()
+        //loadProxy()
     },[state.docs_id])
 
     const onFocus = (data) => {

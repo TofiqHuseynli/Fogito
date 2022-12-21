@@ -93,17 +93,29 @@
 .response-card {
   overflow-x: auto;
   padding: 3px;
-  code { color: #a3acb9;  }
-  div {
+  .response-item{
+    border: 1px solid #e1e1e1;
+    border-radius: 0.5rem;
+    padding: 1rem 1rem;
+    margin-bottom: 1rem;
+  }
+  code { color: #2e3034;  }
+  .response-label{
+    color: #a4adb2;
+    margin-bottom: 10px;
+  }
+  .response-code {
     word-break: initial;
     border: 1px solid #f0f0f0;
-    border-radius: 10px;
-    padding: 5px 10px;
+    border-radius: 6px;
+    padding: 10px;
+    background: #f3f5f9;
   }
   pre {
-    color: #a3acb9;
+    margin-bottom: 0;
+    color: #d94368;
     .key {
-      color: #a3acb9;
+      color: #5c626b;
     }
     .string {
       color: #1ea672;

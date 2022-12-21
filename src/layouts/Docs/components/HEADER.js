@@ -171,7 +171,7 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
                             {
                                 state.docs?.length > 0 ?
                                     <a className="dropdown-item"
-                                       href={`https://docs.fogito.com/apis/export?token?&lang=${Auth.get("lang")}&project_id=${state.pro_id}`}
+                                       href={Api.convert(API_ROUTES.apisExport)+`?token?&lang=${Auth.get("lang")}&project_id=${state.pro_id}`}
                                        target="_blank"
                                        download
                                     >

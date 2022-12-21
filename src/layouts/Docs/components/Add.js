@@ -5,10 +5,11 @@ import {Lang} from "@plugins";
 import {apisCreate, apisCreateSub} from "@actions";
 
 
-export const Add = ({_id, refresh, type, onClose, reFocus, refreshBoolean}) => {
+export const Add = ({_id, refresh, type, docType, onClose, reFocus, refreshBoolean}) => {
     const toast = useToast()
     const [params, setParams] = React.useState({
         title: '',
+        type: docType,
         slug: 'test'
     })
 
@@ -20,7 +21,9 @@ export const Add = ({_id, refresh, type, onClose, reFocus, refreshBoolean}) => {
             response = await apisCreate({data: params, project_id: _id})
         } else if (type === 'add_sub') {
             response = await apisCreateSub({data: params, id: _id})
-        } else {}
+        } else {
+
+        }
 
         if(response.status === 'success') {
             toast.fire({

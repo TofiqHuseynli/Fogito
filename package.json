@@ -2,8 +2,8 @@
   "name": "docspanel",
   "author": "Suleyman",
   "scripts": {
-    "start-on-crm": "webpack-dev-server --mode=development --publicPath=/frame/docspanel --frameMode=true",
-    "start": "webpack-dev-server --mode=development --publicPath= --open",
+    "start-on-crm": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack-dev-server --mode=development --publicPath=/frame/docspanel --frameMode=true",
+    "start": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack-dev-server --mode=development --publicPath= --open",
     "build": "webpack --mode=production --publicPath=/frame/docspanel --frameMode=true"
   },
   "dependencies": {
@@ -12,6 +12,7 @@
     "@syncfusion/ej2-react-navigations": "^19.1.66",
     "antd": "^4.16.2",
     "classnames": "2.2.6",
+    "cross-env": "^7.0.3",
     "fogito-core-ui": "^1.0.26",
     "jquery": "^3.6.0",
     "react": "16.13.1",

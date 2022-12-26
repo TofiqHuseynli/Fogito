@@ -1,45 +1,43 @@
 import React from "react";
 import { Switch, Route, Redirect, useLocation } from "react-router-dom";
 import { settings, translations } from "@actions";
-import { MENU_ROUTES ,API_ROUTES, config } from "@config";
+import { MENU_ROUTES, API_ROUTES, config } from "@config";
 import {
   ErrorBoundary,
   Error,
   Content,
   Loading,
-    Api,
+  Api,
   Auth,
   App as AppLib,
 } from "fogito-core-ui";
-import {Lang} from "@plugins";
-
+import { Lang } from "@plugins";
 
 export const App = () => {
-  const location = useLocation()
+  const location = useLocation();
   const [loading, setLoading] = React.useState(true);
 
   const loadSettings = async (params) => {
     const response = await settings(params);
     return response
-        ? {
+      ? {
           account_data: response.account_data,
           company: response.company,
           langs: response.langs,
           permissions: response.permissions,
         }
-        : false;
+      : false;
   };
 
   const loadTranslations = async (params) => {
     const response = await translations(params);
     return response
-        ? {
+      ? {
           lang: response.data?.lang,
           lang_data: response.data?.lang_data,
         }
-        : false;
+      : false;
   };
-
 
   const loadData = async () => {
     const common = parent.window.common;
@@ -62,8 +60,6 @@ export const App = () => {
       setLoading(false);
     }
   };
-
-
 
   const renderRoutes = (routes) => {
     return routes.map((route, key) => (
@@ -100,20 +96,20 @@ export const App = () => {
     ));
   };
 
-  window.onModeChange = (mode) => {
-    document.body.className = mode;
+  window.onThemeChange = (theme) => {
+    document.body.className = theme;
   };
 
   React.useEffect(() => {
     if (process.env.frameMode) {
       const path =
-          process.env.publicPath.replace('/service', '') +
-          location.pathname +
-          location.search;
+        process.env.publicPath.replace("/service", "") +
+        location.pathname +
+        location.search;
       if (parent.window?.historyPush) {
         parent.window.historyPush(path);
       } else {
-        parent.window.replace(path);
+        window.location.replace(path);
       }
     }
   }, [location]);
@@ -122,56 +118,58 @@ export const App = () => {
     Api.setRoutes(API_ROUTES);
     Api.setParams({ app_id: config.appID });
     AppLib.setData({
-      ...config,
-      API_ROUTES,
-      NODE_ENV: process.env.NODE_ENV,
+      appName: config.appName,
 
       // functions
-      jsonDesign (json) {
-        if (typeof json != 'string') {
+      jsonDesign(json) {
+        if (typeof json != "string") {
           json = JSON.stringify(json, undefined, 4);
         }
-        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-          var cls = 'number';
-          if (/^"/.test(match)) {
-            if (/:$/.test(match)) {
-              cls = 'key';
-            } else {
-              cls = 'string';
+        json = json
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+        return json.replace(
+          /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+          function (match) {
+            var cls = "number";
+            if (/^"/.test(match)) {
+              if (/:$/.test(match)) {
+                cls = "key";
+              } else {
+                cls = "string";
+              }
+            } else if (/true|false/.test(match)) {
+              cls = "boolean";
+            } else if (/null/.test(match)) {
+              cls = "null";
             }
-          } else if (/true|false/.test(match)) {
-            cls = 'boolean';
-          } else if (/null/.test(match)) {
-            cls = 'null';
+            return '<span class="' + cls + '">' + match + "</span>";
           }
-          return '<span class="' + cls + '">' + match + '</span>';
-        })
+        );
       },
 
       createMarkup(text) {
         return { __html: text };
-      }
+      },
     });
 
     loadData();
   }, []);
 
   if (loading) {
-    return <Loading type='whole' />;
+    return <Loading type="whole" />;
   }
 
   if (!Auth.isAuthorized()) {
     return <Error message={Lang.get("NotAuthorized")} />;
   }
 
-
   return (
     <ErrorBoundary>
       <Content sidebar={false}>
         <Switch>
           {renderRoutes(MENU_ROUTES)}
-          {/* You must add your default root here */}
           <Redirect from="*" to="/projects" />
         </Switch>
       </Content>

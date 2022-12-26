@@ -2,9 +2,9 @@
   "name": "docspanel",
   "author": "Suleyman",
   "scripts": {
-    "start-on-crm": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack-dev-server --mode=development --publicPath=/frame/docspanel --frameMode=true",
-    "start": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack-dev-server --mode=development --publicPath= --open",
-    "build": "webpack --mode=production --publicPath=/frame/docspanel --frameMode=true"
+    "start-on-crm": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack-dev-server --mode=development --publicPath=/service/docspanel --frameMode=true",
+    "start": "webpack-dev-server --mode=development --publicPath= --open",
+    "build": "rm -rf build && webpack --mode=production --publicPath=/service/docspanel --frameMode=true"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^29.2.0",
@@ -12,8 +12,7 @@
     "@syncfusion/ej2-react-navigations": "^19.1.66",
     "antd": "^4.16.2",
     "classnames": "2.2.6",
-    "cross-env": "^7.0.3",
-    "fogito-core-ui": "^1.0.26",
+    "fogito-core-ui": "^1.0.30",
     "jquery": "^3.6.0",
     "react": "16.13.1",
     "react-beautiful-dnd": "^13.1.0",
@@ -28,25 +27,19 @@
     "@babel/plugin-transform-runtime": "7.9.0",
     "@babel/preset-env": "7.9.5",
     "@babel/preset-react": "7.9.4",
-    "@syncfusion/ej2-base": "^19.1.64",
-    "@types/react-router-dom": "^5.1.7",
-    "babel-eslint": "10.1.0",
     "babel-loader": "8.1.0",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "5.1.1",
     "css-loader": "2.1.1",
-    "eslint": "6.8.0",
-    "eslint-plugin-react-hooks": "^4.0.0",
+    "file-loader": "^6.2.0",
     "html-loader": "1.1.0",
     "html-webpack-plugin": "4.2.0",
-    "sass": "1.43.5",
+    "sass": "^1.49.8",
     "sass-loader": "8.0.2",
     "style-loader": "1.1.4",
-    "webpack": "^4.42.1",
+    "url-loader": "^4.1.1",
+    "webpack": "4.42.1",
     "webpack-cli": "3.3.11",
-    "webpack-dev-middleware": "3.7.2",
-    "webpack-dev-server": "3.11.0",
-    "webpack-hot-client": "4.1.2",
-    "webpack-hot-middleware": "2.25.0"
+    "webpack-dev-server": "3.11.0"
   }
 }

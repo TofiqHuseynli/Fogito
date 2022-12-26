@@ -33,18 +33,18 @@ export const clearStorage = () => {
 
 export const settings = async (params) => {
   return await getFromStorage(
-      `settings-${config.appID}`,
-      "settings",
-      2,
-      params
+    `settings-${config.appID}`,
+    "settings",
+    2,
+    params
   );
 };
 
 export const translations = async (params) => {
   return await getFromStorage(
-      `translations-${config.appID}`,
-      "translations",
-      60,
-      params
+    `translations-${config.appID}`,
+    "translations",
+    60,
+    params
   );
 };

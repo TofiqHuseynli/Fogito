@@ -2,6 +2,7 @@ import React from "react";
 import {ErrorBoundary, Loading, Textarea, App} from "fogito-core-ui";
 import {Lang} from "@plugins";
 import {prepareText, sendRequest, loadData, saveRequest} from "@layouts/Docs/TestApi/actions";
+import {Checkbox} from "antd";
 
 export const TestApi = ({id, project_id, url, parameters, methods}) => {
     const initialState = {
@@ -12,7 +13,12 @@ export const TestApi = ({id, project_id, url, parameters, methods}) => {
         method: methods && methods.length>0 ? methods[0]: "get",
         loading: false,
         loadingResponse: false,
-        response: "",
+        response: {
+            request: {
+                url: false,
+            },
+            response: ""
+        },
         raw: "",
     }
     const [state, setState] = React.useReducer((prevState, newState) => {
@@ -70,14 +76,25 @@ export const TestApi = ({id, project_id, url, parameters, methods}) => {
                     </div>
                 </div>
 
-                <div className='response mt-4' >
+
+
+                {
+                    !!state.response?.request &&
+                    <div className='mt-4' >
+                        <font color="#222">{state.response?.request?.url}</font>
+                    </div>
+                }
+
+                <div className='response mt-1' >
                     {
                         state.loadingResponse ?
                             <h4 className='p-3' >{Lang.get("Loading... Please, wait!")}</h4>
                             :
-                            <pre className='p-3' >
-                                <div style={{ fontSize: 14 }} dangerouslySetInnerHTML={App.getData().createMarkup(App.getData().jsonDesign(state.response))}/>
-                            </pre>
+                            <div className='p-3' >
+                                <pre style={{ fontSize: 14 }}>
+                                    {state.response?.response && state.response.response?.substr(0, 1) === "{" ? JSON.stringify(JSON.parse(state.response?.response), null, 2): state.response?.response}
+                                </pre>
+                            </div>
                     }
                 </div>
             </div>

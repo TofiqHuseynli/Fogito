@@ -103,7 +103,7 @@ export const DocsEdit = (props) => {
                     <button className='btn options-btn mt-1' onClick={()=> modal.show('jsonModal')} >
                         <i className='feather feather-file-text text-primary' />
                     </button>
-                    <a href={`/frame/docs/api/${state.pro_id}/${state.docs_id}`}
+                    <a href={`/service/adocs/api/${state.pro_id}/${state.docs_id}`}
                        target='_blank'
                        className='btn options-btn mt-1' >
                         {Lang.get("GoDocs")}

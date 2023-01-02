@@ -28,7 +28,6 @@ export const Docs = (props) => {
         public_data: [],
         docs: [],
         file: {},
-        proxyData: [],
 
         options: [
             { value: 'get',       label: 'get' },
@@ -127,26 +126,10 @@ export const Docs = (props) => {
         }
     }
 
-    async function loadProxy() {
-        setState({loading: true})
-        let data = { api_id: state.docs_id }
-        let response = await proxyList({data});
-        if(response.status === 'success') {
-            setState({
-                proxyData: response.data,
-                loading: false
-            })
-        }
-    }
-
-
     React.useEffect(()=> {
         refresh()
     },[])
 
-    React.useEffect(()=> {
-        //loadProxy()
-    },[state.docs_id])
 
     const onFocus = (data) => {
         cookie.remove('_stripe_id')

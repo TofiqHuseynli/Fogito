@@ -183,7 +183,7 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
                                     <a className="dropdown-item"
                                        href={Api.convert(API_ROUTES.documentationPrintable)+`?project_id=${state.pro_id}`}
                                        target="_blank"
-                                       download
+                                       //download
                                     >
                                         {Lang.get("Printable")}
                                     </a> : null

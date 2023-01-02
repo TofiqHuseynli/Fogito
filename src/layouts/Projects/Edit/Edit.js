@@ -3,7 +3,7 @@ import {Members, Permissions} from "@components";
 import {projectsData, projectsInfo, projectsUpdate} from "@actions";
 import {UsersModal} from "../forms";
 import {Link} from "react-router-dom";
-import {projectUsersList} from "../../../actions/user";
+import {projectUsersList} from "@actions/user";
 import {
     Popup,
     ErrorBoundary,
@@ -17,6 +17,7 @@ import {
     useToast
 } from 'fogito-core-ui'
 import {Lang, App} from '@plugins'
+import GlobalVariablesBox from "@layouts/Projects/components/GlobalVariablesBox";
 
 export const Edit = ({name, match, history}) => {
     const initialState = {
@@ -29,7 +30,8 @@ export const Edit = ({name, match, history}) => {
             api_path: "",
             members: false,
             status: '',
-            public: ''
+            public: '',
+            global_variables: []
         },
         loading: false,
 
@@ -246,6 +248,17 @@ export const Edit = ({name, match, history}) => {
                                     onChange={(e) => setState({...state, data: {...state.data, description: e.target.value}})}
                                     placeholder={Lang.get("Description")}
                                     className="form-control"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className='col-md-8 px-2 mt-3' >
+                                <label>{Lang.get("GlobalVariables")}</label>
+
+                                <GlobalVariablesBox
+                                    variables={state.data?.global_variables || []}
+                                    setVars={(globalVariables) => setState({data: {...state.data, global_variables: globalVariables}})}
                                 />
                             </div>
                         </div>

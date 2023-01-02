@@ -3,8 +3,8 @@
   "author": "Suleyman",
   "scripts": {
     "start-on-crm": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack-dev-server --mode=development --publicPath=/service/docspanel --frameMode=true",
-    "start": "webpack-dev-server --mode=development --publicPath= --open",
-    "build": "rm -rf build && webpack --mode=production --publicPath=/service/docspanel --frameMode=true"
+    "start": "cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack-dev-server --mode=development --publicPath= --open",
+    "build": "rm -rf build && cross-env NODE_OPTIONS='--openssl-legacy-provider' webpack --mode=production --publicPath=/service/docspanel --frameMode=true"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-build-classic": "^29.2.0",
@@ -12,6 +12,7 @@
     "@syncfusion/ej2-react-navigations": "^19.1.66",
     "antd": "^4.16.2",
     "classnames": "2.2.6",
+    "cross-env": "^7.0.3",
     "fogito-core-ui": "^1.0.30",
     "jquery": "^3.6.0",
     "react": "16.13.1",

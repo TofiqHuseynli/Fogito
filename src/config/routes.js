@@ -37,6 +37,7 @@ export const API_ROUTES = {
   apisCopy: MICROSERVICE_URL + "/apis/copy",
   apisExport: MICROSERVICE_URL + "/apis/export",
   apisImport: MICROSERVICE_URL + "/apis/import",
+  apisUpdateField: MICROSERVICE_URL + "/apis/updatefield",
 
   // Documentation
   documentationList: MICROSERVICE_URL + "/documentation/list",
@@ -60,6 +61,7 @@ export const API_ROUTES = {
   requestSave: MICROSERVICE_URL + "/requests/save",
   requestDelete: MICROSERVICE_URL + "/requests/delete",
   requestEdit: MICROSERVICE_URL + "/requests/edit",
+  requestUpdateField: MICROSERVICE_URL + "/requests/updatefield",
 };
 
 export const MENU_ROUTES = [

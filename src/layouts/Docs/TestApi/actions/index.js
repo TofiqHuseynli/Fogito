@@ -51,7 +51,7 @@ export async function sendRequest(state, setState)
         }
     })
     if (response.status === 'success') {
-        if(response.data.charAt(0) === '{') {
+        if(response.data?.response?.charAt(0) === '{') {
             setState({response: response.data, loadingResponse: false})
         } else {
             setState({response: response.data, loadingResponse: false})
@@ -92,7 +92,7 @@ export async function loadData(state, setState)
     if(response.status === 'success') {
         setState({
             loading: false,
-            url: response.data.api_url + state.projectUrl
+            url: state.projectUrl
         })
     }
 }

@@ -1,9 +1,10 @@
 import React from 'react';
-import {App, ErrorBoundary} from "fogito-core-ui";
+import {Api, App, ErrorBoundary} from "fogito-core-ui";
 import {Lang} from "@plugins";
 import {useEffect} from "react";
 import {proxyList} from "@actions";
 import {DateLib} from "@plugins/DateLib";
+import {Checkbox} from "antd";
 
 export function Responses({id, project_id})
 {
@@ -12,6 +13,7 @@ export function Responses({id, project_id})
         project_id: project_id,
         loading: false,
         list: [],
+        renderIndex: 0
     }
     const [state, setState] = React.useReducer((prevState, newState) => {
         return {...prevState, ...newState};
@@ -31,6 +33,19 @@ export function Responses({id, project_id})
         }else{
             alert(response.description)
         }
+    }
+
+    async function setVisibleOnDocs(row, value){
+        row.visible_on_docs = !!value ? 1: 0;
+        let response = await Api.post("requestUpdateField", {data: {
+            id: row.id,
+            field: "visible_on_docs",
+            value: row.visible_on_docs,
+        }});
+        if(response.status === "error")
+            alert(response.description)
+
+        setState({renderIndex: state.renderIndex+1});
     }
     return(
         <ErrorBoundary>
@@ -78,17 +93,19 @@ export function Responses({id, project_id})
                                             </div>
                                             <div className='response-code  mb-2'>
                                                 <code>
-                                                <pre className='fs-14'>
-                                                    {
-                                                        !!row.response &&
-                                                        <div style={{lineHeight: 1.3}} dangerouslySetInnerHTML={App.getData().createMarkup(App.getData().jsonDesign(row.response))}/>
-                                                    }
-                                                </pre>
+                                                    <pre className='fs-14'>
+                                                        {row?.response?.response && row.response?.response.substr(0, 1) === "{" ? JSON.stringify(JSON.parse(row.response?.response), null, 2): row.response?.response}
+                                                    </pre>
                                                 </code>
                                             </div>
+
                                             <div className='row' >
                                                 <div className='col'>
-                                                    <span className="response-label">{DateLib.date("Y-m-d H:i:s", row.created_at)}</span>
+                                                    <span className="response-label" style={{paddingRight: 20}}>{DateLib.date("Y-m-d H:i:s", row.created_at)}</span>
+
+                                                    <Checkbox checked={row.visible_on_docs === 1 && true} onChange={(e)=> setVisibleOnDocs(row, e.target.checked)} >
+                                                        {Lang.get("VisibleOnDocs")}
+                                                    </Checkbox>
                                                 </div>
                                             </div>
                                         </div>

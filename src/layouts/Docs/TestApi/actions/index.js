@@ -57,7 +57,8 @@ export async function sendRequest(state, setState)
             setState({response: response.data, loadingResponse: false})
         }
     } else {
-        setState({loading: false, loadingResponse: false, response: response.description})
+        alert(response.description)
+        setState({loading: false, loadingResponse: false})
     }
 }
 

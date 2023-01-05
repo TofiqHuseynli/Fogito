@@ -1,7 +1,7 @@
 import React from 'react';
 import {ErrorBoundary} from "fogito-core-ui";
 import {Lang} from "@plugins";
-import {JsonEditor} from "@components";
+import {JsonEditor, MyJsonEditor} from "@components";
 import {Checkbox, Select} from "antd";
 
 export function Request({ state, setState, status, setStatus, params, setParams })
@@ -41,6 +41,10 @@ export function Request({ state, setState, status, setStatus, params, setParams 
                 {/*    setParam={setParams}*/}
                 {/*/>*/}
 
+                <MyJsonEditor
+                    state={state}
+                    setState={setState}
+                />
                 <JsonEditor
                     state={state}
                     setState={setState}

@@ -3,6 +3,7 @@ import { ErrorBoundary, Lang } from "fogito-core-ui";
 import { Tooltip } from "antd";
 import { useOutsideAlerter } from "@hooks";
 
+var timeoutId;
 export const MyJsonEditor = ({ state, setState }) => {
   const [editorState, setEditorState] = React.useReducer(
     (prevState, newState) => ({ ...prevState, ...newState }),
@@ -108,13 +109,21 @@ export const MyJsonEditor = ({ state, setState }) => {
     },
     dragOver: (e, deepIndex, item, position) => {
       e.preventDefault();
-      setEditorState({
-        draggedOver: {
-          item: item,
-          deepIndex: deepIndex,
-          dragPosition: position,
-        },
-      });
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+          let draggedOver = {
+            item: item,
+            deepIndex: deepIndex,
+            dragPosition: position,
+          }
+          if(JSON.stringify(draggedOver) !== JSON.stringify(editorState.draggedOver))
+          {
+            console.log("set", draggedOver)
+            setEditorState({
+              draggedOver: draggedOver,
+            });
+          }
+      }, 2);
     },
     dragEnd: (e) => {
       e.stopPropagation();

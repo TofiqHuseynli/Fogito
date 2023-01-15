@@ -6,41 +6,40 @@ label {
   user-select: none;
 }
 
-.members {
-  .members_container {
-    display: flex;
-    img {
-      width: 45px;
-      height: 45px;
-      border-radius: 500rem;
-      cursor: pointer;
-    }
-    .more_users {
-      width: 43px;
-      height: 43px;
-      background-color: #BCD5E5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: row;
-      color: #fff;
-      border-radius: 500rem;
-      margin-left: 2px;
-      cursor: pointer;
-    }
-  }
-}
-
+// .members {
+//   .members_container {
+//     display: flex;
+//     img {
+//       width: 45px;
+//       height: 45px;
+//       border-radius: 500rem;
+//       cursor: pointer;
+//     }
+//     .more_users {
+//       width: 43px;
+//       height: 43px;
+//       background-color: #bcd5e5;
+//       display: flex;
+//       justify-content: center;
+//       align-items: center;
+//       flex-direction: row;
+//       color: #fff;
+//       border-radius: 500rem;
+//       margin-left: 2px;
+//       cursor: pointer;
+//     }
+//   }
+// }
 
 .tooltip__header {
   padding: 5px 10px 0px 10px;
   display: flex;
-  color: #7496AB;
+  color: #7496ab;
   align-items: center;
   justify-content: space-between;
   i {
     font-size: 1.3rem;
-    margin-top: -.9rem;
+    margin-top: -0.9rem;
     &:hover {
       color: #6dacd4;
       cursor: pointer;
@@ -53,7 +52,7 @@ label {
     display: flex;
     align-items: center;
     padding: 10px 4px;
-    transition: all .2s ease;
+    transition: all 0.2s ease;
     &:hover {
       cursor: pointer;
       p {
@@ -68,7 +67,7 @@ label {
     .list__info {
       margin-left: 1rem;
       h5 {
-        transition: all .2s ease;
+        transition: all 0.2s ease;
         font-size: 14px;
         margin: 0;
         font-weight: 400;
@@ -91,7 +90,6 @@ label {
 .cr-pointer {
   cursor: pointer;
 }
-
 
 // DARK MODE
 .dark {

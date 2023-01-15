@@ -11,6 +11,7 @@ import {
   Header,
   Loading,
   Popup,
+  Members,
   Table,
   useModal,
   AppContext,
@@ -33,6 +34,7 @@ export const Projects = ({ name, match: { path }, type }) => {
     field: "created_at",
     order: "desc",
   });
+  const [employees, setEmployees] = React.useState({});
 
   const loadData = async (params) => {
     setLoading(true);
@@ -47,8 +49,14 @@ export const Projects = ({ name, match: { path }, type }) => {
     if (response) {
       setLoading(false);
       if (response.status === "success") {
-        setData(response.data);
+        let _data = response.data.map((project) => ({
+          ...project,
+          userIds: project.members?.data.map((member) => member.id),
+        }));
+        setData(_data);
+        console.log("clgData project", response.data);
         setCount(response.count);
+        setEmployees(data.members);
       } else {
         setData([]);
         setCount(0);
@@ -153,34 +161,25 @@ export const Projects = ({ name, match: { path }, type }) => {
     },
     {
       name: Lang.get("Users"),
-      render: (data) =>
-        data.members?.count > 0 ? (
-          <div className="d-flex">
-            {data.members.data?.map(
-              (item, key) =>
-                key < 4 && (
-                  <Tooltip title={item.fullname} key={key}>
-                    <img
-                      alt="avatar"
-                      src={item.avatar}
-                      width="35"
-                      height="35"
-                      className={classNames("rounded-circle cr-pointer", {
-                        "ml-2": key !== 0,
-                      })}
-                    />
-                  </Tooltip>
-                )
-            )}
-            {data.members?.count > 4 && (
-              <ProjectUsersTooltip item={data.members?.data}>
-                <div
-                  className="cr-pointer rounded-circle bg-primary text-white d-flex align-items-center justify-content-center ml-2"
-                  style={{ width: 35, height: 35 }}
-                >{`${data.members?.count - 4}+`}</div>
-              </ProjectUsersTooltip>
-            )}
-          </div>
+      render: (project) =>
+        project.members?.count > 0 ? (
+          <Members
+            tab={true}
+            id={project.id}
+            users={project.members}
+            ids={project.userIds}
+            toggleUrl="projectUsers" // this url must come from routes. (like /cards/users)
+            permissionsUrl="permissions" // this url must come from routes. (like /cards/permissions)
+            userListUrl="userList"
+            toggleParams={{
+              cardKey: "project_id",
+              userKey: "user_id",
+            }}
+            permissionParams={{
+              cardKey: "project_id",
+              userKey: "user_id",
+            }}
+          />
         ) : (
           <span className="text-muted">{Lang.get("noUser")}</span>
         ),

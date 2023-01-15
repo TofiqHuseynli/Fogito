@@ -46,6 +46,7 @@ export const API_ROUTES = {
   documentationPrintable: MICROSERVICE_URL + "/documentation/printable",
 
   // Project Users
+  projectUsers: MICROSERVICE_URL + "/projects/users",
   projectUsersList: MICROSERVICE_URL + "/projects/users/list",
   projectUsersAdd: MICROSERVICE_URL + "/projects/users/add",
   projectUsersDelete: MICROSERVICE_URL + "/projects/users/delete",

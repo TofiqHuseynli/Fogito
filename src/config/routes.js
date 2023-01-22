@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Docs, Projects } from "@layouts";
+import { Add } from "@layouts/Projects/components";
 import { Edit } from "../layouts/Projects/components";
 
 export const CORE_API_URL = "/core";

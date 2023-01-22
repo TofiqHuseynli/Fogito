@@ -7,7 +7,6 @@ import {
   ErrorBoundary,
   Header,
   Loading,
-  Popup,
   Members,
   Table,
   useModal,
@@ -266,10 +265,9 @@ export const Projects = ({ name, history, match: { url, path }, type }) => {
 
   return (
     <ErrorBoundary>
-      {/* new MODAL */}
+      {/* MODALs */}
       <Route
         path={`${path}/add`}
-        exact={false}
         render={(routeProps) => (
           <Add
             {...routeProps}
@@ -278,18 +276,16 @@ export const Projects = ({ name, history, match: { url, path }, type }) => {
           />
         )}
       />
-      {/*** old MODAL ***/}
-      {/* <Popup
-        show={modal.modals.includes("add")}
-        title={Lang.get("AddProject")}
-        onClose={() => modal.hide("add")}
-      >
-        <Add
-          {...{ type }}
-          refresh={() => loadData()}
-          onClose={() => modal.hide("add")}
-        />
-      </Popup>   */}
+      <Route
+        path={`${path}/edit/:id`}
+        render={(routeProps) => (
+          <Edit
+            {...routeProps}
+            refresh={() => loadData()}
+            onClose={() => history.push(url)}
+          />
+        )}
+      />
 
       {/*** HEADER ***/}
       <Header>

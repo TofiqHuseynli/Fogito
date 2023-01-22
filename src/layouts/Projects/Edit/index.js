@@ -20,10 +20,10 @@ export const Edit = ({
   name,
   match: {
     params: { id },
-    url,
     path,
   },
   history,
+  onClose,
 }) => {
   //  actions
   const [state, setState] = React.useReducer(
@@ -123,10 +123,6 @@ export const Edit = ({
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
-    setProps({ activeRoute: { name, path } });
-    return () => {
-      setProps({ activeRoute: { name: null, path: null } });
-    };
   }, []);
 
   const TABS = [
@@ -178,8 +174,8 @@ export const Edit = ({
     <ErrorBoundary>
       <Popup
         size="xl"
-        // onClose={history.push(url)}
         show
+        onClose={() => onClose()}
         header={
           <div className="d-flex align-items-center justify-content-between w-100">
             <div>

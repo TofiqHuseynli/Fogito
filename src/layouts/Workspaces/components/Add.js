@@ -1,7 +1,6 @@
 import React from "react";
-import { App, Lang } from "@plugins";
-import { ErrorBoundary, useToast, Popup, Textarea } from "fogito-core-ui";
-import { projectsCreate } from "@actions";
+import { ErrorBoundary,Lang, useToast, Popup, Textarea } from "fogito-core-ui";
+import { workspacesCreate } from "@actions";
 
 export const Add = ({ refresh, onClose }) => {
   const toast = useToast();
@@ -9,7 +8,7 @@ export const Add = ({ refresh, onClose }) => {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    let response = await projectsCreate({ data: { title: title } });
+    let response = await workspacesCreate({ data: { title: title } });
     if (response.status === "success") {
       toast.fire({
         title: response.description,

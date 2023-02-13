@@ -1,6 +1,5 @@
 import React from 'react';
-import {ErrorBoundary} from "fogito-core-ui";
-import {Lang} from "@plugins";
+import {ErrorBoundary,Lang,} from "fogito-core-ui";
 
 
 
@@ -18,7 +17,7 @@ export const OptionsBtn = ({
                     className={`btn options-btn ${className}`}
                     onClick={onClick}
                     style={style}
-                    
+
                 >
                     {Lang.get(title)}
                 </button>

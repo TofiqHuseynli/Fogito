@@ -1,6 +1,5 @@
 import React from 'react';
-import {ErrorBoundary} from "fogito-core-ui";
-import {Lang} from "@plugins";
+import {ErrorBoundary,Lang,} from "fogito-core-ui";
 import {JsonEditor, MyJsonEditor} from "@components";
 import {Checkbox, Select} from "antd";
 

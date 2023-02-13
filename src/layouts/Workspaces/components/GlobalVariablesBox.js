@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {Lang} from "@plugins";
+import React from 'react';
+import {Lang} from "fogito-core-ui";
 
 export default function GlobalVariablesBox({ variables, setVars })
 {

@@ -1,5 +1,5 @@
-import { Api, getTimeBySeconds } from "fogito-core-ui";
 import { config } from "@config";
+import { Api, getTimeBySeconds } from "fogito-core-ui";
 
 const getFromStorage = async (key, url, expire_time, params) => {
   let response = JSON.parse(window.localStorage.getItem(key) || false);
@@ -26,25 +26,20 @@ const getFromAPI = async (key, url, params) => {
   return response;
 };
 
-export const clearStorage = () => {
-  window.localStorage.removeItem(`settings-${config.appID}`);
-  window.localStorage.removeItem(`translations-${config.appID}`);
-};
-
 export const settings = async (params) => {
   return await getFromStorage(
-    `settings-${config.appID}`,
-    "settings",
-    2,
-    params
+      `settings-${config.appID}`,
+      "settings",
+      2,
+      params
   );
 };
 
 export const translations = async (params) => {
   return await getFromStorage(
-    `translations-${config.appID}`,
-    "translations",
-    60,
-    params
+      `translations-${config.appID}`,
+      "translations",
+      60,
+      params
   );
 };

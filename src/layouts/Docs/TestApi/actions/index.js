@@ -1,4 +1,4 @@
-import {projectsInfo, proxyRequest} from "@actions";
+import {workspacesInfo, requestsProxy, requestsCreate} from "@actions";
 import {Api} from "fogito-core-ui";
 
 export function prepareText (params)
@@ -41,7 +41,7 @@ export function jsonType (par)
 export async function sendRequest(state, setState)
 {
     setState({loadingResponse: true})
-    let response = await proxyRequest({
+    let response = await requestsProxy({
         data: {
             api_id: state.id,
             method: state.method,
@@ -66,17 +66,16 @@ export async function sendRequest(state, setState)
 export async function saveRequest(state, setState)
 {
     setState({loading: true})
-    let response = await Api.post("requestSave", {
-        data: {
-            api_id: state.id,
-            request: {
-                method: state.method,
-                url: state.url,
-                parameters: JSON.parse(state.raw)
-            },
-            response: state.response
-        }
+    let response = await requestsCreate({
+        api_id: state.id,
+        request: {
+            method: state.method,
+            url: state.url,
+            parameters: JSON.parse(state.raw)
+        },
+        response: state.response
     })
+
     if (response.status === 'success') {
         setState({loading: false})
     } else {
@@ -89,7 +88,7 @@ export async function saveRequest(state, setState)
 export async function loadData(state, setState)
 {
     setState({loading: true})
-    let response = await projectsInfo({id: state.project_id})
+    let response = await workspacesInfo({id: state.project_id})
     if(response.status === 'success') {
         setState({
             loading: false,

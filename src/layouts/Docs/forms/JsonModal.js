@@ -1,6 +1,5 @@
 import React from 'react';
-import {ErrorBoundary, Textarea} from "fogito-core-ui";
-import {Lang} from "@plugins";
+import {ErrorBoundary, Textarea,Lang,} from "fogito-core-ui";
 
 
 export const JsonModal = ({state}) => {

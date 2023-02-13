@@ -9,9 +9,8 @@ import {
   Loading,
   Api,
   Auth,
-  App as AppLib,
+  App as AppLib, Lang,
 } from "fogito-core-ui";
-import { Lang } from "@plugins";
 
 export const App = () => {
   const location = useLocation();
@@ -42,21 +41,16 @@ export const App = () => {
   const loadData = async () => {
     const common = parent.window.common;
     if (common) {
-      let { account_data, lang, langs, USER } = common;
+      let { account_data, lang } = common;
       const translations = await loadTranslations({ lang: lang?.short_code });
       Auth.setData({ ...account_data });
-      Lang.setData({ ...translations, ...{ langs } });
-      AppLib.setData({ USER });
+      Lang.setData({ ...translations });
       setLoading(false);
     } else {
       const settings = await loadSettings();
       const translations = await loadTranslations();
-      Auth.setData({
-        ...settings.account_data,
-        permissions: settings.permissions,
-        company: settings.company,
-      });
-      Lang.setData({ ...translations, ...{ langs: settings.langs } });
+      Auth.setData({ ...settings.account_data });
+      Lang.setData({ ...translations });
       setLoading(false);
     }
   };
@@ -116,44 +110,8 @@ export const App = () => {
 
   React.useEffect(() => {
     Api.setRoutes(API_ROUTES);
-    Api.setParams({ app_id: config.appID });
-    AppLib.setData({
-      appName: config.appName,
-
-      // functions
-      jsonDesign(json) {
-        if (typeof json != "string") {
-          json = JSON.stringify(json, undefined, 4);
-        }
-        json = json
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;");
-        return json.replace(
-          /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
-          function (match) {
-            var cls = "number";
-            if (/^"/.test(match)) {
-              if (/:$/.test(match)) {
-                cls = "key";
-              } else {
-                cls = "string";
-              }
-            } else if (/true|false/.test(match)) {
-              cls = "boolean";
-            } else if (/null/.test(match)) {
-              cls = "null";
-            }
-            return '<span class="' + cls + '">' + match + "</span>";
-          }
-        );
-      },
-
-      createMarkup(text) {
-        return { __html: text };
-      },
-    });
-
+    Api.setParams({ app_id: config.appID, test:true });
+    AppLib.setData({appName: config.appName});
     loadData();
   }, []);
 
@@ -170,7 +128,7 @@ export const App = () => {
       <Content sidebar={false}>
         <Switch>
           {renderRoutes(MENU_ROUTES)}
-          <Redirect from="*" to="/projects" />
+          <Redirect from="*" to="/docs" />
         </Switch>
       </Content>
     </ErrorBoundary>

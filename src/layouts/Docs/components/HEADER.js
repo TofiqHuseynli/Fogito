@@ -1,7 +1,7 @@
 import React from "react";
-import {Auth, ErrorBoundary, Api, useToast} from "fogito-core-ui";
-import {App, Lang} from "@plugins";
-import {apisCopy, apisDelete, apisUpdate} from "@actions";
+import {Lang, ErrorBoundary, Api, useToast} from "fogito-core-ui";
+import {App} from "@plugins";
+import {docsCopy, docsDelete, docsUpdate} from "@actions";
 import {API_ROUTES} from "@config";
 import {useHistory} from "react-router-dom";
 
@@ -13,7 +13,7 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
     const history = useHistory()
 
     const getUpdate = async () => {
-        let response = await apisUpdate({
+        let response = await docsUpdate({
             id: state.pro_id,
             data: state.data
         })
@@ -44,7 +44,7 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
 
     async function onDelete() {
         let id = state.docs_id;
-        let response = await apisDelete({id})
+        let response = await docsDelete({id})
         if(response.status === 'success') {
             setState({
                 ...state,
@@ -66,7 +66,7 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
     }
 
     async function onDuplicate() {
-        let response = await apisCopy({
+        let response = await docsCopy({
             id: state.data?.id,
             project_id: state.data?.project_id,
             parent_id: state.data?.parent_id,
@@ -105,7 +105,7 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
             }
         });
 
-        xhr[key].open("POST", Api.convert(API_ROUTES["apisImport"]), true);
+        xhr[key].open("POST", Api.convert(API_ROUTES["docsImport"]), true);
         xhr[key].withCredentials = true;
         xhr[key].send(data);
     };
@@ -171,7 +171,7 @@ export const HEADER = ({state, setState, refresh, refreshInfo}) => {
                             {
                                 state.docs?.length > 0 ?
                                     <a className="dropdown-item"
-                                       href={Api.convert(API_ROUTES.apisExport)+`?project_id=${state.pro_id}`}
+                                       href={Api.convert(API_ROUTES.docsExport)+`?project_id=${state.pro_id}`}
                                        target="_blank"
                                        download
                                     >

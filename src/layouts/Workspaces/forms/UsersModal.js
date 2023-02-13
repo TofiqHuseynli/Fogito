@@ -2,12 +2,12 @@
 import React from "react";
 import { Permissions } from "@components";
 import {
-  projectUsersAdd,
-  projectUsersDelete,
+  workspaceUsersAdd,
+  workspaceUsersDelete,
   userList,
-} from "../../../actions/user";
-import { Popup, ErrorBoundary, Loading } from "fogito-core-ui";
-import { App, Lang } from "@plugins";
+} from "@actions";
+import { Popup,Lang, ErrorBoundary, Loading } from "fogito-core-ui";
+import { App } from "@plugins";
 
 export const UsersModal = ({ users, project_id, setUsers }) => {
   const initialState = {
@@ -30,11 +30,11 @@ export const UsersModal = ({ users, project_id, setUsers }) => {
     setState({ loading: true });
     let response = null;
     if (selected) {
-      response = await projectUsersDelete({
+      response = await workspaceUsersDelete({
         data: { project_id: state.id, user_id: user.id },
       });
     } else {
-      response = await projectUsersAdd({
+      response = await workspaceUsersAdd({
         data: { project_id: state.id, user_id: user.id },
       });
     }

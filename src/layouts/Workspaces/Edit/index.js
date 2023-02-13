@@ -1,9 +1,9 @@
 import React from "react";
 import { Permissions } from "@components";
-import { projectsData, projectsInfo, projectsUpdate } from "@actions";
-import { General, Permissions as Perms } from "./components";
+import { workspacesData, workspacesInfo, workspacesUpdate } from "@actions";
+import { General } from "./components";
 import { Link } from "react-router-dom";
-import { projectUsersList } from "@actions/user";
+import { workspaceUsersList } from "@actions";
 import {
   Popup,
   ErrorBoundary,
@@ -11,10 +11,10 @@ import {
   AppContext,
   useModal,
   useToast,
+  Lang
 } from "fogito-core-ui";
-import { Lang, App } from "@plugins";
 import { Tab, TabPanel, Tabs } from "@components";
-import GlobalVariablesBox from "@layouts/Projects/components/GlobalVariablesBox";
+import GlobalVariablesBox from "@layouts/Workspaces/components/GlobalVariablesBox";
 
 export const Edit = ({
   name,
@@ -66,7 +66,7 @@ export const Edit = ({
   const refresh = async () => {
     setState({ loading: true });
     let id = state.id;
-    let response = await projectsInfo({ id });
+    let response = await workspacesInfo({ id });
     if (response.status === "success") {
       setState({
         data: { ...response.data },
@@ -78,7 +78,7 @@ export const Edit = ({
   };
 
   const getUsers = async () => {
-    let response = await projectUsersList({ data: { project_id: state.id } });
+    let response = await workspaceUsersList({ data: { project_id: state.id } });
     if (response.status === "success") {
       setState({
         users: response.data,
@@ -88,7 +88,7 @@ export const Edit = ({
   };
 
   const getList = async () => {
-    let response = await projectsData();
+    let response = await workspacesData();
     if (response.status === "success") {
       setState({
         status_data: response.data.status,
@@ -98,7 +98,7 @@ export const Edit = ({
   };
 
   const getUpdate = async () => {
-    let response = await projectsUpdate({
+    let response = await workspacesUpdate({
       id: state.id,
       data: state.data,
     });

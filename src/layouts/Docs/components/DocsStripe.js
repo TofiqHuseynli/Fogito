@@ -2,8 +2,7 @@ import React, {useEffect} from "react";
 import {Add} from "./Add";
 import { useHistory } from "react-router-dom";
 import { TreeViewComponent, ContextMenuComponent } from '@syncfusion/ej2-react-navigations';
-import {Popup, ErrorBoundary, Loading, useCookie, useModal} from 'fogito-core-ui'
-import {Lang} from "@plugins";
+import {Popup, ErrorBoundary, Loading, useCookie, useModal,Lang,} from 'fogito-core-ui'
 
 export const DocsStripe = ({state, setState, onDragEnd, refresh}) => {
 

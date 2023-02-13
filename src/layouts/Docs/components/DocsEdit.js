@@ -1,10 +1,9 @@
 import React from 'react';
 import { TestApi } from "@components";
-import { projectsData} from "@actions";
+import { workspacesData} from "@actions";
 import {JsonModal} from "../forms";
 import classNames from "classnames";
-import {Popup, ErrorBoundary, Loading, useModal, App} from 'fogito-core-ui';
-import {Lang} from "@plugins";
+import {Popup, ErrorBoundary, Loading, useModal, Lang,} from 'fogito-core-ui';
 import {Responses} from "@layouts/Docs/Responses";
 import {Request} from "@layouts/Docs/Request";
 import {Content} from "@layouts/Docs/Content";
@@ -15,7 +14,7 @@ export const DocsEdit = (props) => {
     let {refreshInfo, state, setState, status, setStatus, params, setParams} = props;
 
     const getList = async () => {
-        let response = await projectsData()
+        let response = await workspacesData()
         if (response.status === 'success') {
             setState({
                 status_data: response.data.status,

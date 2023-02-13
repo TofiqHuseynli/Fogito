@@ -1,8 +1,7 @@
 // More Users with Tooltip
 import React from "react";
 import {Tooltip} from "antd";
-import {ErrorBoundary} from "fogito-core-ui";
-import {Lang} from "@plugins";
+import {ErrorBoundary,Lang} from "fogito-core-ui";
 
 
 export const ProjectUsersTooltip = ({item, children}) => {

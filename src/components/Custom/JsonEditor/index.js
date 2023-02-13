@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { apisData } from "@actions";
+import { docsData } from "@actions";
 import { NewLine, Tree } from "./components";
 import { useOutsideAlerter } from "@hooks";
 import { ErrorBoundary } from "fogito-core-ui";
@@ -31,7 +31,7 @@ export const JsonEditor = ({ state, setState }) => {
   const [columns, setColumns] = React.useState([]);
 
   const getTypes = async () => {
-    let response = await apisData();
+    let response = await docsData();
     if (response) {
       if (response.status === "success") {
         setTypes(response.data?.type_list);

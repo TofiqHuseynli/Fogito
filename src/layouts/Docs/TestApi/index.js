@@ -1,8 +1,6 @@
 import React from "react";
-import {ErrorBoundary, Loading, Textarea, App} from "fogito-core-ui";
-import {Lang} from "@plugins";
+import {ErrorBoundary, Loading, Textarea, Lang,} from "fogito-core-ui";
 import {prepareText, sendRequest, loadData, saveRequest} from "@layouts/Docs/TestApi/actions";
-import {Checkbox} from "antd";
 
 export const TestApi = ({id, project_id, url, parameters, methods}) => {
     const initialState = {

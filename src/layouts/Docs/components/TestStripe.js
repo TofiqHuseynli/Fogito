@@ -1,6 +1,5 @@
 import React from "react";
 import { ErrorBoundary } from "fogito-core-ui";
-import { apisMove } from "@actions";
 
 export const TestStripe = ({ state, setState }) => {
   const [data, setData] = React.useState([]);
@@ -67,16 +66,7 @@ export const TestStripe = ({ state, setState }) => {
     );
     e.target.style.opacity = 1;
     e.target.style.boxShadow = "none";
-    //         await apisMove(
-    //     'dataMove',
-    //     {
-    //         id: currentItem.id,
-    //         project_id: state.pro_id,
-    //         parent_id: 0,
-    //         // (data.position === "Inside") ? data.droppedNodeData.id : data.droppedNodeData.parentID,
-    //         position: item.index
-    //     }
-    // )
+
   }
 
   function dragOverHandler(e, item, child) {

@@ -1,17 +1,16 @@
 import React from 'react';
-import { apisInfo, apisMove, documentationStripe, proxyList} from "@actions";
-import {DocsEdit, DocsStripe, HEADER, TestStripe} from "./components";
+import { docsInfo, docsMove, documentationStripe} from "@actions";
+import {DocsEdit, DocsStripe, HEADER} from "./components";
 import {Add} from "./components";
 import {useHistory} from 'react-router-dom';
 import {
     ErrorBoundary,
     Header,
     useCookie,
-    Auth,
+    Lang,
     Popup,
-    useModal, Members
+    useModal,
 } from "fogito-core-ui";
-import {Lang} from "@plugins";
 
 export const Docs = (props) => {
 
@@ -76,14 +75,12 @@ export const Docs = (props) => {
     })
 
     async function onDragEnd(data) {
-        const url = 'dataMove';
-        const obj = {
+        await docsMove({
             id: data.draggedNodeData.id,
             project_id: state.pro_id,
             parent_id: (data.position === "Inside") ? data.droppedNodeData.id : data.droppedNodeData.parentID,
             position: data.dropIndex + 1
-        };
-        await apisMove(url, obj);
+        });
     }
 
     async function refresh() {
@@ -102,7 +99,7 @@ export const Docs = (props) => {
     const refreshInfo = async () => {
         setState({loading: true})
         let id = state.docs_id;
-        let response = await apisInfo({id})
+        let response = await docsInfo({id})
         if (response.status === 'success') {
             setState({
                 data: response.data,

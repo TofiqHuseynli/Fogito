@@ -1,10 +1,10 @@
 import React from 'react';
-import {Api, App, ErrorBoundary} from "fogito-core-ui";
-import {Lang} from "@plugins";
+import {Api, App, Lang, ErrorBoundary} from "fogito-core-ui";
 import {useEffect} from "react";
-import {proxyList} from "@actions";
+import {requestsEdit, requestsList} from "@actions";
 import {DateLib} from "@plugins/DateLib";
 import {Checkbox} from "antd";
+import * as FunctionLib from "@plugins";
 
 export function Responses({id, project_id})
 {
@@ -24,7 +24,7 @@ export function Responses({id, project_id})
     }, [id]);
 
     async function loadResponses(apiId){
-        let response = await proxyList({data: {api_id: apiId}});
+        let response = await requestsList({data: {api_id: apiId}});
         if(response.status === 'success') {
             setState({
                 list: response.data,
@@ -37,11 +37,12 @@ export function Responses({id, project_id})
 
     async function setVisibleOnDocs(row, value){
         row.visible_on_docs = !!value ? 1: 0;
-        let response = await Api.post("requestUpdateField", {data: {
+        let response = await requestsEdit({
             id: row.id,
             field: "visible_on_docs",
             value: row.visible_on_docs,
-        }});
+        })
+
         if(response.status === "error")
             alert(response.description)
 
@@ -79,7 +80,7 @@ export function Responses({id, project_id})
                                                 <pre className='fs-14'>
                                                     {
                                                         !!row.request?.parameters ?
-                                                        <div style={{lineHeight: 1.3}} dangerouslySetInnerHTML={App.getData().createMarkup(App.getData().jsonDesign(row.request?.parameters))}/>
+                                                        <div style={{lineHeight: 1.3}} dangerouslySetInnerHTML={FunctionLib.createMarkup(FunctionLib.jsonDesign(row.request?.parameters))}/>
                                                             :
                                                             '{}'
                                                     }

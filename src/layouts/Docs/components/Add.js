@@ -1,8 +1,6 @@
 import React from 'react';
-import {App} from "@plugins";
-import {ErrorBoundary, useToast} from "fogito-core-ui";
-import {Lang} from "@plugins";
-import {apisCreate, apisCreateSub} from "@actions";
+import {ErrorBoundary, useToast, Lang,} from "fogito-core-ui";
+import {docsCreate, docsCreateSub} from "@actions";
 
 
 export const Add = ({_id, refresh, type, docType, onClose, reFocus, refreshBoolean}) => {
@@ -18,9 +16,9 @@ export const Add = ({_id, refresh, type, docType, onClose, reFocus, refreshBoole
         e.preventDefault()
         let response = null
         if(type === 'add_docs') {
-            response = await apisCreate({data: params, project_id: _id})
+            response = await docsCreate({data: params, project_id: _id})
         } else if (type === 'add_sub') {
-            response = await apisCreateSub({data: params, id: _id})
+            response = await docsCreateSub({data: params, id: _id})
         } else {
 
         }

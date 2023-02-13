@@ -1,7 +1,7 @@
 import React from "react";
 import {Permissions, ProjectUsersTooltip} from "@components";
 import UsersTooltip from "./Tooltip/UsersTooltip";
-import {projectUsersDelete} from "../../actions/user";
+import {workspaceUsersDelete} from "@actions";
 import {Popup, ErrorBoundary, Lang} from 'fogito-core-ui';
 import {App} from '@plugins'
 
@@ -14,7 +14,7 @@ export const Members = ({ state, users, setUsers, openMembersModal }) => {
             project_id: state.id,
             user_id: user.id
         }
-        let response = await projectUsersDelete({data})
+        let response = await workspaceUsersDelete({data})
         if(response.status === 'success') {
             setUsers(users.filter(row => row.id !== user.id))
         }

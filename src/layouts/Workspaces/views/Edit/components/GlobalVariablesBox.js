@@ -1,26 +1,23 @@
 import React from 'react';
 import {Lang} from "fogito-core-ui";
 
-export default function GlobalVariablesBox({ variables, setVars })
-{
-    function addVar(index){
-        variables.splice(index+1, 0, {key: "", value: ""})
+export const GlobalVariablesBox = ({variables, setVars}) => {
+    function addVar(index) {
+        variables.splice(index + 1, 0, {key: "", value: ""})
         setVars(variables);
     }
 
-    function removeVar(index){
+    function removeVar(index) {
         variables.splice(index, 1)
         setVars(variables);
     }
 
-    function setKey(index, key)
-    {
+    function setKey(index, key) {
         variables[index]['key'] = key;
         setVars(variables);
     }
 
-    function setValue(index, key)
-    {
+    function setValue(index, key) {
         variables[index]['value'] = key;
         setVars(variables);
     }

@@ -42,8 +42,9 @@ export class Parameters {
 
     static getStatusList() {
         return [
-            {value: '0', label: Lang.get('InActive'), color: '#ffd600'},
-            {value: '1', label: Lang.get('Active'), color: '#2dce89'},
+            {value: 1, label: Lang.get('Active'), color: '#2dce89'},
+            {value: 2, label: Lang.get('InProgress'), color: '#ffd600'},
+            {value: 3, label: Lang.get('Closed'), color: '#d70315'},
         ];
     }
 

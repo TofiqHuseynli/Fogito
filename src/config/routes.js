@@ -27,7 +27,7 @@ export const API_ROUTES = {
     workspaceUsersList: MICROSERVICE_URL + "/workspaces/users/list",
     workspaceUsersAdd: MICROSERVICE_URL + "/workspaces/users/add",
     workspaceUsersDelete: MICROSERVICE_URL + "/workspaces/users/delete",
-    projectUsersLeave: MICROSERVICE_URL + "/workspaces/users/leave",
+    workspaceUsersOwnerSet: MICROSERVICE_URL + "/workspaces/users/setowner",
 
     // Workspace Permissions List
     permissionsList: MICROSERVICE_URL + "/permissions/list",

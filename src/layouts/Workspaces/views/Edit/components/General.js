@@ -170,8 +170,7 @@ export const General = ({ state, setState }) => {
             <Members
               id={state.id}
               users={state.employees}
-              ids={state.userIds}
-              getIds={(userIds) => setState({ userIds })}
+              ids={state.employees?.ids}
               toggleUrl="userList" // this url must come from routes. (like /cards/users)
               permissionsUrl="permissions" // this url must come from routes. (like /cards/permissions)
               userListUrl="userList"

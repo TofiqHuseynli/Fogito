@@ -16,3 +16,7 @@ export const workspaceUsersAdd = (params) => {
 export const workspaceUsersDelete = (params) => {
   return Api.get("workspaceUsersDelete", {data:params});
 };
+
+export const workspaceUsersOwnerSet = (params) => {
+  return Api.get("workspaceUsersOwnerSet", {data:params});
+};

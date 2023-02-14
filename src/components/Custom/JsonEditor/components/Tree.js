@@ -22,11 +22,6 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
         value: ''
     });
 
-    useEffect(() => {
-        console.log("");
-        console.log('valueindex', valueIndex, valueItem);
-        console.log("");
-    }, [])
 
     const [boolean] = React.useState([
         {value: true, label: 'true'},
@@ -425,7 +420,7 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                                                         <input
                                                             className={`is_required text-light ${children[index].is_required ? 'active' : '' }`}
                                                             type='checkbox'
-                                                            onChange={(e)=> setValue(index, !!e.target.checked ? 1 : 0, 'is_required') + console.log('test')}
+                                                            onChange={(e)=> setValue(index, !!e.target.checked ? 1 : 0, 'is_required')}
                                                         />
                                                         {
                                                             edit === index ? (

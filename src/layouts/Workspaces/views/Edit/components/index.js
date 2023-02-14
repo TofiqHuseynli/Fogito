@@ -1,3 +1,3 @@
 export * from "./General";
-export * from "./Permissions";
-export * from "./GlobalVariablesBox";
+export * from "./Permission";
+export * from "./GlobalVariables";

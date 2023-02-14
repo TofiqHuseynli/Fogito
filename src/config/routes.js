@@ -21,7 +21,6 @@ export const API_ROUTES = {
     workspacesMinList: MICROSERVICE_URL + "/workspaces/min-list",
     workspacesUpdate: MICROSERVICE_URL + "/workspaces/update",
     workspacesInfo: MICROSERVICE_URL + "/workspaces/info",
-    workspacesData: MICROSERVICE_URL + "/workspaces/data",
 
     // Workspace Users
     workspaceUsersList: MICROSERVICE_URL + "/workspaces/users/list",
@@ -64,7 +63,7 @@ export const API_ROUTES = {
 
 export const MENU_ROUTES = [
     {
-        path: "/docs",
+        path: "/workspaces",
         name: "TechnicalDocuments",
         icon: <i className="symbol feather feather-list text-muted"/>,
         isExact: false,

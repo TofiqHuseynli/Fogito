@@ -1,13 +1,15 @@
 import React from 'react';
-import {Lang} from "fogito-core-ui";
+import {ErrorBoundary, Lang} from "fogito-core-ui";
 
-export const GlobalVariablesBox = ({variables, setVars}) => {
-    function addVar(index) {
-        variables.splice(index + 1, 0, {key: "", value: ""})
+export const GlobalVariables = ({variables, setVars}) => {
+
+    function addItem(index = 0) {
+        let newItem = {key: "", value: ""};
+        variables.splice(index + 1, 0,newItem)
         setVars(variables);
     }
 
-    function removeVar(index) {
+    function removeItem(index) {
         variables.splice(index, 1)
         setVars(variables);
     }
@@ -23,12 +25,11 @@ export const GlobalVariablesBox = ({variables, setVars}) => {
     }
 
     return (
-        <>
-            {
-                variables?.map((variable, index) => (
-                    <div key={index} className="gvar-row mb-3">
+        <ErrorBoundary>
+            <div className="row col-lg-8">
+                {variables?.map((variable, index) => (
+                    <div key={index} className="mb-3 d-flex">
                         <input
-                            style={{flex: 1}}
                             className="form-control"
                             placeholder={Lang.get("Key")}
                             value={variable.key}
@@ -36,32 +37,32 @@ export const GlobalVariablesBox = ({variables, setVars}) => {
                         />
 
                         <input
-                            style={{flex: 2, marginLeft: '1rem'}}
-                            className="form-control"
+                            className="form-control mx-2"
                             placeholder={Lang.get("Value")}
                             value={variable.value}
                             onChange={(e) => setValue(index, e.target.value)}
                         />
 
-                        <button className="btn btn-primary lh-24 px-3" onClick={() => addVar(index)}>
+                        <button className="btn btn-primary" onClick={() => addItem(index)}>
                             <i className="feather feather-plus fs-16"/>
                         </button>
 
-                        <button className="btn btn-danger lh-24 px-3" onClick={() => removeVar(index)}>
+                        <button className="btn btn-danger" onClick={() => removeItem(index)}>
                             <i className="feather feather-trash fs-16"/>
                         </button>
                     </div>
-                ))
-            }
+                ))}
 
-            {
-                variables?.length === 0 &&
-                <div className="gvar-row">
-                    <button className="btn btn-primary lh-24 px-3" onClick={() => addVar(0)}>
+                {variables?.length === 0 && (
+                    <button
+                        type='button'
+                        className="btn btn-primary px-5"
+                        onClick={addItem}
+                    >
                         <i className="feather feather-plus fs-16"/>
                     </button>
-                </div>
-            }
-        </>
+                )}
+            </div>
+        </ErrorBoundary>
     )
 }

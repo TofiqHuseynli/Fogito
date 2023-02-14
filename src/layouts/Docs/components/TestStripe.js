@@ -32,7 +32,6 @@ export const TestStripe = ({ state, setState }) => {
 
   // functions
   function dragStartHandlerParent(e, item) {
-    console.log("drag", item);
     setCurrentItem(item);
   }
 

@@ -17,7 +17,6 @@ export function Content({state, setState})
                     data={state.data.description}
                     onChange={ ( event, editor ) => {
                         const data = editor.getData();
-                        console.log( { event, editor, data } )
                         setState({...state, data: {...state.data, description: data}})
                     }}
                     style={{

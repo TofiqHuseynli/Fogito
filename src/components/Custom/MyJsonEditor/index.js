@@ -88,7 +88,6 @@ export const MyJsonEditor = ({ state, setState }) => {
     for (let index of deepIndex) {
       if (i === deepIndex.length - 1) {
         // last iteration
-        console.log("delete", reference[index]);
         reference.splice(index, 1);
       } else {
         reference = reference[index].value;

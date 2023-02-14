@@ -442,7 +442,6 @@ export const JsonEditor = ({ state, setState }) => {
   };
 
   async function onDragEnd(result) {
-    console.log("result", result);
     const columns = state.data.parameters;
     if (!result.destination) return;
 
@@ -456,8 +455,6 @@ export const JsonEditor = ({ state, setState }) => {
         (item, index) =>
           item.key + "_" + index + "__" === result.source.droppableId
       );
-      console.log("columnsss", columnFrom);
-      console.log("result.source.droppableId", result.source.droppableId);
       let columnTo = columns.find(
         (item, index) =>
           item.key + "_" + index + "__" === result.destination.droppableId
@@ -471,9 +468,6 @@ export const JsonEditor = ({ state, setState }) => {
       );
       let data = (state.data.parameters[i].value = items);
       setState({ ...data });
-      console.log("sort", sorted);
-      // console.log('sort', card)
-      console.log("iddd", i);
     } else {
       const items = reorder(
         state.data.parameters,
@@ -485,7 +479,6 @@ export const JsonEditor = ({ state, setState }) => {
     }
   }
 
-  console.log(state.data.parameters);
 
   // this function for inputs/forms onblur
   const onCloseForm = () => {
@@ -613,7 +606,6 @@ export const JsonEditor = ({ state, setState }) => {
                                       state,
                                     }}
                                   />
-                                  {console.log("types", types)}
                                   <Type
                                     {...{ item, changeType, types, index }}
                                   />{" "}

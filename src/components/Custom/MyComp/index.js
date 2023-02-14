@@ -267,7 +267,7 @@ export const File = ({data, setData}) => {
 
     const onDrop = (e, item, index) => {
         if(item.id === currentItem.parent_id) {
-            console.log('inside')
+
         } else {
             let elem = data[currentIndex]
             data.splice(currentIndex, 1);

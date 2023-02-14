@@ -1,7 +1,7 @@
 import React from "react";
-import {Permissions} from "@components";
+import {Spinner} from "@components";
 import {workspacesInfo, workspacesUpdate} from "@actions";
-import {General, GlobalVariablesBox} from "./components";
+import {General, GlobalVariables, Permission} from "./components";
 import {Link} from "react-router-dom";
 import {
     Popup,
@@ -12,34 +12,37 @@ import {
 } from "fogito-core-ui";
 import {Tab, TabPanel, Tabs} from "@components";
 
-export const Edit = ({name, match, history, onClose,reload}) => {
+export const Edit = ({match, onClose, reload}) => {
+
+    const toast = useToast();
 
     const [state, setState] = React.useReducer(
         (prevState, newState) => ({...prevState, ...newState,}), {
             id: match?.params?.id,
             loading: false,
+            saveLoading: false,
             updated: false,
+            reload_required: false,
             activeTab: "general",
-            permissions_data: [],
             status_data: [],
             public_data: [],
-            editor_type: "json",
-            employees: {},
-            data: {
+            members: {},
+            params: {
                 id: match?.params?.id,
                 title: "",
                 slug: "",
                 description: "",
                 api_url: "",
                 api_path: "",
-                members: false,
                 status: "",
                 public: "",
                 global_variables: [],
             }
         });
 
-    const toast = useToast();
+    const setParams = (data) =>{
+        setState({params: {...state.params,...data}})
+    }
 
     const loadData = async () => {
         setState({loading: true});
@@ -48,24 +51,41 @@ export const Edit = ({name, match, history, onClose,reload}) => {
         if (response.status === "success") {
             setState({
                 loading: false,
-                data: {...response.data},
-                employees: response.data.members,
+                params: {...response.data},
+                members: response.data.members,
             });
         }
     };
 
     const onSubmit = async () => {
-        let response = await workspacesUpdate(state.data);
-
-        if (response) {
-            toast.fire({
-                title: response.description,
-                icon: response.status,
+        setState({saveLoading: true});
+        if (!state.saveLoading) {
+            let response = await workspacesUpdate({
+                ...state.params,
+                status: state.params.status?.value,
             });
 
-            if (response.status === 'success'){
-              reload();
+            if (response) {
+                setState({
+                    saveLoading: false,
+                    reload_required: true,
+                });
+                toast.fire({
+                    title: response.description,
+                    icon: response.status,
+                });
             }
+        }
+    };
+
+    const goBack = () => {
+        if (typeof onClose === 'function') {
+            onClose();
+        } else {
+            history.push('/workspaces');
+        }
+        if (state.reload_required) {
+            reload();
         }
     };
 
@@ -82,69 +102,49 @@ export const Edit = ({name, match, history, onClose,reload}) => {
             key: "general",
             title: "General",
             permission: true,
-            component: <General state={state} setState={setState}/>,
+            component: <General
+                state={state}
+                setParams={setParams}
+            />,
         },
         {
-            key: "permissions",
-            title: "Permissions",
+            key: "permission",
+            title: "Permission",
             permission: true,
-            component: (
-                <div className="row">
-                    <div className="col-md-8">
-                        <label>{Lang.get("Permissions")}</label>
-                        <Permissions state={state} setState={setState}/>
-                    </div>
-                </div>
-            ),
+            component: <Permission workspace_id={state.id} tab={state.activeTab}/>,
         },
         {
-            key: "globalVariables",
-            title: "Global Variables",
+            key: "global_variables",
+            title: "GlobalVariables",
             permission: true,
-            component: (
-                <div className="row">
-                    <div className="col-md-8">
-                        <label>{Lang.get("GlobalVariables")}</label>
-                        <GlobalVariablesBox
-                            variables={state.data?.global_variables || []}
-                            setVars={(globalVariables) =>
-                                setState({
-                                    data: {
-                                        ...state.data,
-                                        global_variables: globalVariables,
-                                    },
-                                })
-                            }
-                        />
-                    </div>
-                </div>
-            ),
+            component: <GlobalVariables
+                variables={state.params?.global_variables || []}
+                setVars={(global_variables) => setParams({global_variables})}
+            />,
         },
     ];
 
     return (
         <ErrorBoundary>
             <Popup
-                size="xl"
                 show
-                onClose={() => onClose()}
+                size="xl"
+                onClose={goBack}
                 header={
                     <div className="d-flex align-items-center justify-content-between w-100">
-                        <div>
-                            <button
-                                className="btn btn-primary lh-24 px-3 text-center"
-                                onClick={() => history.goBack()}
-                            >
-                                <i className="feather feather-chevron-left fs-20 "/>
-                            </button>
-                        </div>
+                        <button
+                            className="btn btn-primary lh-24 px-3 text-center"
+                            onClick={goBack}
+                        >
+                            <i className="feather feather-chevron-left fs-20 "/>
+                        </button>
 
-                        <h3 className="text-primary">{Lang.get(name)}</h3>
+                        <h3 className="text-primary">{Lang.get('Edit')}</h3>
 
                         <div className="d-flex justify-content-end">
                             <Link
                                 className="btn btn-primary"
-                                to={{pathname: `/docs/${state.data?.id}`}}
+                                to={{pathname: `/docs/${state.id}`}}
                             >
                                 {Lang.get("GoDocs")}
                             </Link>
@@ -153,27 +153,25 @@ export const Edit = ({name, match, history, onClose,reload}) => {
                                     className="btn btn-success"
                                     onClick={onSubmit}
                                 >
-                                    {Lang.get("Save")}
+                                    {state.saveLoading ? (
+                                        <Spinner color="#fff" style={{width: 30}}/>) : (Lang.get("Save"))}
                                 </button>
                             </div>
                         </div>
                     </div>
                 }
             >
-                {/* Content */}
-                <div style={{minHeight: 400}}>
-                    {state.loading && <Loading/>}
+                {state.loading && <Loading/>}
 
+                <div style={{minHeight: 400}}>
                     <Tabs
                         selectedTab={state.activeTab}
-                        onChange={(activeTab) => setState({activeTab: activeTab})}
-                    >
+                        onChange={(activeTab) => setState({activeTab})}>
                         {TABS.filter((tab) => !!tab.permission).map((item, index) => (
                             <Tab label={item.title} value={item.key} key={index}/>
                         ))}
                     </Tabs>
                     <div className="position-relative mt-3">
-                        {state.loading && <Loading/>}
                         {TABS.filter((tab) => !!tab.permission).map((item, index) => (
                             <TabPanel
                                 value={state.activeTab}

@@ -128,7 +128,7 @@ export const App = () => {
       <Content sidebar={false}>
         <Switch>
           {renderRoutes(MENU_ROUTES)}
-          <Redirect from="*" to="/docs" />
+          <Redirect from="*" to="/workspaces" />
         </Switch>
       </Content>
     </ErrorBoundary>

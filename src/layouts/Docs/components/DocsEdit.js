@@ -1,36 +1,32 @@
 import React from 'react';
-import { TestApi } from "@components";
-import { workspacesData} from "@actions";
 import {JsonModal} from "../forms";
 import classNames from "classnames";
 import {Popup, ErrorBoundary, Loading, useModal, Lang,} from 'fogito-core-ui';
 import {Responses} from "@layouts/Docs/Responses";
 import {Request} from "@layouts/Docs/Request";
 import {Content} from "@layouts/Docs/Content";
+import {TestApi} from "@layouts/Docs/TestApi";
 
 export const DocsEdit = (props) => {
 
     const modal = useModal()
     let {refreshInfo, state, setState, status, setStatus, params, setParams} = props;
 
-    const getList = async () => {
-        let response = await workspacesData()
-        if (response.status === 'success') {
-            setState({
-                status_data: response.data.status,
-                public_data: response.data.public,
-            })
-        }
-    }
+    // const getList = async () => {
+    //     let response = await workspacesData()
+    //     if (response.status === 'success') {
+    //         setState({
+    //             status_data: response.data.status,
+    //             public_data: response.data.public,
+    //         })
+    //     }
+    // }
 
     React.useEffect(()=> {
         window.scrollTo(0,0);
         refreshInfo()
     },[state.docs_id])
 
-    React.useEffect(()=> {
-        getList()
-    },[])
 
     const TABS = [
         {

@@ -5,7 +5,7 @@ export const workspacesList = (params) => {
 };
 
 export const workspacesMinList = (params) => {
-    return Api.post("workspacesMinList", {data:params});
+    return Api.get("workspacesMinList", {data:params});
 };
 
 export const workspacesCreate = (params) => {
@@ -17,13 +17,9 @@ export const workspacesDelete = (params) => {
 };
 
 export const workspacesInfo = (params) => {
-    return Api.post("workspacesInfo", {data:params});
+    return Api.get("workspacesInfo", {data:params});
 };
 
 export const workspacesUpdate = (params) => {
     return Api.post("workspacesUpdate", {data:params});
-};
-
-export const workspacesData = (params) => {
-    return Api.post("workspacesData", {data:params});
 };

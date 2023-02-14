@@ -14,17 +14,17 @@ export const TableCustom = ({state, setState,path,loadData}) => {
             render: (data) => (
                 <div className="user__content">
                     <Link to={`${path}/edit/${data?.id}?`}>{data.title}</Link>
-                    <p
-                        className="text-muted fs-14 mb-0 lh-16"
-                        style={{
-                            textOverflow: "ellipsis",
-                            overflow: "hidden",
-                            whiteSpace: "nowrap",
-                            width: 190,
-                            height: 17,
-                        }}>
-                        {data?.description}
-                    </p>
+                    {/*<p*/}
+                    {/*    className="text-muted fs-14 mb-0 lh-16"*/}
+                    {/*    style={{*/}
+                    {/*        textOverflow: "ellipsis",*/}
+                    {/*        overflow: "hidden",*/}
+                    {/*        whiteSpace: "nowrap",*/}
+                    {/*        width: 190,*/}
+                    {/*        height: 17,*/}
+                    {/*    }}>*/}
+                    {/*    {data?.description}*/}
+                    {/*</p>*/}
                 </div>),
         },
         {

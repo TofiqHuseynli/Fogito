@@ -40,7 +40,6 @@ export const API_ROUTES = {
 
     // docs
     docsCreate: MICROSERVICE_URL + "/docs/create",
-    docsCreateSub: MICROSERVICE_URL + "/docs/create-sub",
     docsUpdate: MICROSERVICE_URL + "/docs/update",
     docsList: MICROSERVICE_URL + "/docs/list",
     docsMinList: MICROSERVICE_URL + "/docs/min-list",

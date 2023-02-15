@@ -12,10 +12,6 @@ export const docsMinList = (params) => {
     return Api.get("docsMinList", {data:params});
 };
 
-export const docsCreateSub = (params) => {
-    return Api.post("docsCreateSub", {data:params});
-};
-
 export const docsCreate = (params) => {
     return Api.post("docsCreate", {data:params});
 };

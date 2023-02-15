@@ -1,0 +1,22 @@
+//.dropdown-add-btn::after{
+//  display: none !important;
+//}
+
+label.required,
+label .required {
+  position: relative;
+
+  &::after {
+    content: "*";
+    position: absolute;
+    right: -11px;
+    top: 0;
+    color: var(--danger-rgb-70);
+  }
+}
+
+//.horizontal-navbar ul .nav-item .nav-link.active{
+//  color: $color-general !important;
+//  border-bottom: 2px solid $color-general !important;
+//}
+

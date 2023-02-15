@@ -1,15 +1,15 @@
 import {Api} from "fogito-core-ui";
 
 export const documentationStripe = (params) => {
-    return Api.post("documentationStripe", {data:params});
+    return Api.get("documentationStripe", {data:params});
 };
 
 export const docsList = (params) => {
-    return Api.post("docsList", {data:params});
+    return Api.get("docsList", {data:params});
 };
 
 export const docsMinList = (params) => {
-    return Api.post("docsMinList", {data:params});
+    return Api.get("docsMinList", {data:params});
 };
 
 export const docsCreateSub = (params) => {
@@ -29,14 +29,14 @@ export const docsUpdate = (params) => {
 };
 
 export const docsData = (params) => {
-    return Api.post("docsData", {data:params});
+    return Api.get("docsData", {data:params});
 };
 
 export const docsInfo = (params) => {
-    return Api.post("docsInfo", {data:params});
+    return Api.get("docsInfo", {data:params});
 };
 
-export const docsMove = (url, obj) => {
+export const docsMove = (params) => {
     return Api.post("docsMove", {data:params});
 };
 

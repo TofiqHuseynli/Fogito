@@ -1,6 +1,5 @@
 import {Lang, useToast} from "fogito-core-ui";
 import React from "react";
-import {multiList} from "@actions";
 
 export const serialize = (obj, prefix) => {
     let str = [];

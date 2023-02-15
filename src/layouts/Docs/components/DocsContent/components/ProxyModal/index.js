@@ -1,11 +1,11 @@
 import React from "react";
 import {ErrorBoundary, Loading, Textarea, Lang,} from "fogito-core-ui";
-import {prepareText, sendRequest, loadData, saveRequest} from "@layouts/Docs/TestApi/actions";
+import {prepareText, sendRequest, loadData, saveRequest} from "./actions";
 
-export const TestApi = ({id, project_id, url, parameters, methods}) => {
+export const ProxyModal = ({id, workspace_id, url, parameters, methods}) => {
     const initialState = {
         id: id,
-        project_id: project_id,
+        workspace_id: workspace_id,
         url: url,
         projectUrl: url,
         method: methods && methods.length>0 ? methods[0]: "get",

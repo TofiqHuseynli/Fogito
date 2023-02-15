@@ -13,7 +13,7 @@ export const TableCustom = ({state, setState,path,loadData}) => {
             name: Lang.get("Title"),
             render: (data) => (
                 <div className="user__content">
-                    <Link to={`${path}/edit/${data?.id}?`}>{data.title}</Link>
+                    <Link to={{pathname: `/docs/${data.id}`}} >{data.title}</Link>
                     {/*<p*/}
                     {/*    className="text-muted fs-14 mb-0 lh-16"*/}
                     {/*    style={{*/}
@@ -75,15 +75,17 @@ export const TableCustom = ({state, setState,path,loadData}) => {
                         style={{fontSize: "1.2rem"}}
                     />
                     <div className="dropdown-menu">
+                        <Link to={`docs/${data?.id}`} className="dropdown-item">
+                            {Lang.get("Docs")}
+                        </Link>
+
                         <Link
                             to={`${path}/edit/${data?.id}/${data?.title?.substring(0, 20)}`}
                             className="dropdown-item"
                         >
                             {Lang.get("Edit")}
                         </Link>
-                        <Link to={`docs/${data?.id}`} className="dropdown-item">
-                            {Lang.get("Docs")}
-                        </Link>
+
                         <button
                             className="dropdown-item text-danger"
                             onClick={() => App.deleteModal(() => onDelete(data.id))}

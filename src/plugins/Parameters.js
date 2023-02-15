@@ -48,6 +48,16 @@ export class Parameters {
         ];
     }
 
+    static getRequestMethods() {
+        return [
+            {value: 'get', label: Lang.get('get')},
+            {value: 'post', label: Lang.get('post')},
+            {value: 'put', label: Lang.get('put')},
+            {value: 'delete', label: Lang.get('delete')},
+            {value: 'multipart', label: Lang.get('multipart')},
+        ];
+    }
+
     static getMonths() {
         return [
             Lang.get('January'),

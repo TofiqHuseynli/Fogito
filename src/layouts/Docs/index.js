@@ -1,241 +1,160 @@
 import React from 'react';
-import { docsInfo, docsMove, documentationStripe} from "@actions";
-import {DocsEdit, DocsStripe, HEADER} from "./components";
+import {docsInfo, docsList, documentationStripe} from "@actions";
+import {DocsContent, DocsSidebar, DocsHeader} from "./components";
 import {Add} from "./components";
 import {useHistory} from 'react-router-dom';
 import {
     ErrorBoundary,
-    Header,
     useCookie,
     Lang,
     Popup,
     useModal,
 } from "fogito-core-ui";
+import {Empty} from "antd";
 
 export const Docs = (props) => {
+
+    const {match} = props;
 
     const modal = useModal()
     const history = useHistory()
     const cookie = useCookie()
-    const initialState = {
-        docs_id: props.match.params.docs_id,
-        id: props.match.params.id,
-        _id: '',
-        pro_id: props.match.params.id,
-
-        status_data: [],
-        public_data: [],
-        docs: [],
-        file: {},
-
-        options: [
-            { value: 'get',       label: 'get' },
-            { value: 'post',      label: 'post' },
-            { value: 'put',       label: 'put' },
-            { value: 'delete',    label: 'delete' },
-            { value: 'multipart', label: 'multipart' }
-        ],
-        data: {
-            title: "",
-            slug: "",
-            description: "",
-            parameters: [],
-            parameters_note: {},
-            url: "",
-            methods: [],
-            index: "",
-            status: null,
-            public: ''
-        },
-
-        initData: [],
-        perms_modal: false,
-        loading: false,
-        loadingStripe: false,
-        tab: 'params',
-    };
 
     //  actions
     const [state, setState] = React.useReducer((prevState, newState) => {
         return {...prevState, ...newState};
-    }, initialState);
+    }, {
+        id: match.params.id,
+        workspace_id: match.params.id,
+        docs_id: match.params.docs_id,
+        doc_type: 'folder', //folder /document
 
-    const [status, setStatus] = React.useState({})
-    const [params, setParams] = React.useState({
-        title: "",
-        slug: "",
-        description: "",
-        parameters: [],
-        parameters_note: {},
-        url: "",
-        methods: [],
-        index: "",
-        status: null,
-        public: ''
-    })
-
-    async function onDragEnd(data) {
-        await docsMove({
-            id: data.draggedNodeData.id,
-            project_id: state.pro_id,
-            parent_id: (data.position === "Inside") ? data.droppedNodeData.id : data.droppedNodeData.parentID,
-            position: data.dropIndex + 1
-        });
-    }
-
-    async function refresh() {
-        setState({ loadingStripe: true })
-        let project_id = state.pro_id
-        let response = await documentationStripe({project_id})
-        if(response.status === 'success') {
-            setState({
-                project_id: response.data.project_id,
-                docs: response.data,
-                loadingStripe: false
-            })
-        }
-    }
+        docs: [],
+        file: {},
+        data: {},
+        activeTab: 'general',
+        loading: false,
+        loadingContent: false,
+    });
 
     const refreshInfo = async () => {
         setState({loading: true})
-        let id = state.docs_id;
-        let response = await docsInfo({id})
+        let response = await docsInfo({id : state.docs_id})
         if (response.status === 'success') {
-            setState({
-                data: response.data,
-                loading: false,
-            })
-            setStatus(response.data.status)
-            setParams(response.data)
+            setState({ data: response.data })
         }
-        setState({ loading: false })
+        setState({loading: false})
     }
 
     async function refreshWidthFocus() {
-        setState({ loadingStripe: true })
-        let project_id = state.pro_id
-        let response = await documentationStripe({project_id})
-        if(response.status === 'success') {
-            setState({
-                loadingStripe: false
-            })
+        setState({loadingContent: true})
+        let response = await documentationStripe({workspace_id: state.workspace_id})
+        if (response.status === 'success') {
+            setState({loadingContent: false})
             onFocus(response.data)
         }
     }
 
-    React.useEffect(()=> {
-        refresh()
-    },[])
+
+    async function refresh() {
+        setState({loadingContent: true})
+        let response = await documentationStripe({workspace_id: state.workspace_id})
+        if (response.status === 'success') {
+            setState({
+                docs: response.data,
+                loadingContent: false
+            })
+        }
+    }
+
+    const onAddRequest = (type) =>{
+        modal.show("add_request")
+        setState({doc_type:type})
+    }
 
 
     const onFocus = (data) => {
+        let docsId = data.slice(-1)[0].id;
+
         cookie.remove('_stripe_id')
-        history.push(`/docs/${state?.id}/${data.slice(-1)[0].id}`)
-        let row = data.find(x => x.id === data.slice(-1)[0].id)
-        let ret = data.map(x => {
-                if (x.id === row.id) {
-                    let ret = {
-                        id: x.id,
-                        title: x.title,
-                        children: x.children,
-                        expanded: true,
-                        isSelected: true
-                    }
-                    return ret
-                } else {
-                    return {...x}
-                }
-            }
-        )
-        setState({...state, docs: ret, docs_id: row.id})
+        history.push(`/docs/${state?.workspace_id}/${docsId}`)
+        let selectedDoc = data.find(x => x.id === docsId)
+        let docsData = data.map(item => item.id === selectedDoc.id ? {...item, expanded: true, isSelected: true} : item);
+
+        setState({
+            docs_id: selectedDoc.id,
+            docs: docsData,
+        })
     }
+
+
+    React.useEffect(() => {
+        refresh()
+    }, [])
 
 
     return (
         <ErrorBoundary>
-            {/** Docs Add Modal **/}
+
             <Popup
-                show={modal.modals.includes("add")}
+                show={modal.modals.includes("add_request")}
                 title={Lang.get("AddDocs")}
-                onClose={() => modal.hide("add")}
+                onClose={() => modal.hide("add_request")}
             >
                 <Add
-                    _id={state.pro_id}
-                    type={'add_docs'}
-                    refreshBoolean={false}
-                    reFocus={refreshWidthFocus}
-                    onClose={() => modal.hide("add")}
+                    workspace_id={state.workspace_id}
+                    parent_id={state.docs_id}
+                    doc_type={state.doc_type}
+                    refresh={refresh}
+                    onClose={() => modal.hide("add_request")}
                 />
             </Popup>
 
-            {/*** Header ***/}
-            <Header>
-                <HEADER
-                    state={state}
-                    setState={setState}
-                    refresh={refresh}
-                    refreshInfo={refreshInfo}
-                />
-            </Header>
-            {/*** Content ***/}
             <section className="container-fluid position-relative pb-1">
-                <div className="d-flex flex-md-row flex-column col">
+                <div className="d-flex p-3 row">
 
                     {/* Docs Sidebar */}
-                    <div className='card docs__sidebar col-md-3 p-0 m-0 mb-4' >
-                        <button
-                            className="btn btn-primary d-flex align-items-center
-                            justify-content-center btn-block lh-24  mt-4 mb-2 mx-auto"
-                            onClick={() => modal.show("add")}
-                            style={{ maxWidth:'20rem' }}
-                        >
-                            <i className="feather feather-plus fs-18 align-middle mr-1" />
-                            {Lang.get("Add")}
-                        </button>
-
-                        {/*<TestStripe*/}
-                        {/*    state={state}*/}
-                        {/*    setState={setState}*/}
-                        {/*/>*/}
-                        <DocsStripe state={state}
-                                    setState={setState}
-                                    onDragEnd={onDragEnd}
-                                    refresh={() => refresh()}
-                                    openAddSubModal={() => modal.show("add_sub")}
+                    <div className='docs_sidebar card col-lg-3'>
+                        <DocsSidebar
+                            state={state}
+                            setState={setState}
+                            onAddRequest={onAddRequest}
                         />
                     </div>
 
                     {/* Docs Content */}
-                    <div className='col docs__content' >
-                        <div className='card col-md-9 p-3' style={{ minHeight:630 }} >
-                            {
-                                state.docs_id
-                                ?
-                                <DocsEdit
-                                    {...props}
-                                    _id={state.docs_id}
+                    <div className='col-lg-9 pr-lg-0 docs_right'>
+                        <DocsHeader
+                            state={state}
+                            setState={setState}
+                            refresh={refresh}
+                            refreshInfo={refreshInfo}
+                        />
+
+                        <div className='card docs_content px-3 py-1'>
+                            {state.docs_id && (
+                                <DocsContent
                                     state={state}
-                                    status={status}
-                                    params={params}
-                                    setParams={setParams}
-                                    setStatus={setStatus}
                                     setState={setState}
                                     refreshInfo={() => refreshInfo()}
-                                    refresh={() => refresh()}
                                 />
-                                :
-                                <div className='d-flex flex-column justify-content-center align-items-center pt-5 mt-5' >
-                                    <img src='/frame/docspanel/assets/icons/docs.svg' style={{ width: 120, opacity: .4 }} />
+                            )}
+
+                            {!state.docs_id && (
+                                <div className='d-flex flex-column h-100 justify-content-center align-items-center'>
+                                    <Empty description=''/>
                                     <button
                                         className="btn btn-secondary text-primary w-25 lh-24 px-3 mt-3"
-                                        onClick={() => modal.show("add")}
+                                        onClick={() => onAddRequest('folder')}
                                     >
                                         {Lang.get("Add")}
                                     </button>
                                 </div>
-                            }
+                            )}
+
                         </div>
                     </div>
+
                 </div>
             </section>
         </ErrorBoundary>

@@ -1,7 +1,6 @@
 import React from 'react';
 import {ErrorBoundary, Textarea,Lang,} from "fogito-core-ui";
 
-
 export const JsonModal = ({state}) => {
 
     const [input, setInput] = React.useState({})

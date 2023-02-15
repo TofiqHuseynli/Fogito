@@ -42,13 +42,11 @@ export async function sendRequest(state, setState)
 {
     setState({loadingResponse: true})
     let response = await requestsProxy({
-        data: {
-            api_id: state.id,
-            method: state.method,
-            url: state.url,
-            params: JSON.parse(state.raw),
-            //response: state.response
-        }
+        api_id: state.workspace_id,
+        method: state.method,
+        url: state.url,
+        params: JSON.parse(state.raw),
+        //response: state.response
     })
     if (response.status === 'success') {
         if(response.data?.response?.charAt(0) === '{') {
@@ -67,7 +65,7 @@ export async function saveRequest(state, setState)
 {
     setState({loading: true})
     let response = await requestsCreate({
-        api_id: state.id,
+        api_id: state.workspace_id,
         request: {
             method: state.method,
             url: state.url,
@@ -88,7 +86,7 @@ export async function saveRequest(state, setState)
 export async function loadData(state, setState)
 {
     setState({loading: true})
-    let response = await workspacesInfo({id: state.project_id})
+    let response = await workspacesInfo({id: state.workspace_id})
     if(response.status === 'success') {
         setState({
             loading: false,

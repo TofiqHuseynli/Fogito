@@ -108,12 +108,6 @@ export const Edit = ({match, onClose, reload}) => {
             />,
         },
         {
-            key: "permission",
-            title: "Permission",
-            permission: true,
-            component: <Permission workspace_id={state.id} tab={state.activeTab}/>,
-        },
-        {
             key: "global_variables",
             title: "GlobalVariables",
             permission: true,
@@ -121,6 +115,12 @@ export const Edit = ({match, onClose, reload}) => {
                 variables={state.params?.global_variables || []}
                 setVars={(global_variables) => setParams({global_variables})}
             />,
+        },
+        {
+            key: "permission",
+            title: "Permission",
+            permission: true,
+            component: <Permission workspace_id={state.id} tab={state.activeTab}/>,
         },
     ];
 

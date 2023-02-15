@@ -1,16 +1,16 @@
 import React from 'react';
-import {Api, App, Lang, ErrorBoundary} from "fogito-core-ui";
+import {Lang, ErrorBoundary} from "fogito-core-ui";
 import {useEffect} from "react";
 import {requestsEdit, requestsList} from "@actions";
 import {DateLib} from "@plugins/DateLib";
-import {Checkbox} from "antd";
-import * as FunctionLib from "@plugins";
+import {Checkbox, Empty} from "antd";
+import {createMarkup, jsonDesign} from "@plugins";
 
-export function Responses({id, project_id})
+export function ResponseTab({id, workspace_id})
 {
     const initialState = {
         id: id,
-        project_id: project_id,
+        workspace_id: workspace_id,
         loading: false,
         list: [],
         renderIndex: 0
@@ -24,7 +24,7 @@ export function Responses({id, project_id})
     }, [id]);
 
     async function loadResponses(apiId){
-        let response = await requestsList({data: {api_id: apiId}});
+        let response = await requestsList({api_id: apiId});
         if(response.status === 'success') {
             setState({
                 list: response.data,
@@ -48,6 +48,7 @@ export function Responses({id, project_id})
 
         setState({renderIndex: state.renderIndex+1});
     }
+
     return(
         <ErrorBoundary>
             {/* Json Response */}
@@ -80,7 +81,7 @@ export function Responses({id, project_id})
                                                 <pre className='fs-14'>
                                                     {
                                                         !!row.request?.parameters ?
-                                                        <div style={{lineHeight: 1.3}} dangerouslySetInnerHTML={FunctionLib.createMarkup(FunctionLib.jsonDesign(row.request?.parameters))}/>
+                                                        <div style={{lineHeight: 1.3}} dangerouslySetInnerHTML={createMarkup(jsonDesign(row.request?.parameters))}/>
                                                             :
                                                             '{}'
                                                     }
@@ -114,10 +115,8 @@ export function Responses({id, project_id})
                                 }
                             </div>
                             :
-                            <div className='d-flex justify-content-center align-items-center flex-column pt-5' >
-                                <img src='/frame/docspanel/assets/icons/empty.svg' alt='' />
-                                <p className='text-muted mt-3' >{Lang.get('NotYet')}</p>
-                            </div>
+                            <Empty className='text-muted mt-6' description={Lang.get("NoData")}/>
+
                     }
                 </div>
             </div>

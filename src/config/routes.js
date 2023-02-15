@@ -1,7 +1,5 @@
 import React from "react";
 import {Docs, Workspaces} from "@layouts";
-import {documentationStripe} from "@actions";
-
 
 export const CORE_API_URL = "/core";
 export const MICROSERVICE_URL = "/docs";

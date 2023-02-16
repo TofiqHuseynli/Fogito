@@ -1,7 +1,7 @@
 import React from "react";
 import {Lang, ErrorBoundary, Api, useToast, Header} from "fogito-core-ui";
 import {App} from "@plugins";
-import {docsCopy, docsDelete, docsUpdate} from "@actions";
+import {docsDelete, docsDuplicate, docsUpdate} from "@actions";
 import {API_ROUTES} from "@config";
 import {useHistory} from "react-router-dom";
 
@@ -28,7 +28,7 @@ export const DocsHeader = ({state, setState, refresh}) => {
         if (response.status === 'success') {
             refresh()
         }
-        setState({ loading: false});
+        setState({loading: false});
     }
 
     async function onDelete() {
@@ -47,7 +47,7 @@ export const DocsHeader = ({state, setState, refresh}) => {
     }
 
     async function onDuplicate() {
-        let response = await docsCopy({
+        let response = await docsDuplicate({
             id: state.data?.id,
             workspace_id: state.data?.workspace_id,
             parent_id: state.data?.parent_id,
@@ -79,7 +79,7 @@ export const DocsHeader = ({state, setState, refresh}) => {
             }
         });
 
-        xhr[key].open("POST", Api.convert(API_ROUTES["docsImport"],true));
+        xhr[key].open("POST", Api.convert(API_ROUTES["docsImport"], true));
         xhr[key].withCredentials = true;
         xhr[key].send(data);
     };
@@ -136,28 +136,25 @@ export const DocsHeader = ({state, setState, refresh}) => {
                                     </div>
 
                                 </a>
-                                {
-                                    state.docs?.length > 0 ?
+                                {state.docs?.length > 0 && (
+                                    <>
                                         <a className="dropdown-item"
                                            href={Api.convert(API_ROUTES.docsExport, true) + `?data[workspace_id]=${state.workspace_id}`}
                                            target="_blank"
                                            download
                                         >
                                             {Lang.get("Export")}
-                                        </a> : null
-                                }
-                                {
-                                    state.docs?.length > 0 ?
+                                        </a>
                                         <a className="dropdown-item"
                                            href={Api.convert(API_ROUTES.docsPrintable, true) + `?data[workspace_id]=${state.workspace_id}`}
                                            target="_blank"
                                             //download
                                         >
                                             {Lang.get("Printable")}
-                                        </a> : null
-                                }
-                                {
-                                    !!state.docs_id &&
+                                        </a>
+                                    </>
+                                )}
+                                {!!state.docs_id && (
                                     <>
                                         <a className="dropdown-item delete_action"
                                            onClick={() => App.deleteModal(() => onDelete())}
@@ -170,7 +167,7 @@ export const DocsHeader = ({state, setState, refresh}) => {
                                             {Lang.get("Duplicate")}
                                         </a>
                                     </>
-                                }
+                                )}
                             </div>
                         </div>
 

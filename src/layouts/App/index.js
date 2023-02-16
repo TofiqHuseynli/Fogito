@@ -110,7 +110,7 @@ export const App = () => {
 
   React.useEffect(() => {
     Api.setRoutes(API_ROUTES);
-    Api.setParams({ app_id: config.appID, test:true });
+    Api.setParams({ app_id: config.appID});
     AppLib.setData({appName: config.appName});
     loadData();
   }, []);

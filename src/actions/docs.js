@@ -32,8 +32,8 @@ export const docsMove = (params) => {
     return Api.post("docsMove", {data:params});
 };
 
-export const docsCopy = (params) => {
-    return Api.post("docsCopy", {data:params});
+export const docsDuplicate = (params) => {
+    return Api.post("docsDuplicate", {data:params});
 };
 
 export const docsExport = (params) => {

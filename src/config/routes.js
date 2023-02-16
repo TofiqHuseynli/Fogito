@@ -1,6 +1,5 @@
 import React from "react";
 import {Docs, Workspaces} from "@layouts";
-import {parameters} from "@actions";
 
 export const CORE_API_URL = "/core";
 export const MICROSERVICE_URL = "/docs";
@@ -52,7 +51,7 @@ export const API_ROUTES = {
     docsInfo: MICROSERVICE_URL + "/docs/info",
     docsDelete: MICROSERVICE_URL + "/docs/delete",
     docsMove: MICROSERVICE_URL + "/docs/move",
-    docsCopy: MICROSERVICE_URL + "/docs/copy",
+    docsDuplicate: MICROSERVICE_URL + "/docs/duplicate",
     docsExport: MICROSERVICE_URL + "/docs/export",
     docsImport: MICROSERVICE_URL + "/docs/import",
     docsEdit: MICROSERVICE_URL + "/docs/edit",

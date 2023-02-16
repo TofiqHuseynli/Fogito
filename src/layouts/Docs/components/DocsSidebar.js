@@ -109,8 +109,8 @@ export const DocsSidebar = ({state, setState, onAddRequest}) => {
                             target='#tree'
                             select={(item) => onAddRequest(item?.item?.properties?.id)}
                             items={[
-                                {id: "document", text: Lang.get('Request')},
-                                {id: "folder", text: Lang.get('Folder')}
+                                {id: "document", text: Lang.get('AddRequest')},
+                                {id: "folder", text: Lang.get('AddFolder')}
                             ]}
                         />
                     </>

@@ -1,9 +1,10 @@
 import React from "react";
-import {ErrorBoundary, Lang, Table, SimpleDate, Members, useToast} from "fogito-core-ui";
+import {ErrorBoundary, Lang, Table, SimpleDate, Members, useToast, Api} from "fogito-core-ui";
 import {Link} from "react-router-dom";
 import {App} from "@plugins";
 import {renderStatusColumn} from "@layouts/Workspaces/actions";
 import {workspacesDelete} from "@actions";
+import {API_ROUTES} from "@config";
 
 export const TableCustom = ({state, setState,path,loadData}) => {
     const toast = useToast()
@@ -13,7 +14,10 @@ export const TableCustom = ({state, setState,path,loadData}) => {
             name: Lang.get("Title"),
             render: (data) => (
                 <div className="user__content">
-                    <Link to={{pathname: `/docs/${data.id}`}} >{data.title}</Link>
+                    <Link to={`${path}/edit/${data?.id}?`}>{data.title}</Link>
+
+                    {/*<Link to={{pathname: `/docs/${data.id}`}} >{data.title}</Link>*/}
+
                     {/*<p*/}
                     {/*    className="text-muted fs-14 mb-0 lh-16"*/}
                     {/*    style={{*/}
@@ -85,6 +89,15 @@ export const TableCustom = ({state, setState,path,loadData}) => {
                         >
                             {Lang.get("Edit")}
                         </Link>
+                        {data.count > 0 && (
+                            <a className="dropdown-item"
+                               href={Api.convert(API_ROUTES.docsExport, true) + `?data[workspace_id]=${data.id}`}
+                               target="_blank"
+                               download
+                            >
+                                {Lang.get("Export")}
+                            </a>
+                        )}
 
                         <button
                             className="dropdown-item text-danger"

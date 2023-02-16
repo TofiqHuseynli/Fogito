@@ -84,7 +84,7 @@ export const DocsSidebar = ({state, setState, onAddRequest}) => {
                 {Lang.get("Add")}
             </button>
 
-            <div className='content__scroll'>
+            <div className='content_scroll'>
 
                 {state.loadingContent && <Loading/>}
 
@@ -109,8 +109,8 @@ export const DocsSidebar = ({state, setState, onAddRequest}) => {
                             target='#tree'
                             select={(item) => onAddRequest(item?.item?.properties?.id)}
                             items={[
-                                {id: "document", text: Lang.get('AddDocument')},
-                                {id: "folder", text: Lang.get('AddFolder')}
+                                {id: "document", text: Lang.get('Request')},
+                                {id: "folder", text: Lang.get('Folder')}
                             ]}
                         />
                     </>

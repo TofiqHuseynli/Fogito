@@ -43,3 +43,9 @@ export const translations = async (params) => {
       params
   );
 };
+
+
+
+export const parameters = (params) => {
+  return Api.get("parameters", {data:params});
+};

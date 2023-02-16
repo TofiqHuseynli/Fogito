@@ -58,6 +58,17 @@ export class Parameters {
         ];
     }
 
+    static getVariableTypes() {
+        return [
+            {value: 'int', label: 'int',},
+            {value: 'string', label: 'string',},
+            {value: 'bool', label: 'bool',},
+            {value: 'array', label: 'array',},
+            {value: 'object', label: 'object',},
+            {value: 'float', label: 'float',},
+        ];
+    }
+
     static getMonths() {
         return [
             Lang.get('January'),

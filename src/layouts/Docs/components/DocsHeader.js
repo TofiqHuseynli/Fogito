@@ -6,7 +6,7 @@ import {API_ROUTES} from "@config";
 import {useHistory} from "react-router-dom";
 
 
-export const DocsHeader = ({state, setState, refresh, refreshInfo}) => {
+export const DocsHeader = ({state, setState, refresh}) => {
     const toast = useToast()
 
     let xhr = [];
@@ -19,6 +19,7 @@ export const DocsHeader = ({state, setState, refresh, refreshInfo}) => {
             ...state.data,
         })
 
+        console.log(state.data)
         toast.fire({
             title: response.description,
             icon: response.status,
@@ -26,7 +27,6 @@ export const DocsHeader = ({state, setState, refresh, refreshInfo}) => {
 
         if (response.status === 'success') {
             refresh()
-            refreshInfo()
         }
         setState({ loading: false});
     }
@@ -62,7 +62,9 @@ export const DocsHeader = ({state, setState, refresh, refreshInfo}) => {
         }
     }
 
-    const sendFormData = ({key, data, target}) => {
+    const sendFormData = (data) => {
+        let key = 'import';
+
         xhr[key] = new XMLHttpRequest();
 
         xhr[key].addEventListener("load", function (e) {
@@ -77,7 +79,7 @@ export const DocsHeader = ({state, setState, refresh, refreshInfo}) => {
             }
         });
 
-        xhr[key].open("POST", Api.convert(API_ROUTES["docsImport"]), true);
+        xhr[key].open("POST", Api.convert(API_ROUTES["docsImport"],true));
         xhr[key].withCredentials = true;
         xhr[key].send(data);
     };
@@ -90,10 +92,7 @@ export const DocsHeader = ({state, setState, refresh, refreshInfo}) => {
             let formData = new FormData();
             formData.append("workspace_id", workspace_id);
             formData.append("file", file);
-            sendFormData({
-                data: formData,
-                target,
-            });
+            sendFormData(formData);
         }
     };
 
@@ -150,7 +149,7 @@ export const DocsHeader = ({state, setState, refresh, refreshInfo}) => {
                                 {
                                     state.docs?.length > 0 ?
                                         <a className="dropdown-item"
-                                           href={Api.convert(API_ROUTES.documentationPrintable, true) + `?data[workspace_id]=${state.workspace_id}`}
+                                           href={Api.convert(API_ROUTES.docsPrintable, true) + `?data[workspace_id]=${state.workspace_id}`}
                                            target="_blank"
                                             //download
                                         >
@@ -174,12 +173,16 @@ export const DocsHeader = ({state, setState, refresh, refreshInfo}) => {
                                 }
                             </div>
                         </div>
-                        <button
-                            className="btn btn-success"
-                            onClick={() => onSubmit()}
-                        >
-                            {Lang.get("Save")}
-                        </button>
+
+                        {state.docs_id && (
+                            <button
+                                className="btn btn-success"
+                                onClick={() => onSubmit()}
+                            >
+                                {Lang.get("Save")}
+                            </button>
+                        )}
+
                     </div>
                 </div>
             </Header>

@@ -56,6 +56,11 @@
 
 .docs_sidebar{
   margin:0;
+
+  .content_scroll{
+    overflow: scroll;
+    height: calc(100vh - 90px);
+  }
 }
 
 .docs_right {

@@ -1,5 +1,6 @@
 import React from "react";
 import {Docs, Workspaces} from "@layouts";
+import {parameters} from "@actions";
 
 export const CORE_API_URL = "/core";
 export const MICROSERVICE_URL = "/docs";
@@ -11,6 +12,9 @@ export const API_ROUTES = {
 
     // Users
     userList: MICROSERVICE_URL + "/users/search",
+
+    //parameters
+    parameters: MICROSERVICE_URL + "/data/parameters",
 
     // Workspace
     workspacesCreate: MICROSERVICE_URL + "/workspaces/create",
@@ -42,19 +46,16 @@ export const API_ROUTES = {
     docsCreate: MICROSERVICE_URL + "/docs/create",
     docsUpdate: MICROSERVICE_URL + "/docs/update",
     docsList: MICROSERVICE_URL + "/docs/list",
+    docsStripe: MICROSERVICE_URL + "/docs/stripe",
+    docsPrintable: MICROSERVICE_URL + "/docs/printable",
     docsMinList: MICROSERVICE_URL + "/docs/min-list",
     docsInfo: MICROSERVICE_URL + "/docs/info",
     docsDelete: MICROSERVICE_URL + "/docs/delete",
     docsMove: MICROSERVICE_URL + "/docs/move",
-    docsData: MICROSERVICE_URL + "/docs/data",
     docsCopy: MICROSERVICE_URL + "/docs/copy",
     docsExport: MICROSERVICE_URL + "/docs/export",
     docsImport: MICROSERVICE_URL + "/docs/import",
-    docsUpdateField: MICROSERVICE_URL + "/docs/updatefield",
-
-    // Documentation
-    documentationStripe: MICROSERVICE_URL + "/documentation/list",
-    documentationPrintable: MICROSERVICE_URL + "/documentation/printable",
+    docsEdit: MICROSERVICE_URL + "/docs/edit",
 };
 
 

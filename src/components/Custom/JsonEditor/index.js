@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { docsData } from "@actions";
 import { NewLine, Tree } from "./components";
 import { useOutsideAlerter } from "@hooks";
 import { ErrorBoundary } from "fogito-core-ui";
 import { Tooltip } from "antd";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import classNames from "classnames";
+import {Parameters} from "@plugins";
 
 export const JsonEditor = ({ state, setState }) => {
   //  values
@@ -18,7 +18,6 @@ export const JsonEditor = ({ state, setState }) => {
   const [oneNewLine, setOneNewLine] = React.useState(false);
   const [editComment, setEditComment] = React.useState(false);
   const [newLineExample, setNewLineExample] = React.useState(false);
-  const [types, setTypes] = React.useState([]);
   const [create, setCreate] = useState({
     key: "",
     type: "string",
@@ -28,26 +27,8 @@ export const JsonEditor = ({ state, setState }) => {
     { value: true, label: "true" },
     { value: false, label: "false" },
   ]);
-  const [columns, setColumns] = React.useState([]);
 
-  const getTypes = async () => {
-    let response = await docsData();
-    if (response) {
-      if (response.status === "success") {
-        setTypes(response.data?.type_list);
-      } else {
-        setTypes([]);
-      }
-    }
-  };
-
-  useEffect(() => {
-    getTypes();
-  }, []);
-
-  useEffect(() => {
-    setColumns(state.data.parameters);
-  }, [state.data.parameters]);
+  const types = Parameters.getVariableTypes()
 
   // functions
   function removeLine(index) {

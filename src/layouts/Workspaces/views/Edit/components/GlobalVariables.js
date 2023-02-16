@@ -26,10 +26,11 @@ export const GlobalVariables = ({variables, setVars}) => {
 
     return (
         <ErrorBoundary>
-            <div className="row col-lg-8">
+            <div className="">
                 {variables?.map((variable, index) => (
                     <div key={index} className="mb-3 d-flex">
                         <input
+                            style={{width:'40%'}}
                             className="form-control"
                             placeholder={Lang.get("Key")}
                             value={variable.key}

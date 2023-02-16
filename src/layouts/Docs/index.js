@@ -1,5 +1,5 @@
 import React from 'react';
-import {docsInfo, docsList, documentationStripe} from "@actions";
+import {docsInfo,docsStripe} from "@actions";
 import {DocsContent, DocsSidebar, DocsHeader} from "./components";
 import {Add} from "./components";
 import {useHistory} from 'react-router-dom';
@@ -48,7 +48,7 @@ export const Docs = (props) => {
 
     async function refreshWidthFocus() {
         setState({loadingContent: true})
-        let response = await documentationStripe({workspace_id: state.workspace_id})
+        let response = await docsStripe({workspace_id: state.workspace_id})
         if (response.status === 'success') {
             setState({loadingContent: false})
             onFocus(response.data)
@@ -58,7 +58,7 @@ export const Docs = (props) => {
 
     async function refresh() {
         setState({loadingContent: true})
-        let response = await documentationStripe({workspace_id: state.workspace_id})
+        let response = await docsStripe({workspace_id: state.workspace_id})
         if (response.status === 'success') {
             setState({
                 docs: response.data,
@@ -90,6 +90,7 @@ export const Docs = (props) => {
 
     React.useEffect(() => {
         refresh()
+        state.docs_id && refreshInfo()
     }, [])
 
 
@@ -128,7 +129,6 @@ export const Docs = (props) => {
                             state={state}
                             setState={setState}
                             refresh={refresh}
-                            refreshInfo={refreshInfo}
                         />
 
                         <div className='card docs_content px-3 py-1'>

@@ -1,7 +1,7 @@
 import {Api} from "fogito-core-ui";
 
-export const documentationStripe = (params) => {
-    return Api.get("documentationStripe", {data:params});
+export const docsStripe = (params) => {
+    return Api.get("docsStripe", {data:params});
 };
 
 export const docsList = (params) => {
@@ -22,10 +22,6 @@ export const docsDelete = (params) => {
 
 export const docsUpdate = (params) => {
     return Api.post("docsUpdate", {data:params});
-};
-
-export const docsData = (params) => {
-    return Api.get("docsData", {data:params});
 };
 
 export const docsInfo = (params) => {

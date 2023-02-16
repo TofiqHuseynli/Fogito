@@ -19,7 +19,7 @@ export const Edit = ({match, onClose, reload}) => {
     const [state, setState] = React.useReducer(
         (prevState, newState) => ({...prevState, ...newState,}), {
             id: match?.params?.id,
-            loading: false,
+            loading: true,
             saveLoading: false,
             updated: false,
             reload_required: false,

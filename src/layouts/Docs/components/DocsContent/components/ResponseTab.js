@@ -24,7 +24,7 @@ export function ResponseTab({id, workspace_id})
     }, [id]);
 
     async function loadResponses(apiId){
-        let response = await requestsList({api_id: apiId});
+        let response = await requestsList({doc_id: apiId});
         if(response.status === 'success') {
             setState({
                 list: response.data,

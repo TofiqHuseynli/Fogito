@@ -42,7 +42,7 @@ export async function sendRequest(state, setState)
 {
     setState({loadingResponse: true})
     let response = await requestsProxy({
-        api_id: state.workspace_id,
+        doc_id: state.id,
         method: state.method,
         url: state.url,
         params: JSON.parse(state.raw),
@@ -65,7 +65,7 @@ export async function saveRequest(state, setState)
 {
     setState({loading: true})
     let response = await requestsCreate({
-        api_id: state.workspace_id,
+        doc_id: state.id,
         request: {
             method: state.method,
             url: state.url,

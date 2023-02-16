@@ -69,7 +69,7 @@ export const DocsContent = ({refreshInfo, state, setState}) => {
             {state.loading && <Loading/>}
 
             <div className='docs__tab d-flex justify-content-between'>
-               <div className="col-6 p-0">
+               <div className="p-0 w-100">
                    <Tabs
                        selectedTab={state.activeTab}
                        onChange={(activeTab) => setState({activeTab})}>
@@ -79,22 +79,20 @@ export const DocsContent = ({refreshInfo, state, setState}) => {
                    </Tabs>
                </div>
 
-                <div className="col-4 p-0">
-                    <div className='d-flex'>
-                        <button className='btn btn-secondary' onClick={() => modal.show('proxy_modal')}>
-                            <i className='feather feather-play text-primary'/>
-                        </button>
-                        <button className='btn btn-secondary' onClick={() => modal.show('json_modal')}>
-                            <i className='feather feather-file-text text-primary'/>
-                        </button>
-                        <a
-                            target='_blank'
-                            className='btn btn-secondary text-primary'
-                            href={`/service/adocs/api/${state.workspace_id}/${state.docs_id}`}
-                        >
-                            {Lang.get("GoDocs")}
-                        </a>
-                    </div>
+                <div className='d-flex ml-3'>
+                    <button className='btn btn-secondary' onClick={() => modal.show('proxy_modal')}>
+                        <i className='feather feather-play text-primary'/>
+                    </button>
+                    <button className='btn btn-secondary' onClick={() => modal.show('json_modal')}>
+                        <i className='feather feather-file-text text-primary'/>
+                    </button>
+                    <a
+                        target='_blank'
+                        className='btn btn-secondary text-primary'
+                        href={`/service/adocs/api/${state.workspace_id}/${state.docs_id}`}
+                    >
+                        {Lang.get("GoDocs")}
+                    </a>
                 </div>
 
             </div>

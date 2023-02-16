@@ -74,15 +74,6 @@ export const ProxyModal = ({id, workspace_id, url, parameters, methods}) => {
                     </div>
                 </div>
 
-
-
-                {
-                    !!state.response?.request &&
-                    <div className='mt-4' >
-                        <font color="#222">{state.response?.request?.url}</font>
-                    </div>
-                }
-
                 <div className='response mt-1' >
                     {
                         state.loadingResponse ?

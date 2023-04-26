@@ -86,6 +86,28 @@
     border-radius: 0.5rem;
     padding: 1rem 1rem;
     margin-top: 1rem;
+    position: relative;
+
+    .delete-btn{
+      position: absolute;
+      display: none;
+      z-index: 100;
+      right: -13px;
+      top: -13px;
+      width: 30px !important;
+      height: 30px !important;
+      border-radius: 50%;
+      border: 1px solid #444;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    &:hover{
+      & .delete-btn{
+        display: flex;
+      }
+    }
   }
   code { color: #2e3034;  }
   .response-label{

@@ -25,7 +25,11 @@ export const DocsContent = ({state, setState}) => {
             key: 'responses',
             title: 'Responses',
             permission: true,
-            component: <ResponseTab id={state.docs_id} workspace_id={state.workspace_id}/>,
+            component: <ResponseTab
+                id={state.docs_id}
+                tab={state.activeTab}
+                workspace_id={state.workspace_id}
+            />,
         },
     ]
 

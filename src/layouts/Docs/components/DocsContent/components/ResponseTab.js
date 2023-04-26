@@ -1,17 +1,17 @@
 import React from 'react';
-import {Lang, ErrorBoundary} from "fogito-core-ui";
+import {Lang, ErrorBoundary, Loading} from "fogito-core-ui";
 import {useEffect} from "react";
-import {requestsEdit, requestsList} from "@actions";
+import {requestsDelete, requestsEdit, requestsList} from "@actions";
 import {DateLib} from "@plugins/DateLib";
 import {Checkbox, Empty} from "antd";
-import {createMarkup, jsonDesign} from "@plugins";
+import {AlertLib, createMarkup, jsonDesign} from "@plugins";
 
-export function ResponseTab({id, workspace_id})
+export function ResponseTab({id, workspace_id,tab})
 {
     const initialState = {
         id: id,
         workspace_id: workspace_id,
-        loading: false,
+        loading: true,
         list: [],
         renderIndex: 0
     }
@@ -20,10 +20,12 @@ export function ResponseTab({id, workspace_id})
     }, initialState);
 
     useEffect(() => {
-        loadResponses(id);
-    }, [id]);
+        if (tab === 'responses' && id)
+            loadResponses(id);
+    }, [tab]);
 
     async function loadResponses(apiId){
+        setState({loading:true})
         let response = await requestsList({doc_id: apiId});
         if(response.status === 'success') {
             setState({
@@ -49,18 +51,38 @@ export function ResponseTab({id, workspace_id})
         setState({renderIndex: state.renderIndex+1});
     }
 
+
+    async function onDeleteRequest(rowId){
+        let confirmed = await AlertLib.deleteCondition()
+        if (!confirmed) return;
+
+        let response = await requestsDelete({id:rowId})
+
+        if(response.status === "error")
+            alert(response.description)
+
+        await loadResponses(id)
+    }
+
     return(
         <ErrorBoundary>
             {/* Json Response */}
+            {state.loading && <Loading/>}
+
             <div className='row' >
                 <div className='col' >
                     {
                         state.list.length
                             ?
-                            <div className='response-card' >
+                            <div className='response-card overflow-visible' >
                                 {
                                     !!state.list && state.list.map((row,i) =>
                                         <div key={i} className="response-item">
+
+                                            <div className="delete-btn">
+                                                <i className='feather feather-x text-danger fs-18' onClick={() => onDeleteRequest(row.id)}/>
+                                            </div>
+
                                             <div className='row mb-2' >
                                                 <div className='col' >
                                                     <span className="response-label">{Lang.get("Url")}:</span> {row.request?.url}
@@ -108,6 +130,7 @@ export function ResponseTab({id, workspace_id})
                                                     <Checkbox checked={row.visible_on_docs === 1 && true} onChange={(e)=> setVisibleOnDocs(row, e.target.checked)} >
                                                         {Lang.get("VisibleOnDocs")}
                                                     </Checkbox>
+
                                                 </div>
                                             </div>
                                         </div>

@@ -46,6 +46,7 @@ export const Docs = (props) => {
         setState({loading: false})
     }
 
+
     async function refreshWidthFocus() {
         setState({loadingContent: true})
         let response = await docsStripe({workspace_id: state.workspace_id})
@@ -86,6 +87,13 @@ export const Docs = (props) => {
             docs: docsData,
         })
     }
+
+
+
+    React.useEffect(() => {
+        // window.scrollTo(0, 0);
+        state.docs_id && refreshInfo()
+    }, [state.docs_id])
 
 
     React.useEffect(() => {
@@ -136,7 +144,6 @@ export const Docs = (props) => {
                                 <DocsContent
                                     state={state}
                                     setState={setState}
-                                    refreshInfo={() => refreshInfo()}
                                 />
                             )}
 

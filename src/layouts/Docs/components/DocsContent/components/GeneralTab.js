@@ -1,7 +1,7 @@
 import React from 'react';
 import {ErrorBoundary, Lang,} from "fogito-core-ui";
 import {JsonEditor} from "@components";
-import {Select} from "antd";
+import Select from "react-select";
 import {Parameters} from "@plugins";
 import AsyncSelect from "react-select/async";
 
@@ -51,6 +51,8 @@ export function GeneralTab({state, setState}) {
                     <div className='row mt-3' style={{margin: '0'}}>
                         <label className='required'>{Lang.get("Methods")} </label>
                         <Select
+                            isMulti={true}
+                            className='form-control'
                             mode="tags"
                             allowClear
                             style={{width: '100%'}}

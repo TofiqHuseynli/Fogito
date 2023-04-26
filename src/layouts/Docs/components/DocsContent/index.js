@@ -3,14 +3,9 @@ import {Popup, ErrorBoundary, Loading, useModal, Lang,} from 'fogito-core-ui';
 import {JsonModal, GeneralTab, InfoTab, ResponseTab, ProxyModal} from "./components";
 import {Tab, TabPanel, Tabs} from "@components";
 
-export const DocsContent = ({refreshInfo, state, setState}) => {
+export const DocsContent = ({state, setState}) => {
 
     const modal = useModal()
-
-    React.useEffect(() => {
-        window.scrollTo(0, 0);
-        refreshInfo()
-    }, [state.docs_id])
 
 
     const TABS = [

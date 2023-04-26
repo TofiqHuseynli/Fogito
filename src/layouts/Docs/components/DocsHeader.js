@@ -15,11 +15,11 @@ export const DocsHeader = ({state, setState, refresh}) => {
     const onSubmit = async () => {
         setState({loading: true});
         let response = await docsUpdate({
-            id: state.docs_id,
             ...state.data,
+            id: state.docs_id,
+            methods: state.data?.methods.map(row=>row.value),
         })
 
-        console.log(state.data)
         toast.fire({
             title: response.description,
             icon: response.status,

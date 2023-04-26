@@ -8,7 +8,7 @@ export const ProxyModal = ({id, workspace_id, url, parameters, methods}) => {
         workspace_id: workspace_id,
         url: url,
         projectUrl: url,
-        method: methods && methods.length>0 ? methods[0]: "get",
+        method: methods && methods.length>0 ? methods[0].value : "get",
         loading: false,
         loadingResponse: false,
         response: {

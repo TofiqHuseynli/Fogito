@@ -14,9 +14,9 @@ export const TableCustom = ({state, setState,path,loadData}) => {
             name: Lang.get("Title"),
             render: (data) => (
                 <div className="user__content">
-                    <Link to={`${path}/edit/${data?.id}?`}>{data.title}</Link>
+                    <Link to={{pathname: `/docs/${data.id}`}} >{data.title}</Link>
 
-                    {/*<Link to={{pathname: `/docs/${data.id}`}} >{data.title}</Link>*/}
+                    {/*<Link to={`${path}/edit/${data?.id}?`}>{data.title}</Link>*/}
 
                     {/*<p*/}
                     {/*    className="text-muted fs-14 mb-0 lh-16"*/}

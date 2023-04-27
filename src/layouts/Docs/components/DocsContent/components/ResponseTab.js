@@ -22,7 +22,7 @@ export function ResponseTab({id, workspace_id,tab})
     useEffect(() => {
         if (tab === 'responses' && id)
             loadResponses(id);
-    }, [tab]);
+    }, [tab,id]);
 
     async function loadResponses(apiId){
         setState({loading:true})

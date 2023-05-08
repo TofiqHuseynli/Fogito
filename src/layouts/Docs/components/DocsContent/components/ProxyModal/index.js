@@ -1,6 +1,8 @@
 import React from "react";
 import {ErrorBoundary, Loading, Textarea, Lang,} from "fogito-core-ui";
 import {prepareText, sendRequest, loadData, saveRequest} from "./actions";
+import Select from "react-select";
+import {Parameters} from "@plugins";
 
 export const ProxyModal = ({id, workspace_id, url, parameters, methods}) => {
     const initialState = {
@@ -8,7 +10,7 @@ export const ProxyModal = ({id, workspace_id, url, parameters, methods}) => {
         workspace_id: workspace_id,
         url: url,
         projectUrl: url,
-        method: methods && methods.length>0 ? methods[0].value : "get",
+        method: methods && methods.length>0 ? methods[0] : {value: 'get', label: Lang.get('get')},
         loading: false,
         loadingResponse: false,
         response: {
@@ -35,9 +37,17 @@ export const ProxyModal = ({id, workspace_id, url, parameters, methods}) => {
                 <div className='row' >
                     <div className='col' >
                         <label>{Lang.get("Url")}</label>
-                        <div className="input-group">
+                        <div className="d-flex">
+                            <div style={{width:110}}>
+                                <Select
+                                    className='form-control mr-1 w-auto'
+                                    value={state.method}
+                                    options={Parameters.getRequestMethods()}
+                                    onChange={method => setState({method})}
+                                />
+                            </div>
                             <input
-                                className="form-control"
+                                className="form-control mr-1"
                                 placeholder={Lang.get("Url")}
                                 value={state.url}
                                 onChange={(e) => setState({url: e.target.value})}
@@ -73,6 +83,13 @@ export const ProxyModal = ({id, workspace_id, url, parameters, methods}) => {
                         />
                     </div>
                 </div>
+
+                <p
+                    className='fs-15 font-weight-400 m-0'
+                    style={{wordBreak:'break-all',}}
+                >
+                    {state.response.request.url}
+                </p>
 
                 <div className='response mt-1' >
                     {

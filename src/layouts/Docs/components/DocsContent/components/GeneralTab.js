@@ -55,7 +55,6 @@ export function GeneralTab({state, setState}) {
                             className='form-control'
                             mode="tags"
                             allowClear
-                            style={{width: '100%'}}
                             placeholder=""
                             value={state.data?.methods?.length ? state.data.methods : []}
                             options={Parameters.getRequestMethods()}

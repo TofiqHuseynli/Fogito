@@ -43,7 +43,7 @@ export async function sendRequest(state, setState)
     setState({loadingResponse: true})
     let response = await requestsProxy({
         doc_id: state.id,
-        method: state.method,
+        method: state.method.value,
         url: state.url,
         params: JSON.parse(state.raw),
         //response: state.response
@@ -88,9 +88,6 @@ export async function loadData(state, setState)
     setState({loading: true})
     let response = await workspacesInfo({id: state.workspace_id})
     if(response.status === 'success') {
-        setState({
-            loading: false,
-            url: state.projectUrl
-        })
+        setState({loading: false })
     }
 }

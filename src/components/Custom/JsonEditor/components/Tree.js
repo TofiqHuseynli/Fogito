@@ -157,8 +157,8 @@ export function Tree({setState, line, setLine, children, types, valueItem, value
                         }
                              trigger={'click'}
                              placement={'bottom'}
-                             visible={visibleBoolean}
-                             onVisibleChange={(visible) => setVisibleBoolean(visible)}
+                             open={visibleBoolean}
+                             onOpenChange={(visible) => setVisibleBoolean(visible)}
                              overlayStyle={{minWidth: 90}}
                              color='#FFF'
                         >
@@ -705,8 +705,8 @@ const Type = ({item, types, changeType, index}) => {
                 <Tooltip title={getTypes()}
                          trigger={'click'}
                          placement={'bottom'}
-                         visible={!!visible}
-                         onVisibleChange={(visible) => setVisible(visible)}
+                         open={!!visible}
+                         onOpenChange={(visible) => setVisible(visible)}
                          overlayStyle={style}
                          color='#FFF'
                 >

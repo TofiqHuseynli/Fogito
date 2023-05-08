@@ -1,7 +1,3 @@
-//.dropdown-add-btn::after{
-//  display: none !important;
-//}
-
 label.required,
 label .required {
   position: relative;
@@ -15,8 +11,33 @@ label .required {
   }
 }
 
-//.horizontal-navbar ul .nav-item .nav-link.active{
-//  color: $color-general !important;
-//  border-bottom: 2px solid $color-general !important;
-//}
 
+.editable-row-table {
+  input {
+    border: none;
+    background: transparent;
+  }
+
+  .delete-btn{
+    display: none;
+  }
+
+  th{
+    .custom-checkbox{
+      display: none;
+    }
+  }
+
+  tr{
+    &:hover{
+      .delete-btn{
+        display: inline-block;
+      }
+    }
+
+    &.active{
+      background-color: transparent !important;
+      border-left:0 !important;
+    }
+  }
+}

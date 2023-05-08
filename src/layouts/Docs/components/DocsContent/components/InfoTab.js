@@ -35,11 +35,6 @@ export function InfoTab({state, setState})
                             "body { font-size: 14pt; font-family: Arial; }",
                         height: 500,
                         menubar: false,
-                        plugins: [
-                            "advlist autolink link image lists charmap print preview hr anchor pagebreak",
-                            "searchreplace wordcount visualblocks code fullscreen insertdatetime media nonbreaking",
-                            "table emoticons template paste help",
-                        ],
                         toolbar:
                             "undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | " +
                             "bullist numlist outdent indent | link image | print preview media fullpage | " +

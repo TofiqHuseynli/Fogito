@@ -1,6 +1,6 @@
 import React from 'react';
 import {Popup, ErrorBoundary, Loading, useModal, Lang,} from 'fogito-core-ui';
-import {JsonModal, GeneralTab, InfoTab, ResponseTab, ProxyModal} from "./components";
+import {JsonModal, GeneralTab, InfoTab, ResponseTab, ProxyModal, HeadersTab, CookiesTab} from "./components";
 import {Tab, TabPanel, Tabs} from "@components";
 
 export const DocsContent = ({state, setState}) => {
@@ -14,6 +14,18 @@ export const DocsContent = ({state, setState}) => {
             title: 'Request',
             permission: true,
             component: <GeneralTab state={state} setState={setState}/>,
+        },
+        {
+            key: 'headers',
+            title: 'Headers',
+            permission: true,
+            component: <HeadersTab state={state} setState={setState}/>,
+        },
+        {
+            key: 'cookies',
+            title: 'Cookies',
+            permission: true,
+            component: <CookiesTab state={state} setState={setState}/>,
         },
         {
             key: 'content',

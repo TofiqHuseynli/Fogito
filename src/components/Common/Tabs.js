@@ -40,7 +40,7 @@ export const Tabs = ({selectedTab, onChange, children = []}) => {
     });
 
     return (
-        <div className="horizontal-navbar" ref={containerRef}>
+        <div className="core-horizontal-navbar" ref={containerRef}>
             <ul>{tabs}</ul>
             <span className="border__bottom"/>
         </div>

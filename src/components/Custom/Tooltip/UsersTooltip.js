@@ -27,8 +27,8 @@ const UsersTooltip = ({ item, children, onDelete, onPermission }) => {
                      trigger='click'
                      color={'#fff'}
                      placement='bottom'
-                     visible={!!visible}
-                     onVisibleChange={(visible) => setVisible(visible)}
+                     open={!!visible}
+                     onOpenChange={(visible) => setVisible(visible)}
                      overlayStyle={style}
             >
                 {children}

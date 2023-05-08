@@ -115,8 +115,8 @@ export const JsonEditorItem = ({
           }
           trigger={"click"}
           placement={"bottom"}
-          visible={booleanVisible}
-          onVisibleChange={(visible) => setBooleanVisible(visible)}
+          open={booleanVisible}
+          onOpenChange={(visible) => setBooleanVisible(visible)}
           overlayStyle={{ minWidth: 90 }}
           color="#FFF"
         >
@@ -244,8 +244,8 @@ export const JsonEditorItem = ({
                 title={renderTypes()}
                 trigger={"click"}
                 placement={"bottom"}
-                visible={!!typeVisible}
-                onVisibleChange={(typeVisible) => setTypeVisible(typeVisible)}
+                open={!!typeVisible}
+                onOpenChange={(typeVisible) => setTypeVisible(typeVisible)}
                 overlayStyle={{ minWidth: 90 }}
                 color="#FFF"
               >

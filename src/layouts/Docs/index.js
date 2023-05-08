@@ -31,11 +31,26 @@ export const Docs = (props) => {
 
         docs: [],
         file: {},
-        data: {},
+        data: {
+            save_required:false,
+            title:'',
+            slug:'',
+            url:'',
+            headers:[],
+            cookies:[],
+            methods:[],
+        },
         activeTab: 'general',
         loading: false,
         loadingContent: false,
     });
+
+    const setData = (data) =>{
+        setState({
+            save_required : true,
+            data:{...state.data,...data}}
+        )
+    }
 
     const refreshInfo = async () => {
         setState({loading: true})
@@ -144,6 +159,7 @@ export const Docs = (props) => {
                                 <DocsContent
                                     state={state}
                                     setState={setState}
+                                    setData={setData}
                                 />
                             )}
 

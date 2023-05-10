@@ -42,4 +42,14 @@ export class AlertLib {
     return res.isConfirmed
   }
 
+
+  static errorAlert = (error) =>{
+    Swal.fire({
+      icon: 'error',
+      title: Lang.get('Error'),
+      text: error,
+    })
+  }
+
+
 }

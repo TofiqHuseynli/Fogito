@@ -91,7 +91,7 @@ export const TableCustom = ({state, setState,path,loadData}) => {
                         </Link>
                         {data.count > 0 && (
                             <a className="dropdown-item"
-                               href={Api.convert(API_ROUTES.docsExport, true) + `?data[workspace_id]=${data.id}`}
+                               href={Api.convert(API_ROUTES.docsExport) + `?data[workspace_id]=${data.id}`}
                                target="_blank"
                                download
                             >

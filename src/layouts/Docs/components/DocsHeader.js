@@ -79,7 +79,7 @@ export const DocsHeader = ({state, setState, refresh}) => {
             }
         });
 
-        xhr[key].open("POST", Api.convert(API_ROUTES["docsImport"], true));
+        xhr[key].open("POST", Api.convert(API_ROUTES["docsImport"]));
         xhr[key].withCredentials = true;
         xhr[key].send(data);
     };
@@ -139,14 +139,14 @@ export const DocsHeader = ({state, setState, refresh}) => {
                                 {state.docs?.length > 0 && (
                                     <>
                                         <a className="dropdown-item"
-                                           href={Api.convert(API_ROUTES.docsExport, true) + `?data[workspace_id]=${state.workspace_id}`}
+                                           href={Api.convert(API_ROUTES.docsExport) + `?data[workspace_id]=${state.workspace_id}`}
                                            target="_blank"
                                            download
                                         >
                                             {Lang.get("Export")}
                                         </a>
                                         <a className="dropdown-item"
-                                           href={Api.convert(API_ROUTES.docsPrintable, true) + `?data[workspace_id]=${state.workspace_id}`}
+                                           href={Api.convert(API_ROUTES.docsPrintable) + `?data[workspace_id]=${state.workspace_id}`}
                                            target="_blank"
                                             //download
                                         >

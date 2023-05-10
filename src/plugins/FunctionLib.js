@@ -264,3 +264,12 @@ export const jsonDesign = (json) => {
 export const createMarkup = (text) => {
     return { __html: text };
 }
+
+export function isJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}

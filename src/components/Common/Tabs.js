@@ -6,7 +6,7 @@ export const Tab = ({label, active, onClick}) => {
     return (
         <li className="nav-item">
             <button
-                className={classNames('nav-link pb-3', {
+                className={classNames('nav-link', {
                     active,
                 })}
                 onClick={onClick}

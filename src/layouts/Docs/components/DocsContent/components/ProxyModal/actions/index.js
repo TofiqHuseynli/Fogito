@@ -1,5 +1,7 @@
 import {workspacesInfo, requestsProxy, requestsCreate} from "@actions";
-import {Api} from "fogito-core-ui";
+import {Api, Lang} from "fogito-core-ui";
+import {AlertLib, isJsonString} from "@plugins";
+import Swal from "sweetalert2";
 
 export function prepareText (params)
 {
@@ -10,7 +12,6 @@ export function prepareText (params)
         newJSON[par.key] = jsonType(par);
     return JSON.stringify(newJSON, undefined, 2)
 }
-
 
 export function jsonType (par)
 {
@@ -40,22 +41,23 @@ export function jsonType (par)
 
 export async function sendRequest(state, setState)
 {
-    setState({loadingResponse: true})
+    setState({loadingResponse: true,response:''})
     let response = await requestsProxy({
         doc_id: state.id,
         method: state.method.value,
         url: state.url,
         params: JSON.parse(state.raw),
-        //response: state.response
+        headers: state.headers,
+        cookies: state.cookies,
     })
     if (response.status === 'success') {
-        if(response.data?.response?.charAt(0) === '{') {
-            setState({response: response.data, loadingResponse: false})
-        } else {
-            setState({response: response.data, loadingResponse: false})
-        }
+        setState({
+            response: JSON.stringify(JSON.parse(response.data.response),null,2),
+            request: response.data.request,
+            loadingResponse: false
+        })
     } else {
-        alert(response.description)
+        AlertLib.errorAlert(response.description);
         setState({loading: false, loadingResponse: false})
     }
 }
@@ -63,21 +65,35 @@ export async function sendRequest(state, setState)
 
 export async function saveRequest(state, setState)
 {
+    if (!isJsonString(state.raw) || !isJsonString(state.response)){
+        Swal.fire({
+            icon: 'warning',
+            title: 'Oops..',
+            text: Lang.get('WrongJsonFormat'),
+        })
+        return;
+    }
+
     setState({loading: true})
     let response = await requestsCreate({
         doc_id: state.id,
         request: {
-            method: state.method,
+            method: state.method.value,
             url: state.url,
-            parameters: JSON.parse(state.raw)
+            parameters: JSON.parse(state.raw),
+            headers: state.headers,
+            cookies: state.cookies,
         },
-        response: state.response
+        response: {
+            request:state.request,
+            response:state.response,
+        }
     })
 
     if (response.status === 'success') {
         setState({loading: false})
     } else {
-        alert(response.description);
+        AlertLib.errorAlert(response.description);
         setState({loading: false})
     }
 }
@@ -90,4 +106,19 @@ export async function loadData(state, setState)
     if(response.status === 'success') {
         setState({loading: false })
     }
+}
+
+
+export function getDefaultMethod(methods)
+{
+    let res = {
+        value: 'get',
+        label: Lang.get('get')
+    };
+
+    if (methods && methods.length>0){
+        res = methods[0];
+    }
+
+    return res
 }

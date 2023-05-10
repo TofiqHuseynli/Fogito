@@ -52,13 +52,11 @@ export const DocsContent = ({state, setState}) => {
             <Popup
                 show={modal.modals.includes("json_modal")}
                 title={Lang.get("JsonFormat")}
-                size={'md'}
+                size={'lg'}
                 onClose={() => modal.hide("json_modal")}>
                 <JsonModal
                     setState={setState}
-                    id={state.docs_id}
                     state={state}
-                    onClose={() => modal.hide("json_modal")}
                 />
             </Popup>
             <Popup
@@ -67,12 +65,7 @@ export const DocsContent = ({state, setState}) => {
                 size={'xl'}
                 onClose={() => modal.hide("proxy_modal")}>
                 <ProxyModal
-                    onClose={() => modal.show('proxy_modal')}
-                    id={state.docs_id}
-                    workspace_id={state.workspace_id}
-                    url={state.data?.url}
-                    parameters={state.data?.parameters}
-                    methods={state.data?.methods}
+                    parentState={state}
                 />
             </Popup>
 

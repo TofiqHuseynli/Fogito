@@ -69,7 +69,7 @@ export const ProxyModal = ({parentState}) => {
                     <div className='col' >
                         <label>{Lang.get("Url")}</label>
                         <div className="d-flex">
-                            <div style={{width:110}}>
+                            <div style={{width:110,zIndex:100}}>
                                 <Select
                                     className='form-control mr-1 w-auto'
                                     value={state.method}

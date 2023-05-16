@@ -16,6 +16,7 @@
     "cross-env": "^7.0.3",
     "fogito-core-ui": "^1.0.35",
     "jquery": "^3.6.0",
+    "moment": "^2.29.4",
     "react": "16.13.1",
     "react-beautiful-dnd": "^13.1.0",
     "react-dom": "16.13.1",

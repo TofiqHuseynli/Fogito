@@ -16,6 +16,20 @@ export const getValueByType = (type) =>{
     }
 }
 
+export const filterValue = (item) =>{
+    switch (item.type) {
+        case 'array':
+            return []
+        case 'object':
+            return []
+        case 'integer':
+            return parseInt(item.value);
+        case 'float':
+            return parseFloat(item.value);
+        default:
+            return item.value
+    }
+}
 
 export const renderTypeValue = (item) => {
     if (item.type === 'object') {

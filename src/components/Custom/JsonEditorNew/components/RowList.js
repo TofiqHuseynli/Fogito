@@ -1,7 +1,7 @@
 import React from "react";
 import {ErrorBoundary} from "fogito-core-ui";
 import {RowItem} from "./RowItem";
-import {getValueByType} from "../actions/actions";
+import {filterValue, getValueByType} from "../actions/actions";
 
 export const RowList = React.memo(({parentType,params,deepLength,forceUpdate}) => {
 
@@ -19,7 +19,7 @@ export const RowList = React.memo(({parentType,params,deepLength,forceUpdate}) =
         if (!newItem.type)
             return 'error';
 
-        newItem.value = getValueByType(newItem.type)
+        newItem.value = filterValue(newItem)
         list.splice(index, 0, newItem);
         forceUpdate()
     }

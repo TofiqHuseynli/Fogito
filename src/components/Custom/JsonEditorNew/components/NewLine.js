@@ -24,6 +24,12 @@ export const NewLine = ({disableKey = false,onAdd,setShowNewLine}) => {
 
     const types = Parameters.getVariableTypes()
 
+    const handleKeyDown = async (event) => {
+        if (event.key === 'Enter') {
+            await addNewItem()
+            setShowNewLine(true)
+        }
+    }
 
     const addNewItem = async () =>{
         let res = await onAdd(newItem)
@@ -44,6 +50,7 @@ export const NewLine = ({disableKey = false,onAdd,setShowNewLine}) => {
     return (
         <ErrorBoundary>
             <div
+                onKeyDown={handleKeyDown}
                 ref={containerRef}
                 className="editor-new-line"
             >

@@ -36,6 +36,7 @@ export const Docs = (props) => {
             title:'',
             slug:'',
             url:'',
+            parameters:[],
             headers:[],
             cookies:[],
             methods:[],

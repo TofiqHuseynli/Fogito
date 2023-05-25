@@ -60,12 +60,12 @@ export class Parameters {
 
     static getVariableTypes() {
         return [
-            {value: 'int', label: 'int',},
             {value: 'string', label: 'string',},
+            {value: 'int', label: 'int',},
+            {value: 'float', label: 'float',},
             {value: 'bool', label: 'bool',},
             {value: 'array', label: 'array',},
             {value: 'object', label: 'object',},
-            {value: 'float', label: 'float',},
         ];
     }
 

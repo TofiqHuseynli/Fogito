@@ -1,6 +1,6 @@
 import React from 'react';
 import {ErrorBoundary, Lang,} from "fogito-core-ui";
-import {JsonEditor} from "@components";
+import {JsonEditor,JsonEditorNew} from "@components";
 import Select from "react-select";
 import {Parameters} from "@plugins";
 import AsyncSelect from "react-select/async";
@@ -24,17 +24,11 @@ export function GeneralTab({state, setState}) {
             </div>
 
             <label className='parent__label mt-2'>{Lang.get("Parameters")}</label>
-            <div className='row'>
 
-                {/*<MyJsonEditor*/}
-                {/*    state={state}*/}
-                {/*    setState={setState}*/}
-                {/*/>*/}
-                <JsonEditor
-                    state={state}
-                    setState={setState}
-                />
-            </div>
+            <JsonEditorNew
+                formParams={state.data.parameters}
+            />
+
 
             <div className='row'>
                 <div className='col'>

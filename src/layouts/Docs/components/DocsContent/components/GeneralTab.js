@@ -1,6 +1,6 @@
 import React from 'react';
 import {ErrorBoundary, Lang,} from "fogito-core-ui";
-import {JsonEditor,JsonEditorNew} from "@components";
+import {JsonEditorNew} from "@components";
 import Select from "react-select";
 import {Parameters} from "@plugins";
 import AsyncSelect from "react-select/async";

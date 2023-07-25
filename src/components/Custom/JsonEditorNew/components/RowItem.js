@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {ErrorBoundary} from "fogito-core-ui";
-import {getValueByType, isListType, renderTypeValue} from "../actions/actions";
+import {getValueByType, isListType} from "../actions/actions";
 import {RowList, InputGeneral, NewLine, RowItemEnd, TypeInput, ValueInput} from "../components";
 
 export const RowItem = ({parentType,item, deepLength, onDelete, onAdd, index, forceUpdate}) => {

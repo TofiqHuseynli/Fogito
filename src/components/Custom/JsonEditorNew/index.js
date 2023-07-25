@@ -39,8 +39,6 @@ export const JsonEditorNew = ({formParams}) => {
 
     let totalRowNums = getRowNums(formParams)
 
-    console.log(formParams)
-
 
     return (
         <ErrorBoundary>

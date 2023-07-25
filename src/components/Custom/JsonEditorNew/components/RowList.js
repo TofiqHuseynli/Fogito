@@ -1,16 +1,16 @@
 import React from "react";
 import {ErrorBoundary} from "fogito-core-ui";
 import {RowItem} from "./RowItem";
-import {filterValue, getValueByType} from "../actions/actions";
+import {filterValue} from "../actions/actions";
 
-export const RowList = React.memo(({parentType,params,deepLength,forceUpdate}) => {
+export const RowList = ({parentType, params, deepLength, forceUpdate}) => {
 
-    const onDelete = (index) =>{
-        params.splice(index,1)
+    const onDelete = (index) => {
+        params.splice(index, 1)
         forceUpdate()
     }
 
-    const onAdd = (list,index,newItem,itemType) =>{
+    const onAdd = (list, index, newItem, itemType) => {
 
         let disableKey = itemType === 'array' || parentType === 'array'
 
@@ -27,26 +27,26 @@ export const RowList = React.memo(({parentType,params,deepLength,forceUpdate}) =
     return (
         <ErrorBoundary>
             <ul className={`editor-row-list`}>
-                {params?.length > 0 && params.map((item,key) => {
+                {params?.length > 0 && params.map((item, key) => {
 
                     return (
                         <RowItem
-                            key={key+'_'+deepLength}
+                            key={key + '_' + deepLength}
                             parentType={parentType}
                             item={item}
                             index={key}
-                            onAdd={(index,newItem,endItem = false)=>{
+                            onAdd={(index, newItem, endItem = false) => {
                                 let listType = ['array', 'object'].includes(item.type)
 
                                 let currentParams = params;
                                 let currentIndex = index + 1;
 
-                                if (listType && !endItem){
+                                if (listType && !endItem) {
                                     currentParams = item.value;
                                     currentIndex = 0;
                                 }
 
-                                onAdd(currentParams,currentIndex,newItem,item.type)
+                                onAdd(currentParams, currentIndex, newItem, item.type)
                             }}
                             onDelete={onDelete}
                             deepLength={deepLength}
@@ -57,4 +57,4 @@ export const RowList = React.memo(({parentType,params,deepLength,forceUpdate}) =
             </ul>
         </ErrorBoundary>
     );
-});
+};

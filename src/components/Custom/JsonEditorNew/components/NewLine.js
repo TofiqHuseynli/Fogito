@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import { ErrorBoundary } from "fogito-core-ui";
 import {useOutsideAlerter} from "@hooks";
 import {Parameters} from "@plugins";
+import {getValueByType} from "@components/Custom/JsonEditorNew/actions/actions";
 
 export const NewLine = ({disableKey = false,onAdd,setShowNewLine}) => {
 
@@ -68,7 +69,10 @@ export const NewLine = ({disableKey = false,onAdd,setShowNewLine}) => {
 
                 <select
                     value={newItem.type}
-                    onChange={(e)=> setNewItem({type: e.target.value})}
+                    onChange={(e)=> setNewItem({
+                            type: e.target.value,
+                            value: getValueByType(e.target.value)
+                        })}
                 >
                     <option disabled={true}>Type</option>
                     {types.map((d, i) => (

@@ -20,6 +20,8 @@ export function jsonType (par)
             return par.value
         case 'integer':
             return parseInt(par.value)
+        case 'int':
+            return parseInt(par.value)
         case 'boolean':
             return par.value
         case 'float':

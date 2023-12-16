@@ -49,3 +49,8 @@ export const translations = async (params) => {
 export const parameters = (params) => {
   return Api.get("parameters", {data:params});
 };
+
+
+export const timezones = (params) => {
+  return Api.get("timezones", {data:params});
+};

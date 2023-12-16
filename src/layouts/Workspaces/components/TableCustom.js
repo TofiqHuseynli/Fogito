@@ -140,12 +140,14 @@ export const TableCustom = ({state, setState,path,loadData}) => {
         }
     }
 
+    
     return (
         <ErrorBoundary>
+   
             <Table
                 data={state.data}
                 loading={state.loading}
-                columns={{all: columns, hidden: state.hiddenColumns}}
+                columns={{ all: columns, hidden: state.hiddenColumns}}
                 pagination={{
                     skip: state.skip,
                     limit: state.limit,
@@ -164,6 +166,8 @@ export const TableCustom = ({state, setState,path,loadData}) => {
                     onSelectAll: onSelectAll,
                 }}
             />
+
+
         </ErrorBoundary>
     );
 };

@@ -4,7 +4,7 @@ import {Lang} from 'fogito-core-ui';
 
 export const Tab = ({label, active, onClick}) => {
     return (
-        <li className="nav-item">
+        <li className="nav-item test">
             <button
                 className={classNames('nav-link', {
                     active,

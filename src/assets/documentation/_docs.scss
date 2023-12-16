@@ -180,12 +180,16 @@
 
   .nav-item{
     flex:1;
+    background-color: red!important;
     .nav-link{
       width: 100%;
       padding: 10px 15px !important;
+      background-color: red;
     }
   }
 }
+
+
 
 
 
@@ -235,3 +239,4 @@
     }
   }
 }
+

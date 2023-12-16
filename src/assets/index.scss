@@ -1,6 +1,7 @@
 @import "variables";
 @import "buttons";
 @import "jsoneditor";
+@import "board";
 
 //Custom
 @import "documentation/index";
@@ -11,3 +12,19 @@
     height: 0;
   }
 }
+
+
+ .kanban-task{
+  width: 100%;
+  height: 100px;
+  background-color: #363636;
+  border-radius: 5px;
+
+  padding: 10px;
+}
+
+.noDelete:hover{
+  cursor:not-allowed;
+
+}
+

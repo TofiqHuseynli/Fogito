@@ -5,6 +5,10 @@ export const userList = (params) => {
   return Api.get("userList", {data:params});
 };
 
+export const usersSearch = (params) => {
+  return Api.get("usersSearch", {data:params});
+};
+
 export const workspaceUsersList = (params) => {
   return Api.get("workspaceUsersList", {data:params});
 };

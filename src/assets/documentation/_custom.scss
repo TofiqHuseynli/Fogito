@@ -18,26 +18,66 @@ label .required {
     background: transparent;
   }
 
-  .delete-btn{
+  .delete-btn {
     display: none;
   }
 
-  th{
-    .custom-checkbox{
+  th {
+    .custom-checkbox {
       display: none;
     }
   }
 
-  tr{
-    &:hover{
-      .delete-btn{
+  tr {
+    &:hover {
+      .delete-btn {
         display: inline-block;
       }
     }
 
-    &.active{
+    &.active {
       background-color: transparent !important;
-      border-left:0 !important;
+      border-left: 0 !important;
     }
   }
+}
+
+.snip_item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #363636;
+  height: 50px;
+  width: auto;
+  padding-left: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-right: 19px;
+
+
+
+
+
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 15px;
+  height: 50px;
+  width: 40px;
+  background-color: #4B4B4B;
+
+}
+
+.icon:hover {
+  cursor: pointer;
+}
+
+.icon i {
+  font-size: 22px;
+  color: #5A9AB2;
 }

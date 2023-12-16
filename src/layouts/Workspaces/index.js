@@ -1,5 +1,4 @@
-import React from "react";
-
+import React from 'react'
 import {
     AppContext,
     ErrorBoundary,
@@ -57,7 +56,6 @@ export const Workspaces = React.memo(({name, history, match: {path, url}}) => {
     const onDelete = async () => {
         let confirmed = await AlertLib.deleteCondition()
         if (!confirmed) return;
-
         let count = 1;
         let total = state.selectedIDs.length;
         setState({ loading: true });

@@ -8,6 +8,7 @@ import {
   Content,
   Loading,
   Api,
+  Sidebar,
   Auth,
   App as AppLib, Lang,
 } from "fogito-core-ui";
@@ -110,7 +111,7 @@ export const App = () => {
 
   React.useEffect(() => {
     Api.setRoutes(API_ROUTES);
-    Api.setParams({ app_id: config.appID});
+    Api.setParams({ app_id: config.appID ,test : true});
     AppLib.setData({appName: config.appName});
     loadData();
   }, []);
@@ -125,10 +126,11 @@ export const App = () => {
 
   return (
     <ErrorBoundary>
-      <Content sidebar={false}>
+      <Sidebar routes={MENU_ROUTES} />
+      <Content sidebar={true}>
         <Switch>
           {renderRoutes(MENU_ROUTES)}
-          <Redirect from="*" to="/workspaces" />
+          <Redirect from="*" to="/groups" />
         </Switch>
       </Content>
     </ErrorBoundary>

@@ -14,7 +14,7 @@ import moment from "moment";
 export const Leads = ({ name, history, match: { path, url } }) => {
 
     const toast = useToast();
-    const VIEW = "invoices";
+    const VIEW = "lead";
 
     const { setProps } = React.useContext(AppContext);
 
@@ -138,13 +138,13 @@ export const Leads = ({ name, history, match: { path, url } }) => {
 
     React.useEffect(() => {
         loadData();
-    }, [state.limit,state.filters, state.sort, state.sort_type, state.status,state.title]);
+    }, [ state.limit, state.filters, state.sort, state.sort_type, state.status, state.title]);
 
 
     React.useEffect(() => {
         setProps({ activeRoute: { name, path } });
         return () => {
-            setProps({ activeRoute: { name: null, path: null } });
+            setProps({ activeRoute: { name: null, path: null }});
         };
 
     }, []);

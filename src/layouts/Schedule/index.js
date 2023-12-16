@@ -12,10 +12,6 @@ import {
 import { Filters, HeaderSchedule, TableSchedule, ViewRoutes } from './components';
 
 
-
-
-
-
 export const Schedule = ({ name, history, match: { path, url } }) => {
 
     const toast = useToast();

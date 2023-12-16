@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Lang, useToast, ErrorBoundary } from "fogito-core-ui";
-import moment from "moment";
+import {  useToast, ErrorBoundary } from "fogito-core-ui";
 import { historyEmailtotal, historyList, historyPushByName, invoiceTotals } from "@actions";
 
-export const CardList = ({ state, setState }) => {
+
+export const CardList = ({ state, setState, name }) => {
   const toast = useToast();
 
   const loadEmail = async () => {
@@ -21,8 +21,6 @@ useEffect(()=>{
   loadEmail()
 },[])
   
-
-  
   const onAction = (target) => {
     if (state.filters.activeCard === target) {
       return false;
@@ -34,9 +32,9 @@ useEffect(()=>{
       historyPushByName(
         {
           label: "status",
-          value: "",
+          value: target,
         },
-        "Invoices"
+        name
       );
     } else {
       setState({
@@ -51,11 +49,9 @@ useEffect(()=>{
       historyPushByName(
         {
           label: "status",
-          // value: String(
-          //   state.statuses.find((status) => status.id == target)?.id
-          // ),
+          value: target,
         },
-        "Invoices"
+        name
       );
     }
   };
@@ -132,11 +128,9 @@ useEffect(()=>{
               </div>
               <div className="d-flex flex-column align-items-end"><div className="fs-18">{state.emailTotal?.opened}</div><span className="fs-13 text-muted">Opened</span></div>
             </div>
-
-
-
           </div>
         </div>
+
         {/* Waiting */}
         <div
           className={`card cursor-pointer ${state.filters.activeCard === "2"

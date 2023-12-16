@@ -25,7 +25,6 @@ export const ProjectsLoading = React.memo(({state}) => {
         
           <Header>
           <div className="row ">
-
           <div className="col-md-1 col-2 p-0 m-0 ">
               <Skeleton.Button
                 active

@@ -18,7 +18,9 @@ export const Filters = ({ show, name, filters, state, setState }) => {
     range: { start: null, end: null, },
     receiver_type: null,
     archived: null,
+    target_type: null,
     group: null,
+    template_id: null
   };
 
   const [params, setParams] = React.useReducer(
@@ -48,14 +50,16 @@ export const Filters = ({ show, name, filters, state, setState }) => {
 
 
 
-  const reciverTypeList = [
-    { value: 'individual', label: Lang.get('Individual') },
-    { value: 'company', label: Lang.get('Company') },
-  ]
-
   const archivedList = [
     { value: '0', label: Lang.get('Active') },
     { value: '1', label: Lang.get('Archived') },
+  ]
+
+  const targetTypeList = [
+    { value: '1', label: Lang.get('Single lead') },
+    { value: '2', label: Lang.get('Single user') },
+    { value: '3', label: Lang.get('Leads') },
+    { value: '4', label: Lang.get('Users') }
   ]
 
 
@@ -70,6 +74,8 @@ export const Filters = ({ show, name, filters, state, setState }) => {
 
   React.useEffect(() => {
     if (show) {
+
+
     }
   }, [show]);
 
@@ -127,8 +133,8 @@ export const Filters = ({ show, name, filters, state, setState }) => {
             <DatePicker.RangePicker
               allowEmpty={[true, true]}
               value={[
-                params.range?.start
-                  ? moment(params.range?.start, "YYYY-MM-DD")
+                params.range.start
+                  ? moment(params.range.start, "YYYY-MM-DD")
                   : "",
                 params.range.end ? moment(params.range.end, "YYYY-MM-DD") : "",
               ]}
@@ -164,9 +170,10 @@ export const Filters = ({ show, name, filters, state, setState }) => {
           </div>
         </div>
 
-        {/* Receiver Type */}
+
+        {/*Type */}
         <div className='col-12 mb-2'>
-          <label className='text-muted mb-1'>{Lang.get("Receiver Type")}</label>
+          <label className='text-muted mb-1'>{Lang.get("Type")}</label>
           <div className='input-group input-group-alternative'>
             <Select
               isClearable
@@ -183,11 +190,11 @@ export const Filters = ({ show, name, filters, state, setState }) => {
                   );
                 },
               }}
-              value={reciverTypeList.find((type) => type.value == params.receiver_type)}
+              value={archivedList.find((type) => type.value == params.archived)}
               className='form-control form-control-alternative'
               placeholder={Lang.get("Select")}
               onChange={(type) => {
-                setParams({ receiver_type: type?.value });
+                setParams({ archived: type?.value });
                 historyPushByName(
                   {
                     label: "type",
@@ -196,13 +203,14 @@ export const Filters = ({ show, name, filters, state, setState }) => {
                   name
                 );
               }}
-              options={reciverTypeList}
+              options={archivedList}
             />
           </div>
         </div>
-        {/* Group */}
+
+        {/*Target Type*/}
         <div className='col-12 mb-2'>
-          <label className='text-muted mb-1'>{Lang.get("Group")}</label>
+          <label className='text-muted mb-1'>{Lang.get("Target Type")}</label>
           <div className='input-group input-group-alternative'>
             <Select
               isClearable
@@ -219,23 +227,64 @@ export const Filters = ({ show, name, filters, state, setState }) => {
                   );
                 },
               }}
-              value={state.group.find((type) => type.value == params.group)}
+              value={targetTypeList.find((type) => type.value == params.target_type)}
               className='form-control form-control-alternative'
               placeholder={Lang.get("Select")}
               onChange={(type) => {
-                setParams({ group: type?.value });
+                setParams({ target_type: type?.value });
                 historyPushByName(
                   {
-                    label: "group",
+                    label: "type",
                     value: type?.value ? String(type?.value) : "",
                   },
                   name
                 );
               }}
-              options={state.group}
+              options={targetTypeList}
             />
           </div>
         </div>
+
+        {/* Template */}
+        <div className='col-12 mb-2'>
+          <label className='text-muted mb-1'>{Lang.get("Template")}</label>
+          <div className='input-group input-group-alternative'>
+            <Select
+              isClearable
+              components={{
+                Control: ({ innerProps, children, innerRef }) => {
+                  return (
+                    <div
+                      className='input-group-prepend m-1'
+                      {...innerProps}
+                      ref={innerRef}
+                    >
+                      {children}
+                    </div>
+                  );
+                },
+              }}
+              value={state.template.find((type) => type.value == params.template_id)}
+              className='form-control form-control-alternative'
+              placeholder={Lang.get("Select")}
+              onChange={(type) => {
+                setParams({ template_id: type?.value });
+                historyPushByName(
+                  {
+                    label: "type",
+                    value: type?.value ? String(type?.value) : "",
+                  },
+                  name
+                );
+              }}
+              options={state.template}
+            />
+          </div>
+        </div>
+
+
+
+
       </div>
     </FilterBar>
   );

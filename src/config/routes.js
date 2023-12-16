@@ -87,56 +87,44 @@ export const API_ROUTES = {
 
 export const MENU_ROUTES = [
 
-    {
-        path: "/groups",
-        name: "Leads",
-        icon: (<i class="symbol feather feather-grid text-primary" />
-        ),
-        nestedRoutes: [
+   
             {
-                path: "",
+                path: "/groups",
                 name: "Groups",
                 icon: <i className="symbol feather feather-users text-danger" />,
-                isExact: true,
-           
+            
                 component: (props) => <Groups {...props} />,
             },
             {
                 path: "/list",
                 name: "Lead List",
                 icon: <i className="symbol feather feather-list text-primary" />,
-                isExact: true,
+            
                 component: (props) => <Leads {...props} />,
             },
             {
                 path: "/kanban",
                 name: "Kanban",
                 icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="symbol text-warning"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="9"></rect><rect x="14" y="7" width="3" height="5"></rect></svg>,
-                isExact: true,
                
                 component: (props) => <Kanban {...props} />,
-            }
-        ],
+            },
+        
+    
+
+
+
+    {
+        path: "/groups/:id?/:docs_id?",
+        name: "Docs Panel",
+        isExact: true,
+        isHidden: true,
+        component: (props) => <Docs {...props} />,
     },
 
-
-
-    // {
-    //     path: "/groups/:id?/:docs_id?",
-    //     name: "Docs Panel",
-    //     isExact: true,
-    //     isHidden: true,
-    //     component: (props) => <Docs {...props} />,
-    // },
-   {
-    path: "/history",
-    name:"Email Sending",
-    icon: (<i class="symbol feather feather-mail text-success"></i>), 
-    nestedRoutes:[
         {
-            path: "",
+            path: "/history",
             name: "History",
-            isExact: true,
             icon: <i className="symbol feather feather-archive text-danger" />, 
             component: (props) => <History {...props} />,
         },
@@ -144,20 +132,15 @@ export const MENU_ROUTES = [
             path: "/templates",
             name: "Template",
             icon: <i className="symbol feather feather-calendar text-success" />,
-            isExact: true,
             component: (props) => <Template {...props} />,
         },
         {
             path: "/schedule",
             name: "Schedule",
             icon: <i className="symbol feather feather-activity text-primary" />,
-            isExact: true,
             component: (props) => <Schedule {...props} />,
         },
-    ]
-
-   },
-    
+   
 
     // {
     //     path: "/groups/:id?/:docs_id?",

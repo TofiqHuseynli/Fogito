@@ -136,8 +136,6 @@ export const TableLead = ({ state, setState, path, loadData, VIEW }) => {
     };
 
     
-
-
     return (
         <ErrorBoundary>
             {modal.modals.includes("groups") && (

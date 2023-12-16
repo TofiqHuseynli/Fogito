@@ -5,19 +5,16 @@ import {
     ErrorBoundary,
     useToast,
 } from "fogito-core-ui";
-import { getFilterToLocal, historyDelete, historyEmailtotal, historyList } from "@actions";
-import { HeaderHistory } from './components/HeaderHistory';
-import { TableHistory } from './components/TableHistory';
-import { CardList } from './components/CardList';
-import Item from 'antd/lib/list/Item';
+import { getFilterToLocal, historyDelete,  historyList, onFilterStorageBySection, templateMinList } from "@actions";
+import { CardList, HeaderHistory, TableHistory, Filters } from './components';
+import moment from "moment";
 
 
 
-
-export const History = ({ name, history, match: { path, url } }) => {
+export const History = ({ name, match: { path } }) => {
 
     const toast = useToast();
-
+    const VIEW = "history";
     const { setProps } = React.useContext(AppContext);
 
     const [state, setState] = React.useReducer(
@@ -27,28 +24,44 @@ export const History = ({ name, history, match: { path, url } }) => {
             data: [],
             count: 0,
             skip: 0,
-            limit: 10,
+            limit: localStorage.getItem(`${VIEW}_tb_limit`) || 10,
             status: 0,
+            filter: false,
             selectedIDs: [],
             hiddenColumns: [],
             sort: "created_at",
             sort_type: "desc",
             emailTotal:null,
+            member: getFilterToLocal(name, "member") || null,
+            template: [],
             filters: {
                 opened: 0,
                 delivered: 0,
                 not_delivered: 0,
                 activeCard: getFilterToLocal(name, "status") || "0",
-
+                range: {
+                    start: getFilterToLocal(name, "date")
+                        ? moment
+                            .unix(getFilterToLocal(name, "date")?.split("T")[0] || "")
+                            .format("YYYY-MM-DD")
+                        : null,
+                    end: getFilterToLocal(name, "date")
+                        ? moment
+                            .unix(getFilterToLocal(name, "date")?.split("T")[1] || "")
+                            .format("YYYY-MM-DD")
+                        : null,
+                },
+                archived: null,
+                target_type:  null,
+                group:  null,
+                template_id:  null,
             }
         }
-
     );
 
-
     const loadData = async (params) => {
-        setState({ loading: true });
-      
+        setState({ loading: true, skip: params?.skip || 0 });
+        let templateRes = await loadTemplate();
         let response = await historyList({
             ...state.filters,
             email: state.email,
@@ -57,10 +70,10 @@ export const History = ({ name, history, match: { path, url } }) => {
             limit: state.limit || "",
             sort: state.sort || "",
             sort_type: state.sort_type || "",
-
+            member_id: state.member?.value || "",
         });
         if (response) {
-            setState({ loading: false });
+            setState({ loading: false, template: templateRes });
             if (response.status === "success") {
                 setState({
                     data: response.data, count: response.count,
@@ -74,12 +87,7 @@ export const History = ({ name, history, match: { path, url } }) => {
         }
     };
 
-   
-
-    
-
-    console.log(state.emailTotal)
-
+    console.log(state.member)
     const onDelete = async () => {
         let confirmed = await AlertLib.deleteCondition()
         if (!confirmed) return;
@@ -109,9 +117,51 @@ export const History = ({ name, history, match: { path, url } }) => {
         }
     }
 
+    const loadTemplate = async (title = '') => {
+        let response = await templateMinList({
+            title,
+            skip: 0,
+            limit: 20,
+        });
+
+        if (response?.status === "success") {
+            return response.data;
+        } else {
+            toast.fire({ icon: response?.status, title: response.description });
+        }
+        return [];
+    };
+
+    
+    const onClearFilters = async () => {
+        setState({
+            filters: {
+                range: { start: null, end: null, },
+                archived: null,
+                target_type: null,
+                group: null,
+                template_id: null
+
+            }
+        })
+        onFilterStorageBySection(name);
+    };
+
+    const filters = {
+        range:
+            (state.filters.range.start === null && state.filters.range.end === null) ||
+            (state.filters.range.start === "" && state.filters.range.end === "") ? null : state.filters.range,
+
+        archived: state.filters.archived === "" ? null : state.filters.archived,
+        target_type: state.filters.target_type === "" ? null : state.filters.target_type,
+        group: state.filters.group === "" ? null : state.filters.group,
+        template_id: state.filters.template_id === "" ? null : state.filters.template_id
+
+    };
+
     React.useEffect(() => {
         loadData();
-    }, [state.title, state.status, state.filters]);
+    }, [state.title, state.status, state.filters, state.limit, state.member]);
 
 
     React.useEffect(() => {
@@ -122,12 +172,6 @@ export const History = ({ name, history, match: { path, url } }) => {
 
     }, []);
 
-    const filters = {
-        ...state.filters,
-        activeCard:
-            state.filters.activeCard === "0" ? null : state.filters.activeCard,
-    };
-
     return (
         <ErrorBoundary>
 
@@ -137,6 +181,13 @@ export const History = ({ name, history, match: { path, url } }) => {
             loadData={loadData}
             path={path}
         /> */}
+        <Filters
+                show={state.filter}
+                name={name}
+                filters={state.filters}
+                state={state}
+                setState={(key, value) => setState({ [key]: value })}
+            />
 
             <HeaderHistory
                 state={state}
@@ -144,12 +195,20 @@ export const History = ({ name, history, match: { path, url } }) => {
                 onDelete={onDelete}
                 loadData={loadData}
                 path={path}
+                name={name}
+                onClearFilters={onClearFilters}
+                filters={filters}
             />
 
             <section className="container-fluid">
-                <CardList state={state} setState={setState} />
+                <CardList 
+                state={state} 
+                setState={setState} 
+                name={name}
+                />
 
                 <TableHistory
+                    VIEW={VIEW}
                     state={state}
                     setState={setState}
                     path={path}

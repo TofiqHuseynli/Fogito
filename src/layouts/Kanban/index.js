@@ -33,6 +33,7 @@ import { ProjectsLoading } from './components/ProjectsLoading';
 
 export const Kanban = ({ name, history, match: { path, url, params: { id }, } }) => {
 
+    const VIEW = "kanban";
     const toast = useToast();
     const modal = useModal();
     const PROJECT = App.get("PROJECT");
@@ -80,7 +81,7 @@ export const Kanban = ({ name, history, match: { path, url, params: { id }, } })
                             .format("YYYY-MM-DD")
                         : null,
                 },
-                receiver_type: getFilterToLocal(name, "receiver_type") || null,
+                receiver_type: getFilterToLocal(name, "type") || null,
 
                 group: getFilterToLocal(name, "group") || null,
             },
@@ -92,7 +93,7 @@ export const Kanban = ({ name, history, match: { path, url, params: { id }, } })
 
     const loadData = async (params) => {
         setState({ loading: true, skip: params?.skip || 0 });
-        // let groupRes = await loadGroup();
+        let groupRes = await loadGroup();
         let response = await kanbanList({
             ...state.filters,
             ...state.filters.range,
@@ -124,11 +125,11 @@ export const Kanban = ({ name, history, match: { path, url, params: { id }, } })
 
             // setState({ group: groupRes })
             if (response.status === "success") {
-
                 setState({
                     loading: false,
                     headerLoading: true,
                     data: response.data, count: response.count,
+                    group: groupRes,
                     columns: response.data?.statuses.map((column) => {
                         column.leads = [];
                         for (let lead of allLeads) {

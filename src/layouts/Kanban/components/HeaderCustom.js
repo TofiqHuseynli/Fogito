@@ -1,33 +1,17 @@
 import React from "react";
-import { ErrorBoundary, InputLazy, Lang, Header, useModal } from "fogito-core-ui";
-import { Link } from "react-router-dom";
+import { ErrorBoundary, InputLazy, Lang, Header } from "fogito-core-ui";
 import Select from "react-select";
 import {
-    onFilterStorageBySection,
     historyPushByName,
-    groupsMinList,
 } from "@actions";
 
-
 export const HeaderCustom = ({ name, state, setState, reload, onDelete, onShow, onClearFilters, filters }) => {
-
-    const modal = useModal();
-
-
-
-    // const [params, setParams] = React.useReducer(
-    //     (prevState, newState) => ({ ...prevState, ...newState }),
-    //     filters
-    // );
-
 
 
     const archivedList = [
         { value: '0', label: Lang.get('Active') },
         { value: '1', label: Lang.get('Archived') },
     ]
-
-
 
 
     return (

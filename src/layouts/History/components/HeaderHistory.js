@@ -14,6 +14,7 @@ export const HeaderHistory = ({
   name,
   onClearFilters,
   filters,
+  VIEW,
 }) => {
   const USER = App.get("USER");
   const columns = [
@@ -72,7 +73,7 @@ export const HeaderHistory = ({
             </div>
           )}
 
-          {/* member */}
+          {/* Member */}
           <div className="col-md-3 col-6 mt-md-0 mt-3 order-md-2 order-2 ">
             <div className="input-group input-group-alternative">
               <div className="input-group-prepend">
@@ -128,7 +129,8 @@ export const HeaderHistory = ({
               />
             </div>
           </div>
-
+          
+          {/* Title Serach */}
           <div className="col-lg-4 col-md-3 col-12 mt-md-0 mt-3 order-md-2 order-2">
             <div className="input-group input-group-alternative">
               <div className="input-group-prepend">
@@ -138,8 +140,27 @@ export const HeaderHistory = ({
               </div>
               <InputLazy
                 defaultValue={state.title}
-                onChange={() => {}}
-                action={(title) => setState({ title })}
+                onChange={(e) => {
+                    setState({ title: e.target.value });
+                    if (e.target.value?.length) {
+                      historyPushByName(
+                        {
+                          label: "title",
+                          value: e.target.value,
+                        },
+                        name
+                      );
+                    } else {
+                      historyPushByName(
+                        {
+                          label: "title",
+                          value: "",
+                        },
+                        name
+                      );
+                    }
+                  }}
+                action={(e) => setState({ title: e.target.value })}
                 className="form-control form-control-alternative"
                 placeholder={Lang.get("Title")}
               />
@@ -149,7 +170,12 @@ export const HeaderHistory = ({
           <div className="col-md-auto col-6 mt-md-0 mt-3 order-md-2 order-4 ml-md-auto">
             <Table.ColumnFilter
               className="btn btn-block btn-white"
-              columns={{ all: columns, hidden: state.hiddenColumns }}
+              columns={{
+                all: columns,
+                hidden: state.hiddenColumns,
+                required: 1,
+                view: VIEW,
+              }}
               setColumns={(hiddenColumns) => setState({ hiddenColumns })}
             >
               <i className="feather feather-sliders mr-2" />

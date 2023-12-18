@@ -5,9 +5,10 @@ import {
     ErrorBoundary,
     useToast,
 } from "fogito-core-ui";
-import {  templateDelete, templateList } from "@actions";
-import { HeaderTemplate } from './components/HeaderTemplate';
-import { TableTemplate } from './components/TableTemplate';
+import {  getFilterToLocal, templateDelete, templateList } from "@actions";
+import { config } from '@config';
+import { HeaderTemplate, TableTemplate, ViewRoutes } from './components';
+
 
 
 
@@ -16,6 +17,7 @@ import { TableTemplate } from './components/TableTemplate';
 export const Template =({ name, history, match: { path, url } })=>{
 
     const toast = useToast();
+    const VIEW = "Template"
 
     const { setProps } = React.useContext(AppContext);
 
@@ -28,8 +30,11 @@ export const Template =({ name, history, match: { path, url } })=>{
             skip: 0,
             limit: 10,
             status: 0,
+            title: getFilterToLocal(name, "title") || null,
             selectedIDs: [],
-            hiddenColumns: [],
+            hiddenColumns: JSON.parse(
+                localStorage.getItem(`${VIEW}_columns_${config.appID}`)
+              ) || [0, 3, 6],
             sort: "created_at",
             sort_type: "desc",
         }
@@ -43,8 +48,7 @@ export const Template =({ name, history, match: { path, url } })=>{
             status: state.status?.value || "",
             skip: params?.skip || 0,
             limit: state.limit || "",
-            sort: state.sort || "",
-            sort_type: state.sort_type || "",
+            title: state.title || ""
 
         });
         if (response) {
@@ -105,12 +109,11 @@ export const Template =({ name, history, match: { path, url } })=>{
         <ErrorBoundary>
           
         
-
-        {/* < ViewRoutes
+          < ViewRoutes
             onClose={() => history.push(url)}
             loadData={loadData}
             path={path}
-        /> */}
+        />
 
         <HeaderTemplate
             state={state}
@@ -118,6 +121,8 @@ export const Template =({ name, history, match: { path, url } })=>{
             onDelete={onDelete}
             loadData={loadData}
             path={path}
+            name={name}
+            VIEW={VIEW}
         />
 
         <section className="container-fluid">

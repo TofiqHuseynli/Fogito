@@ -8,8 +8,7 @@ import {
 import { getFilterToLocal, historyDelete,  historyList, onFilterStorageBySection, templateMinList } from "@actions";
 import { CardList, HeaderHistory, TableHistory, Filters } from './components';
 import moment from "moment";
-
-
+import { config } from "@config";
 
 export const History = ({ name, match: { path } }) => {
 
@@ -28,12 +27,15 @@ export const History = ({ name, match: { path } }) => {
             status: 0,
             filter: false,
             selectedIDs: [],
-            hiddenColumns: [],
+            hiddenColumns: JSON.parse(
+                localStorage.getItem(`${VIEW}_columns_${config.appID}`)
+              ) || [0, 3, 6],
             sort: "created_at",
             sort_type: "desc",
             emailTotal:null,
             member: getFilterToLocal(name, "member") || null,
             template: [],
+            title: getFilterToLocal(name, "title") || null,
             filters: {
                 opened: 0,
                 delivered: 0,
@@ -51,10 +53,9 @@ export const History = ({ name, match: { path } }) => {
                             .format("YYYY-MM-DD")
                         : null,
                 },
-                archived: null,
-                target_type:  null,
-                group:  null,
-                template_id:  null,
+                archived: getFilterToLocal(name, "type") || null,
+                target_type:  getFilterToLocal(name, "target") || null,
+                template_id: getFilterToLocal(name, "template") || null,
             }
         }
     );
@@ -71,6 +72,7 @@ export const History = ({ name, match: { path } }) => {
             sort: state.sort || "",
             sort_type: state.sort_type || "",
             member_id: state.member?.value || "",
+            title: state.title || ""
         });
         if (response) {
             setState({ loading: false, template: templateRes });
@@ -83,15 +85,13 @@ export const History = ({ name, match: { path } }) => {
             else {
                 setState({ data: [], count: 0 });
             }
-
         }
     };
 
-    console.log(state.member)
+    console.log(state.emailTotal)
     const onDelete = async () => {
         let confirmed = await AlertLib.deleteCondition()
         if (!confirmed) return;
-
         let count = 1;
         let total = state.selectedIDs.length;
         setState({ loading: true });
@@ -135,13 +135,13 @@ export const History = ({ name, match: { path } }) => {
     
     const onClearFilters = async () => {
         setState({
+            title: null,
+            member: null,
             filters: {
                 range: { start: null, end: null, },
                 archived: null,
                 target_type: null,
-                group: null,
                 template_id: null
-
             }
         })
         onFilterStorageBySection(name);
@@ -151,10 +151,10 @@ export const History = ({ name, match: { path } }) => {
         range:
             (state.filters.range.start === null && state.filters.range.end === null) ||
             (state.filters.range.start === "" && state.filters.range.end === "") ? null : state.filters.range,
-
+            title: state.title === "" ? null : state.title,
+            member: state.member ==="" ? null : state.member,
         archived: state.filters.archived === "" ? null : state.filters.archived,
         target_type: state.filters.target_type === "" ? null : state.filters.target_type,
-        group: state.filters.group === "" ? null : state.filters.group,
         template_id: state.filters.template_id === "" ? null : state.filters.template_id
 
     };
@@ -174,8 +174,6 @@ export const History = ({ name, match: { path } }) => {
 
     return (
         <ErrorBoundary>
-
-
             {/* < ViewRoutes
             onClose={() => history.push(url)}
             loadData={loadData}
@@ -198,6 +196,7 @@ export const History = ({ name, match: { path } }) => {
                 name={name}
                 onClearFilters={onClearFilters}
                 filters={filters}
+                VIEW={VIEW}
             />
 
             <section className="container-fluid">

@@ -19,7 +19,6 @@ export const Filters = ({ show, name, filters, state, setState }) => {
     receiver_type: null,
     archived: null,
     target_type: null,
-    group: null,
     template_id: null
   };
 
@@ -100,6 +99,7 @@ export const Filters = ({ show, name, filters, state, setState }) => {
       }}
     >
       <div className='row'>
+
         {/* Date */}
         <div className='col-12 mb-2'>
           <label className='text-muted mb-1'>{Lang.get("Date")}</label>
@@ -170,7 +170,6 @@ export const Filters = ({ show, name, filters, state, setState }) => {
           </div>
         </div>
 
-
         {/*Type */}
         <div className='col-12 mb-2'>
           <label className='text-muted mb-1'>{Lang.get("Type")}</label>
@@ -234,7 +233,7 @@ export const Filters = ({ show, name, filters, state, setState }) => {
                 setParams({ target_type: type?.value });
                 historyPushByName(
                   {
-                    label: "type",
+                    label: "target",
                     value: type?.value ? String(type?.value) : "",
                   },
                   name
@@ -271,7 +270,7 @@ export const Filters = ({ show, name, filters, state, setState }) => {
                 setParams({ template_id: type?.value });
                 historyPushByName(
                   {
-                    label: "type",
+                    label: "template",
                     value: type?.value ? String(type?.value) : "",
                   },
                   name

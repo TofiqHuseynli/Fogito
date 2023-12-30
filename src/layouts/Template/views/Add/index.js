@@ -5,28 +5,21 @@ import {
   Popup,
   Loading,
   useToast,
-  Picker,
   Auth,
-  InputCheckbox,
 } from "fogito-core-ui";
-import { Spinner, Tab, TabPanel, Tabs } from "@components";
-import moment from "moment";
-import "../../../../assets/documentation/_custom.scss";
+import { Spinner, WYSIWYGEditor } from "@components";
 
 import {
   historyPushByName,
-  getFilterToLocal,
-  minList,
   usersSearch,
-  groupsMinList,
-  templateMinList,
   timezones,
   scheduleCreate,
   snippetsParameter,
+  templateCreate,
+  templateList,
 } from "@actions";
-import AsyncSelect from "react-select/async";
 import Select from "react-select";
-import { DatePicker } from "antd";
+import { Controller, useForm } from "react-hook-form";
 
 export const Add = ({ onClose, reload, match }) => {
   const toast = useToast();
@@ -36,58 +29,26 @@ export const Add = ({ onClose, reload, match }) => {
     {
       loading: true,
       saveLoading: false,
-      leads: [],
-      users: [],
-      groups: [],
-      group: [],
-      template: [],
-      gender_id: "",
-      lead_id: "",
-      user_id: "",
-      user_type_id: "",
-      template_id: "",
-      timezones: [],
+      owners: [],
+      owner: {},
       snippets: [],
+      title: "",
       subject: "",
       message: "",
       repeatCheck: true,
-      target_type: getFilterToLocal(name, "target_type") || "1",
-      send_date: {
-        timezone: Auth.get("timezone") || null,
-      },
-      repeat: {
-        every: "2",
-        type: "day",
-        end: {
-          type: "never",
-          value: "",
-        },
-        days: [],
-      },
     }
   );
 
   const onSubmit = async () => {
     setState({ saveLoading: true });
-
     if (state.saveLoading) {
       return;
     }
-
-    let repeatModify = state.repeat.days.map((item) => item.value);
-
-    let response = await scheduleCreate({
-      target_type_id: state.target_type,
-      lead_id: state.lead_id,
-      user_id: state.user_id,
-      group_ids: state.group,
-      gender_id: state.gender_id,
-      user_type_id: state.user_type_id,
-      template_id: state.template_id,
-      send_date: state.send_date,
-      subject: state.subject,
-      repeat: state.repeatCheck ? { ...state.repeat, days: repeatModify } : {},
-      message: state.message,
+    let response = await templateCreate({
+      owner: state.owner || null,
+      title: state.title || "",
+      subject: state.subject || "",
+      message: state.message || "",
     });
     if (response) {
       setState({ saveLoading: false });
@@ -102,64 +63,9 @@ export const Add = ({ onClose, reload, match }) => {
     }
   };
 
-  const setSendDate = (newState) => {
-    setState({
-      send_date: {
-        ...state.send_date,
-        ...newState,
-      },
-    });
-  };
-
-  const genderList = [
-    { value: "1", label: Lang.get("Male") },
-    { value: "2", label: Lang.get("Female") },
-    { value: "3", label: Lang.get("Other") },
-  ];
-
-  const targetTypeList = [
-    { value: "1", label: Lang.get("Single lead") },
-    { value: "2", label: Lang.get("Single user") },
-    { value: "3", label: Lang.get("Leads") },
-    { value: "4", label: Lang.get("Users") },
-  ];
-
-  const userType = [
-    { value: "1", label: Lang.get("Moderator") },
-    { value: "2", label: Lang.get("Employee") },
-    { value: "3", label: Lang.get("Customer") },
-    { value: "4", label: Lang.get("Partner") },
-  ];
-
-  const typeList = [
-    { value: "day", label: Lang.get("Day") },
-    { value: "week", label: Lang.get("Week") },
-    { value: "month", label: Lang.get("Month") },
-  ];
-
-  const daysList = [
-    { value: "1", label: Lang.get("Monday") },
-    { value: "2", label: Lang.get("Tuesday") },
-    { value: "3", label: Lang.get("Wednesday") },
-    { value: "4", label: Lang.get("Thursday") },
-    { value: "5", label: Lang.get("Friday") },
-    { value: "6", label: Lang.get("Saturday") },
-    { value: "7", label: Lang.get("Sunday") },
-  ];
-
-  const endList = [
-    { value: "never", label: Lang.get("Never") },
-    { value: "date", label: Lang.get("Date") },
-    { value: "after", label: Lang.get("After") },
-  ];
-
   const loadData = async () => {
-    let leadsRes = await loadLeads();
-    let usersRes = await loadUsers();
-    let groupRes = await loadGroups();
-    let templateRes = await loadTemplate();
     let snippetsRes = await loadSnippets();
-
+    let ownersRes = await loadOwners();
     let timezonesRes = await timezones({
       limit: 20,
     });
@@ -170,35 +76,15 @@ export const Add = ({ onClose, reload, match }) => {
 
     setState({
       loading: false,
-      leads: leadsRes,
-      timezones: timezonesRes.data,
-      users: usersRes,
-      groups: groupRes,
-      template: templateRes,
       snippets: snippetsRes,
+      owners: ownersRes,
     });
   };
 
-  const loadLeads = async (title = "") => {
-    let response = await minList({
-      title,
-      skip: 0,
-      limit: 20,
-    });
-
-    if (response?.status === "success") {
-      return response.data;
-    } else {
-      toast.fire({ icon: response?.status, title: response.description });
-    }
-    return [];
-  };
-
-  const loadUsers = async (title = "") => {
+  const loadOwners = async (title = "") => {
     let response = await usersSearch({
       title,
       skip: 0,
-      limit: 20,
     });
 
     if (response?.status === "success") {
@@ -206,37 +92,6 @@ export const Add = ({ onClose, reload, match }) => {
         value: item.id,
         label: item.fullname,
       }));
-    } else {
-      toast.fire({ icon: response?.status, title: response.description });
-    }
-    return [];
-  };
-
-  const loadGroups = async (title = "") => {
-    let response = await groupsMinList({
-      title,
-      skip: 0,
-      limit: 20,
-    });
-
-    if (response?.status === "success") {
-      return response.data;
-    } else {
-      toast.fire({ icon: response?.status, title: response.description });
-    }
-
-    return [];
-  };
-
-  const loadTemplate = async (title = "") => {
-    let response = await templateMinList({
-      title,
-      skip: 0,
-      limit: 20,
-    });
-
-    if (response?.status === "success") {
-      return response.data;
     } else {
       toast.fire({ icon: response?.status, title: response.description });
     }
@@ -257,15 +112,12 @@ export const Add = ({ onClose, reload, match }) => {
 
   useEffect(() => {
     loadData();
+    // loadTemplate();
   }, []);
 
-  function today() {
-    var d = new Date();
-    var curr_date = d.getDate();
-    var curr_month = d.getMonth() + 1;
-    var curr_year = d.getFullYear();
-    document.write(curr_date + "-" + curr_month + "-" + curr_year);
-  }
+  const { control } = useForm({
+    mode: "onChange",
+  });
 
   return (
     <ErrorBoundary>
@@ -301,73 +153,63 @@ export const Add = ({ onClose, reload, match }) => {
         {state.loading && <Loading />}
 
         <div style={{ minHeight: 400 }}>
-          {/* Content */}
-
-          
           <div className="row  px-2 py-3 mb-3">
             {/* Title */}
             <div className="col-lg-6 mb-4 col-md-12">
-                <label className="text-muted mb-1">{Lang.get("Title")}</label>
-                <input
-                  className="form-control w-100"
-                  placeholder={Lang.get("Title")}
-                  value={state.subject}
-                  maxLength={30}
-                  onChange={(e) => setState({ subject: e.target.value })}
-                />
-              </div>
+              <label className="text-muted mb-1">{Lang.get("Title")}</label>
+              <input
+                className="form-control w-100"
+                placeholder={Lang.get("Title")}
+                value={state.title}
+                maxLength={30}
+                onChange={(e) => setState({ title: e.target.value })}
+              />
+            </div>
 
-            {/*User*/}
-              <div className="col-lg-6 mb-4 col-md-12">
-                <label className="text-muted mb-1">{Lang.get("User")}</label>
-                <div className="input-group input-group-alternative">
-                  <Select
-                    isClearable
-                    components={{
-                      Control: ({ innerProps, children, innerRef }) => {
-                        return (
-                          <div
-                            className="input-group-prepend m-1"
-                            {...innerProps}
-                            ref={innerRef}
-                          >
-                            {children}
-                          </div>
-                        );
-                      },
-                    }}
-                    value={state.users.value}
-                    className="form-control form-control-alternative"
-                    placeholder={Lang.get("Select")}
-                    onChange={(type) => {
-                      setState({ user_id: type?.value });
-                      historyPushByName(
-                        {
-                          label: "type",
-                          value: type?.value ? String(type?.value) : "",
-                        },
-                        name
+            {/*Owner*/}
+            <div className="col-lg-6 mb-4 col-md-12">
+              <label className="text-muted mb-1">{Lang.get("Owner")}</label>
+              <div className="input-group input-group-alternative">
+                <Select
+                  isClearable
+                  components={{
+                    Control: ({ innerProps, children, innerRef }) => {
+                      return (
+                        <div
+                          className="input-group-prepend m-1"
+                          {...innerProps}
+                          ref={innerRef}
+                        >
+                          {children}
+                        </div>
                       );
-                    }}
-                    options={state.users}
-                  />
-                </div>
-              </div>
-
-              {/* Subject */}
-              <div className="col-lg-6 mb-4 col-md-12">
-                <label className="text-muted mb-1">{Lang.get("Subject")}</label>
-                <input
-                  className="form-control w-100"
-                  placeholder={Lang.get("Subject")}
-                  value={state.subject}
-                  maxLength={30}
-                  onChange={(e) => setState({ subject: e.target.value })}
+                    },
+                  }}
+                  value={state.owners.value}
+                  className="form-control form-control-alternative"
+                  placeholder={Lang.get("Owner")}
+                  onChange={(owner) => {
+                    setState({ owner });
+                  }}
+                  options={state.owners}
                 />
               </div>
+            </div>
 
-              {/* Snippets */}
-              <div className="col-12 mb-4">
+            {/* Subject */}
+            <div className="col-lg-6 mb-4 col-md-12">
+              <label className="text-muted mb-1">{Lang.get("Subject")}</label>
+              <input
+                className="form-control w-100"
+                placeholder={Lang.get("Subject")}
+                value={state.subject}
+                maxLength={30}
+                onChange={(e) => setState({ subject: e.target.value })}
+              />
+            </div>
+
+            {/* Snippets */}
+            <div className="col-12 mb-4">
               <div className="d-flex flex-column">
                 <div
                   className="d-flex align-items-center mb-4 form-control-label m-0"
@@ -389,17 +231,20 @@ export const Add = ({ onClose, reload, match }) => {
               </div>
             </div>
 
-             {/* Message */}
-                <div className="col-12 pb-3">
-                  <label>Message</label>
-                  <textarea
-                    className="form-control"
-                    rows={7}
-                    onChange={(e) => {
-                      setState({ message: e.target.value });
-                    }}
-                  ></textarea>
-                </div>
+            {/* Message */}
+            <div className="form-group col-12">
+              <label className="form-control-label">
+                {Lang.get("Message")}
+              </label>
+              <Controller
+                as={<WYSIWYGEditor defaultValue={state.message} />}
+                name="editor_content"
+                control={control}
+                onChange={(data) =>
+                  setState({  message: data[0] })
+                }
+              />
+            </div>
           </div>
         </div>
       </Popup>

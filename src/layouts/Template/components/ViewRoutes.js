@@ -16,7 +16,12 @@ export const ViewRoutes = ({ onClose, loadData, path }) => {
       <Route
         path={`${path}/edit/:id`}
         render={(routeProps) => (
-          <Edit {...routeProps} reload={() => loadData()} onClose={onClose} />
+          <Edit
+            {...routeProps}
+            reload={() => loadData()}
+            onClose={onClose}
+          
+          />
         )}
       />
     </ErrorBoundary>

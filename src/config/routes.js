@@ -17,8 +17,6 @@ export const API_ROUTES = {
     //Users
     usersSearch: MICROSERVICE_URL + "/users/search",
 
-
-
     //Leads groups
     groupsList: MICROSERVICE_URL + "/groups/list",
     groupsCreate: MICROSERVICE_URL + "/groups/add",
@@ -45,7 +43,12 @@ export const API_ROUTES = {
 
     //Template
     templateList: MICROSERVICE_URL + "/templates/list",
+    templateCreate: MICROSERVICE_URL + "/templates/add",
     templateMinList: MICROSERVICE_URL + "/templates/minlist",
+    templateArchive: MICROSERVICE_URL + "/templates/archive",
+    templateInfo: MICROSERVICE_URL + "/templates/info",
+    templateUpdate: MICROSERVICE_URL + "/templates/edit",
+    templateDelete: MICROSERVICE_URL + "/templates/delete",
 
     //Schedule
     scheduleList: MICROSERVICE_URL + "/schedules/list",

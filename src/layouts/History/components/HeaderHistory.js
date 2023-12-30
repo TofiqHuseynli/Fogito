@@ -162,7 +162,7 @@ export const HeaderHistory = ({
                   }}
                 action={(e) => setState({ title: e.target.value })}
                 className="form-control form-control-alternative"
-                placeholder={Lang.get("Title")}
+                placeholder={Lang.get("Email")}
               />
             </div>
           </div>

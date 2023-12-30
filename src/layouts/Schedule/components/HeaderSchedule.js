@@ -6,7 +6,7 @@ import { historyPushByName } from "@actions";
 
 
 export const HeaderSchedule = ({ state, setState, loadData, onDelete,
-    path, onClearFilters, VIEW, filters, loadUsers }) => {
+    path, onClearFilters, VIEW, filters, loadUsers, name }) => {
 
     
     const columns = [
@@ -23,7 +23,6 @@ export const HeaderSchedule = ({ state, setState, loadData, onDelete,
     return (
         <ErrorBoundary>
             <Header>
-
                 <div className="row">
                     {!!state.selectedIDs.length && (
                         <div className="col col-md-auto mt-md-0 mt-3">
@@ -47,9 +46,8 @@ export const HeaderSchedule = ({ state, setState, loadData, onDelete,
                         </div>
                     )}
 
-
                     {/* member */}
-                    <div className='col-md-3 col-6 mt-md-0 mt-3 order-md-2 order-2 ml-md-auto'>
+                    <div className='col-md-3 col-6 mt-md-0 mt-3 order-md-2 order-2 md-auto'>
                         <div className='input-group input-group-alternative'>
                             <div className='input-group-prepend'>
                                 <div
@@ -100,6 +98,8 @@ export const HeaderSchedule = ({ state, setState, loadData, onDelete,
                         </div>
                     </div>
 
+
+                    {/* Email */}
                     <div className=" col-md-3 col-12 mt-md-0 mt-3 order-md-2 order-3">
                         <div className="input-group input-group-alternative">
                             <div className="input-group-prepend">
@@ -108,11 +108,30 @@ export const HeaderSchedule = ({ state, setState, loadData, onDelete,
                                 </span>
                             </div>
                             <InputLazy
-                                defaultValue={state.title}
-                                onChange={() => { }}
-                                action={(email) => setState({ email })}
+                                defaultValue={state.email}
+                                action={(e) => setState({email: e.target.value})}
                                 className="form-control form-control-alternative"
                                 placeholder={Lang.get("Email")}
+                                onChange={(e) => {   {
+                                    setState({ email: e.target.value });
+                                    if (e.target.value?.length) {
+                                      historyPushByName(
+                                        {
+                                          label: "email",
+                                          value: e.target.value,
+                                        },
+                                        name
+                                      );
+                                    } else {
+                                      historyPushByName(
+                                        {
+                                          label: "email",
+                                          value: "",
+                                        },
+                                        name
+                                      );
+                                    }
+                                  } }}
                             />
                         </div>
                     </div>

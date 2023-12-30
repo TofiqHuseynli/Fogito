@@ -9,7 +9,7 @@ import {
   historyPushByName,
   groupsMinList,
 } from "@actions";
-import { InputLazy, Auth, Lang } from "fogito-core-ui";
+import { Lang } from "fogito-core-ui";
 import FilterBar from "fogito-core-ui/build/components/common/FilterBar";
 
 export const Filters = ({ show, name, filters, state, setState }) => {
@@ -33,35 +33,10 @@ export const Filters = ({ show, name, filters, state, setState }) => {
   );
 
 
-  const dateFilters = [
-    {
-      label: Lang.get("CreatedAt"),
-      value: "created_at",
-    },
-    {
-      label: Lang.get("OverdueAt"),
-      value: "overdue_at",
-    },
-    {
-      label: Lang.get("PaidAt"),
-      value: "paid_at",
-    },
-  ];
-
-
-
   const archivedList = [
     { value: '0', label: Lang.get('Active') },
     { value: '1', label: Lang.get('Archived') },
   ]
-
-  const targetTypeList = [
-    { value: '1', label: Lang.get('Single lead') },
-    { value: '2', label: Lang.get('Single user') },
-    { value: '3', label: Lang.get('Leads') },
-    { value: '4', label: Lang.get('Users') }
-  ]
-
 
 
   const onSearch = () => {
@@ -208,121 +183,7 @@ export const Filters = ({ show, name, filters, state, setState }) => {
           </div>
         </div>
 
-        {/*Target Type*/}
-        <div className='col-12 mb-2'>
-          <label className='text-muted mb-1'>{Lang.get("Target Type")}</label>
-          <div className='input-group input-group-alternative'>
-            <Select
-              isClearable
-              components={{
-                Control: ({ innerProps, children, innerRef }) => {
-                  return (
-                    <div
-                      className='input-group-prepend m-1'
-                      {...innerProps}
-                      ref={innerRef}
-                    >
-                      {children}
-                    </div>
-                  );
-                },
-              }}
-              value={targetTypeList.find((type) => type.value == params.target_type)}
-              className='form-control form-control-alternative'
-              placeholder={Lang.get("Select")}
-              onChange={(type) => {
-                setParams({ target_type: type?.value });
-                historyPushByName(
-                  {
-                    label: "target_type",
-                    value: type?.value ? String(type?.value) : "",
-                  },
-                  name
-                );
-              }}
-              options={targetTypeList}
-            />
-          </div>
-        </div>
-
-        {/* Group */}
-        <div className='col-12 mb-2'>
-          <label className='text-muted mb-1'>{Lang.get("Group")}</label>
-          <div className='input-group input-group-alternative'>
-            <Select
-              isClearable
-              components={{
-                Control: ({ innerProps, children, innerRef }) => {
-                  return (
-                    <div
-                      className='input-group-prepend m-1'
-                      {...innerProps}
-                      ref={innerRef}
-                    >
-                      {children}
-                    </div>
-                  );
-                },
-              }}
-              value={state.group.find((type) => type.value == params.group)}
-              className='form-control form-control-alternative'
-              placeholder={Lang.get("Select")}
-              onChange={(type) => {
-                setParams({ group: type?.value });
-                historyPushByName(
-                  {
-                    label: "group",
-                    value: type?.value ? String(type?.value) : "",
-                  },
-                  name
-                );
-              }}
-              options={state.group}
-            />
-          </div>
-        </div>
-
-
-        {/* Template */}
-        <div className='col-12 mb-2'>
-          <label className='text-muted mb-1'>{Lang.get("Template")}</label>
-          <div className='input-group input-group-alternative'>
-            <Select
-              isClearable
-              components={{
-                Control: ({ innerProps, children, innerRef }) => {
-                  return (
-                    <div
-                      className='input-group-prepend m-1'
-                      {...innerProps}
-                      ref={innerRef}
-                    >
-                      {children}
-                    </div>
-                  );
-                },
-              }}
-              value={state.template.find((type) => type.value == params.template_id)}
-              className='form-control form-control-alternative'
-              placeholder={Lang.get("Select")}
-              onChange={(type) => {
-                setParams({ template_id: type?.value });
-                historyPushByName(
-                  {
-                    label: "template",
-                    value: type?.value ? String(type?.value) : "",
-                  },
-                  name
-                );
-              }}
-              options={state.template}
-            />
-          </div>
-        </div>
-
-
-
-
+   
       </div>
     </FilterBar>
   );

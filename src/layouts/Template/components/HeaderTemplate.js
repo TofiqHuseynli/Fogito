@@ -10,7 +10,9 @@ export const HeaderTemplate = ({
   onDelete,
   path,
   name,
-  VIEW
+  VIEW,
+  onClearFilters,
+  filters
 }) => {
   const columns = [
     { name: Lang.get("Owner") },
@@ -54,7 +56,7 @@ export const HeaderTemplate = ({
               </div>
               <InputLazy
                 defaultValue={state.title}
-                action={(title) => setState({ title })}
+                action={(e) => setState({ title: e.target.value })}
                 onChange={(e) => {
                   {
                     setState({ title: e.target.value });
@@ -90,13 +92,26 @@ export const HeaderTemplate = ({
                 all: columns,
                 hidden: state.hiddenColumns,
                 required: 1,
-                view: VIEW
+                view: VIEW,
               }}
               setColumns={(hiddenColumns) => setState({ hiddenColumns })}
             >
               <i className="feather feather-sliders mr-2" />
               {Lang.get("Columns")}
             </Table.ColumnFilter>
+          </div>
+
+          <div className="col-6 col-md-auto mt-md-0 mt-3 order-md-3 order-3">
+            <Header.FilterButton
+              onClick={() => setState({ filter: true })}
+              containerClassName="h-100 w-100"
+              onClear={onClearFilters}
+              className="btn btn-white"
+              count={Object.keys(filters).filter((key) => filters[key]).length}
+            >
+              <i className="feather feather-filter mr-2" />
+              {Lang.get("Filters")}
+            </Header.FilterButton>
           </div>
 
           <div className="col-md-auto col mt-md-0 mt-3 order-md-4 order-2">

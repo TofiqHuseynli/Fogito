@@ -74,7 +74,6 @@ export const Add = ({ onClose, reload }) => {
                             state.title.length > 0 ? Lang.get("Avalable length ") + (30 - state.title?.length) : Lang.get("Max. length ") + (30 - state.title?.length)}
                     </span>
                     <br />
-
                     <label className="form-control-label  mt-4">
                         {Lang.get("Note")}
                     </label>
@@ -85,7 +84,6 @@ export const Add = ({ onClose, reload }) => {
                         rows={6}
                         onChange={(e) => setState({ note: e.target.value })}
                     />
-
                 </div>
 
                 <div className="d-flex justify-content-between align-items-center w-100">

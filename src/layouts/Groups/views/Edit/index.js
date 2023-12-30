@@ -36,10 +36,9 @@ export const Edit = ({onClose, reload}) => {
         setState({params: {...state.params, ...data}})
     }
 
-    const onSubmit = async (data) => {
+    const onSubmit = async () => {
         setState({saveLoading: true});
         if (!state.saveLoading) {
-
             let response = await groupsUpdate(state.params);
 
             if (response) {

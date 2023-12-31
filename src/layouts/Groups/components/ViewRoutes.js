@@ -28,6 +28,17 @@ export const ViewRoutes = ({onClose,loadData,path}) => {
                     />
                 )}
             />
+
+<Route
+                path={`${path}/info/:id`}
+                render={(routeProps) => (
+                    <Info 
+                        {...routeProps}
+                        reload={() => loadData()}
+                        onClose={onClose}
+                    />
+                )}
+            />
            
         </ErrorBoundary>
     );
